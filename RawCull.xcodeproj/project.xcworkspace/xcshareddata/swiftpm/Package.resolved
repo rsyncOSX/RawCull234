@@ -1,0 +1,69 @@
+{
+  "originHash" : "4712e706b3d55da3e58e3b7471f36767bbaabd8c8ab2a6435a018bd38b937b46",
+  "pins" : [
+    {
+      "identity" : "decodeencodegeneric",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/rsyncOSX/DecodeEncodeGeneric.git",
+      "state" : {
+        "revision" : "b5ecbbbe1b244191efec1532a979f6ae342d6617",
+        "version" : "1.0.0"
+      }
+    },
+    {
+      "identity" : "parsersyncoutput",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/rsyncOSX/ParseRsyncOutput",
+      "state" : {
+        "revision" : "e079e0c9d34bf07f7f2a4312b40feea79ae14847",
+        "version" : "1.0.0"
+      }
+    },
+    {
+      "identity" : "photoanalysiskit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/rsyncOSX/PhotoAnalysisKit.git",
+      "state" : {
+        "revision" : "6e83ceebbca47a5dea0b1b2b4ee8b9132c281449",
+        "version" : "1.2.0"
+      }
+    },
+    {
+      "identity" : "rawcullcore",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/rsyncOSX/RawCullCore.git",
+      "state" : {
+        "revision" : "d25a51e65ad32a82bf82f86fa0ec07d6e14498e9",
+        "version" : "1.1.2"
+      }
+    },
+    {
+      "identity" : "rawparserkit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/rsyncOSX/RawParserKit.git",
+      "state" : {
+        "revision" : "0576a7cfbbdb48a5e0cd34569f2fce53e6d72a54",
+        "version" : "1.2.8"
+      }
+    },
+    {
+      "identity" : "rsyncarguments",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/rsyncOSX/RsyncArguments",
+      "state" : {
+        "revision" : "0ff6518136c208dfbecc1a918f045048ca79853d",
+        "version" : "1.0.0"
+      }
+    },
+    {
+      "identity" : "rsyncprocessstreaming",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/rsyncOSX/RsyncProcessStreaming",
+      "state" : {
+        "revision" : "dd86f012b352888fd146e0b6e103740dc237f740",
+        "version" : "1.0.0"
+      }
+    }
+  ],
+  "version" : 3
+}

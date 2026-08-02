@@ -1,0 +1,115 @@
+import Foundation
+import RawCullCore
+
+nonisolated struct BurstGroupSignature: Codable, Hashable {
+    let memberKeys: [String]
+
+    init(memberKeys: [String]) {
+        self.memberKeys = memberKeys
+            .filter { !$0.isEmpty }
+            .sorted { $0.localizedStandardCompare($1) == .orderedAscending }
+    }
+
+    init?(files: [FileItem], catalog: URL?) {
+        let keys = files.map { Self.memberKey(for: $0, catalog: catalog) }
+        guard !keys.isEmpty else { return nil }
+        self.init(memberKeys: keys)
+    }
+
+    static func memberKey(for file: FileItem, catalog: URL?) -> String {
+        guard let catalog else { return file.name }
+
+        let catalogPath = catalog.standardizedFileURL.path
+        let filePath = file.url.standardizedFileURL.path
+        let prefix = catalogPath.hasSuffix("/") ? catalogPath : catalogPath + "/"
+
+        guard filePath.hasPrefix(prefix) else { return file.name }
+        let relativePath = String(filePath.dropFirst(prefix.count))
+        return relativePath.isEmpty ? file.name : relativePath
+    }
+
+    static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.memberKeys == rhs.memberKeys
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(memberKeys)
+    }
+}
+
+nonisolated struct BurstReviewStateSnapshot: Codable, Equatable {
+    let signature: BurstGroupSignature
+    let state: BurstReviewState
+}
+
+struct CompletedBurstAnalysisContext: Equatable {
+    let catalog: URL
+    let orderedFileIDs: [UUID]
+    let orderedFilePaths: [String]
+    let similaritySignature: BurstSimilaritySignature
+    let generation: Int
+}
+
+struct BurstGroupPresentation: Equatable {
+    nonisolated static func recommendationBadge(
+        for candidate: BurstCandidateScore,
+        in result: BurstAnalysisResult,
+    ) -> String? {
+        guard result.recommendedFileID == candidate.fileID else { return nil }
+
+        if result.reviewState == .manualWinnerOverride {
+            return "Manual"
+        }
+
+        switch result.confidence {
+        case .high:
+            return "Best"
+
+        case .medium:
+            return "Suggested"
+
+        case .low:
+            return "Check frame"
+        }
+    }
+}
+
+enum BurstAnalysisStep: String, Codable, Equatable {
+    case idle
+    case loadingCache
+    case scoringSharpness
+    case indexingSimilarity
+    case grouping
+    case ranking
+    case savingCache
+}
+
+struct BurstAnalysisProgress: Codable, Equatable {
+    var step: BurstAnalysisStep = .idle
+    var total: Int = 0
+
+    var isRunning: Bool {
+        step != .idle
+    }
+
+    var isCountBased: Bool {
+        total > 0
+    }
+
+    var statusText: String {
+        switch step {
+        case .idle: "Ready"
+        case .loadingCache: "Loading burst analysis..."
+        case .scoringSharpness: "Scoring sharpness..."
+        case .indexingSimilarity: "Indexing similarity..."
+        case .grouping: "Grouping bursts..."
+        case .ranking: "Ranking burst candidates..."
+        case .savingCache: "Saving burst analysis..."
+        }
+    }
+}
+
+struct BurstUndoEntry: Equatable {
+    let groupID: Int
+    let previousRatingsByFileName: [String: Int]
+}

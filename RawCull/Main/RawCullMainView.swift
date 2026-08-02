@@ -1,0 +1,373 @@
+import OSLog
+import SwiftUI
+import UniformTypeIdentifiers
+
+extension KeyPath: @unchecked @retroactive Sendable where Root == FileItem {}
+
+struct RawCullMainView: View {
+    @Environment(\.openWindow) var openWindow
+    @Environment(GridThumbnailViewModel.self) var gridthumbnailviewmodel
+
+    @Bindable var viewModel: RawCullViewModel
+
+    @State private var memoryWarningOpacity: Double = 0.3
+    @State private var dismissedMemoryPressureWarning = false
+    @State var columnVisibility = NavigationSplitViewVisibility.doubleColumn
+
+    @State private var cgImage: CGImage?
+    @State private var nsImage: NSImage?
+    @State private var showCandidateInspector = false
+    @State private var showsDetailedBurstComparison = false
+
+    private var showsJPGExtractionProgressOverlay: Bool {
+        viewModel.currentExtractAndSaveJPGsActor != nil && viewModel.mainViewMode != .loupe
+    }
+
+    var body: some View {
+        ZStack {
+            Group {
+                switch viewModel.mainViewMode {
+                case .loupe:
+                    loupeSplit
+
+                case .grid:
+                    gridSplit
+
+                case .similarityGrid:
+                    similarityGridSplit
+
+                case .ratedGrid:
+                    ratedGridSplit
+
+                case .comparisonGrid:
+                    comparisonGridSplit
+                }
+            }
+
+            if viewModel.zoomOverlayVisible {
+                ZoomOverlayView(viewModel: viewModel)
+                    .transition(.opacity)
+                    .zIndex(10)
+            }
+
+            if showsJPGExtractionProgressOverlay {
+                VStack {
+                    Spacer()
+
+                    ProgressCount(
+                        progress: $viewModel.progress,
+                        estimatedSeconds: $viewModel.estimatedSeconds,
+                        max: viewModel.max,
+                        statusText: "Extracting JPGs",
+                    )
+                    .frame(maxWidth: 480)
+                    .padding(16)
+                    .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 12))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 12)
+                            .stroke(Color.primary.opacity(0.12), lineWidth: 1),
+                    )
+                    .shadow(color: .black.opacity(0.25), radius: 12, y: 4)
+                    .padding(.bottom, 24)
+                }
+                .transition(.move(edge: .bottom).combined(with: .opacity))
+                .zIndex(12)
+            }
+        }
+        .sheet(item: $viewModel.activeSheet) { sheet in
+            switch sheet {
+            case .stats:
+                ScanStatsSheetView(viewModel: viewModel)
+
+            case .scoringParams:
+                ScoringParametersSheetView(
+                    config: Bindable(viewModel.sharpnessModel.focusMaskModel).config,
+                    thumbnailMaxPixelSize: Bindable(viewModel.sharpnessModel).thumbnailMaxPixelSize,
+                    scoringQuality: Bindable(viewModel.sharpnessModel).scoringQuality,
+                    scoringSource: Bindable(viewModel.sharpnessModel).scoringSource,
+                )
+
+            case .extractJPGs:
+                ExtractJPGsSheetView(viewModel: viewModel)
+            }
+        }
+        .sheet(isPresented: $viewModel.showSavedFiles) {
+            SavedFilesView()
+        }
+        .sheet(item: $viewModel.rawDiagnosticsPresentation) { presentation in
+            RawFileDiagnosticsView(log: presentation.log) {
+                viewModel.rawDiagnosticsPresentation = nil
+            }
+        }
+        .sheet(isPresented: $viewModel.showcopyARWFilesView) {
+            CopyARWFilesView(
+                viewModel: viewModel,
+                sheetType: $viewModel.sheetType,
+                selectedSource: $viewModel.selectedSource,
+                remotedatanumbers: $viewModel.remotedatanumbers,
+                showcopytask: $viewModel.showcopyARWFilesView,
+            )
+        }
+        .alert(item: $viewModel.operationFailurePresentation) { presentation in
+            Alert(
+                title: Text(presentation.title),
+                message: Text(presentation.message),
+                dismissButton: .default(Text("OK")),
+            )
+        }
+        .alert("Changes Not Saved", isPresented: persistenceErrorIsPresented) {
+            Button("Retry") {
+                Task {
+                    await viewModel.cullingModel.retryPersistence()
+                }
+            }
+        } message: {
+            Text("RawCull could not save ratings and culling changes. Your changes remain in memory. Retry before quitting.\n\n\(viewModel.cullingModel.persistenceError ?? "Unknown error")")
+        }
+        .onChange(of: viewModel.mainViewMode) { _, newMode in
+            if newMode == .grid || newMode == .similarityGrid {
+                gridthumbnailviewmodel.open(
+                    cullingModel: viewModel.cullingModel,
+                    selectedSource: viewModel.selectedSource,
+                    filteredFiles: viewModel.filteredFiles,
+                )
+            } else {
+                gridthumbnailviewmodel.close()
+            }
+        }
+        .onChange(of: viewModel.activeBurstComparisonGroupID) { oldGroupID, newGroupID in
+            if oldGroupID != newGroupID {
+                showsDetailedBurstComparison = false
+            }
+        }
+        .focusedSceneValue(\.extractJPGs, $viewModel.focusExtractJPGs)
+        .focusedSceneValue(\.aborttask, $viewModel.focusaborttask)
+        .onChange(of: viewModel.focusExtractJPGs) { _, shouldPresent in
+            guard shouldPresent else { return }
+            viewModel.focusExtractJPGs = false
+            viewModel.presentExtractJPGsSheet()
+        }
+    }
+
+    private var persistenceErrorIsPresented: Binding<Bool> {
+        Binding(
+            get: { viewModel.cullingModel.persistenceError != nil },
+            set: { _ in },
+        )
+    }
+
+    // MARK: - Loupe mode (3-column split)
+
+    private var loupeSplit: some View {
+        NavigationSplitView(columnVisibility: $columnVisibility) {
+            RAWCatalogSidebarView(
+                sources: $viewModel.sources,
+                selectedSource: $viewModel.selectedSource,
+                isShowingPicker: $viewModel.isShowingPicker,
+                cullingModel: viewModel.cullingModel,
+            )
+        } content: {
+            SidebarARWCatalogFileView(
+                viewModel: viewModel,
+                isShowingPicker: $viewModel.isShowingPicker,
+                progress: $viewModel.progress,
+                selectedSource: $viewModel.selectedSource,
+                scanning: $viewModel.scanning,
+                creatingThumbnails: $viewModel.creatingthumbnails,
+                nsImage: $nsImage,
+                cgImage: $cgImage,
+                issorting: viewModel.issorting,
+                max: viewModel.max,
+            )
+            .navigationTitle((viewModel.selectedSource?.name ?? "Files") +
+                " (\(viewModel.filteredFiles.count) files)")
+            .toolbar { toolbarContent }
+            .alert(viewModel.alertTitle, isPresented: $viewModel.showingAlert) {
+                switch viewModel.alertType {
+                case .createJPGDiskCache:
+                    Button("Create Cache") {
+                        viewModel.startScanAndExtractJPGs()
+                    }
+                    .frame(width: 100)
+
+                case .clearRatedFiles:
+                    Button("Clear", role: .destructive) {
+                        viewModel.clearCurrentCatalogCullingState()
+                    }
+                    .frame(width: 100)
+
+                case .none:
+                    EmptyView()
+                }
+                Button("Cancel", role: .cancel) {}
+            } message: {
+                Text(viewModel.alertMessage)
+            }
+        } detail: {
+            RawCullDetailContainerView(
+                viewModel: viewModel,
+                cgImage: $cgImage,
+                nsImage: $nsImage,
+                selectedFileID: $viewModel.selectedFileID,
+                abort: abort,
+            )
+        }
+        .task {
+            columnVisibility = .doubleColumn
+        }
+        .task {
+            let handlers = CreateFileHandlers().createFileHandlers(
+                fileHandler: { _ in },
+                maxfilesHandler: { _ in },
+                estimatedTimeHandler: { _ in },
+                memorypressurewarning: viewModel.setMemoryPressureWarning,
+                onExtractionNeeded: {},
+            )
+            await SharedMemoryCache.shared.setFileHandlers(handlers)
+        }
+        .inspector(isPresented: $viewModel.hideInspector) {
+            FileInspectorView(
+                file: viewModel.selectedFile,
+            )
+        }
+        .fileImporter(isPresented: $viewModel.isShowingPicker, allowedContentTypes: [.folder]) { result in
+            handlePickerResult(result)
+        }
+        .task(id: viewModel.selectedSource) {
+            viewModel.startCatalogLoad(for: viewModel.selectedSource)
+        }
+        .onChange(of: viewModel.sortOrder) { _, _ in
+            Task(priority: .background) {
+                await viewModel.handleSortOrderChange()
+            }
+        }
+        .overlay(alignment: .bottom) {
+            if viewModel.memoryPressureWarning, !dismissedMemoryPressureWarning {
+                MemoryWarningLabelView(
+                    memoryWarningOpacity: $memoryWarningOpacity,
+                    onAppearAction: startMemoryWarningFlash,
+                    onClose: {
+                        dismissedMemoryPressureWarning = true
+                    },
+                )
+                .transition(.move(edge: .top).combined(with: .opacity))
+            }
+        }
+        .onChange(of: viewModel.memoryPressureWarning) { _, newValue in
+            if newValue {
+                startMemoryWarningFlash()
+            } else {
+                dismissedMemoryPressureWarning = false
+            }
+        }
+    }
+
+    // MARK: - Grid mode
+
+    private var gridSplit: some View {
+        GridThumbnailView(
+            viewModel: viewModel,
+            nsImage: $nsImage,
+            cgImage: $cgImage,
+        )
+        .navigationTitle((viewModel.selectedSource?.name ?? "Files") +
+            " (\(viewModel.filteredFiles.count) files)")
+        .toolbar { toolbarContent }
+    }
+
+    // MARK: - Similarity grid mode
+
+    private var similarityGridSplit: some View {
+        SimilarityGridView(
+            viewModel: viewModel,
+            nsImage: $nsImage,
+            cgImage: $cgImage,
+        )
+        .navigationTitle((viewModel.selectedSource?.name ?? "Files") +
+            " (\(viewModel.filteredFiles.count) files)")
+        .toolbar { toolbarContent }
+    }
+
+    // MARK: - Rated grid mode
+
+    private var ratedGridSplit: some View {
+        RatedPhotoGridView(
+            viewModel: viewModel,
+            catalogURL: viewModel.selectedSource?.url,
+            onPhotoSelected: { file in
+                viewModel.selectedFileID = file.id
+            },
+        )
+        .navigationTitle("Rated images")
+        .toolbar { toolbarContent }
+    }
+
+    // MARK: - Comparison grid mode
+
+    @ViewBuilder
+    private var comparisonGridSplit: some View {
+        if let groupID = viewModel.activeBurstComparisonGroupID,
+           !showsDetailedBurstComparison {
+            BurstCullingWorkspaceView(
+                viewModel: viewModel,
+                groupID: groupID,
+                onCompare: { showsDetailedBurstComparison = true },
+            )
+            .navigationTitle((viewModel.selectedSource?.name ?? "Catalog") + " — Burst")
+        } else {
+            NavigationSplitView(columnVisibility: $columnVisibility) {
+                RAWCatalogSidebarView(
+                    sources: $viewModel.sources,
+                    selectedSource: $viewModel.selectedSource,
+                    isShowingPicker: $viewModel.isShowingPicker,
+                    cullingModel: viewModel.cullingModel,
+                )
+            } detail: {
+                ComparisonGridView(
+                    viewModel: viewModel,
+                    showCandidateInspector: $showCandidateInspector,
+                )
+                .navigationTitle("Compare images")
+                .toolbar { toolbarContent }
+                .inspector(isPresented: $showCandidateInspector) {
+                    CandidateInspectorView(context: candidateInspectorContext)
+                }
+            }
+            .task {
+                columnVisibility = .detailOnly
+            }
+            .fileImporter(isPresented: $viewModel.isShowingPicker, allowedContentTypes: [.folder]) { result in
+                handlePickerResult(result)
+            }
+            .task(id: viewModel.selectedSource) {
+                viewModel.startCatalogLoad(for: viewModel.selectedSource)
+            }
+        }
+    }
+
+    private var candidateInspectorContext: CandidateInspectorContext? {
+        guard let groupID = viewModel.activeBurstComparisonGroupID else { return nil }
+        return CandidateInspectorContext.make(
+            selectedFile: viewModel.selectedFile,
+            result: viewModel.burstAnalysisResult(for: groupID),
+            files: viewModel.files,
+            saliencyInfo: viewModel.sharpnessModel.saliencyInfo,
+            sharpnessScores: viewModel.sharpnessModel.scores,
+            sharpnessBreakdowns: viewModel.sharpnessModel.breakdowns,
+            focusPoints: viewModel.focusPoints,
+            rating: viewModel.selectedFile.map { viewModel.getRating(for: $0) } ?? 0,
+        )
+    }
+
+    // MARK: - Actions
+
+    func abort() {
+        viewModel.abort()
+    }
+
+    private func startMemoryWarningFlash() {
+        withAnimation(.easeInOut(duration: 1.5).repeatForever(autoreverses: true)) {
+            memoryWarningOpacity = 0.8
+        }
+    }
+}

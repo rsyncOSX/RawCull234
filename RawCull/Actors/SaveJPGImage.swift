@@ -1,0 +1,92 @@
+//
+//  SaveJPGImage.swift
+//  RawCull
+//
+//  Created by Thomas Evensen on 20/02/2026.
+//
+
+import Foundation
+import ImageIO
+import OSLog
+import RawParserKit
+import UniformTypeIdentifiers
+
+actor SaveJPGImage {
+    /// Saves pre-encoded JPEG data next to the source RAW file.
+    /// - Parameters:
+    ///   - jpegData: JPEG data encoded by the caller before crossing actor boundaries.
+    ///   - originalURL: The URL of the source ARW file (used to generate the filename).
+    func save(_ jpegData: Data, originalURL: URL) async throws {
+        let outputURL = originalURL.deletingPathExtension().appendingPathExtension("jpg")
+
+        Logger.process.info("ExtractEmbeddedPreview: Attempting to save to \(outputURL.path)")
+
+        try await Task.detached(priority: .background) {
+            try jpegData.write(to: outputURL, options: .atomic)
+            Logger.process.info("ExtractEmbeddedPreview: Successfully saved JPEG. Output bytes: \(jpegData.count)")
+        }.value
+    }
+
+    /// Saves pre-encoded JPEG data into a selected destination catalog.
+    func save(
+        _ jpegData: Data,
+        originalURL: URL,
+        destinationCatalogURL: URL,
+        exportMode: ExtractJPGExportMode,
+    ) async throws {
+        let outputURL = Self.outputURL(
+            for: originalURL,
+            in: destinationCatalogURL,
+            exportMode: exportMode,
+        )
+
+        Logger.process.info("ExtractEmbeddedPreview: Attempting to save to \(outputURL.path)")
+
+        try await Task.detached(priority: .background) {
+            try jpegData.write(to: outputURL, options: .atomic)
+            Logger.process.info("ExtractEmbeddedPreview: Successfully saved JPEG. Output bytes: \(jpegData.count)")
+        }.value
+    }
+
+    nonisolated static func outputURL(
+        for originalURL: URL,
+        in destinationCatalogURL: URL,
+        exportMode: ExtractJPGExportMode,
+    ) -> URL {
+        let baseName = originalURL.deletingPathExtension().lastPathComponent
+        let outputName: String = switch exportMode {
+        case .embeddedJPG:
+            baseName
+
+        case .demosaicedRAW:
+            "\(baseName)_demosaic"
+        }
+
+        return destinationCatalogURL
+            .appendingPathComponent(outputName)
+            .appendingPathExtension(RawParserKit.SupportedFileType.jpg.rawValue)
+    }
+
+    /// Encodes a `CGImage` to JPEG data at export quality.
+    /// Call this before sending the result to the save actor so `CGImage` does not
+    /// cross actor/task boundaries.
+    nonisolated static func jpegData(from image: CGImage) -> Data? {
+        let mutableData = NSMutableData()
+        guard let destination = CGImageDestinationCreateWithData(
+            mutableData,
+            UTType.jpeg.identifier as CFString,
+            1,
+            nil,
+        ) else {
+            return nil
+        }
+
+        let options: [CFString: Any] = [
+            kCGImageDestinationLossyCompressionQuality: 1.0
+        ]
+
+        CGImageDestinationAddImage(destination, image, options as CFDictionary)
+        guard CGImageDestinationFinalize(destination) else { return nil }
+        return mutableData as Data
+    }
+}
