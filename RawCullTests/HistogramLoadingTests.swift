@@ -12,14 +12,14 @@ struct HistogramLoadingTests {
         _ = await loader.load(
             image: image,
             convert: { $0.cgImage(forProposedRect: nil, context: nil, hints: nil) },
-            calculate: { _ in [0.25, 1.0] },
+            calculate: { _ in [0.25, 1.0] }
         )
         #expect(loader.normalizedBins == [0.25, 1.0])
 
         let converted = await loader.load(
             image: nil,
             convert: { _ in Issue.record("nil input must not be converted"); return nil },
-            calculate: { _ in Issue.record("nil input must not be calculated"); return [] },
+            calculate: { _ in Issue.record("nil input must not be calculated"); return [] }
         )
 
         #expect(!converted)
@@ -33,7 +33,7 @@ struct HistogramLoadingTests {
         let converted = await loader.load(
             image: createTestImage(),
             convert: { _ in nil },
-            calculate: { _ in Issue.record("failed conversion must not be calculated"); return [] },
+            calculate: { _ in Issue.record("failed conversion must not be calculated"); return [] }
         )
 
         #expect(!converted)
@@ -48,7 +48,7 @@ struct HistogramLoadingTests {
         let converted = await loader.load(
             image: createTestImage(),
             convert: { $0.cgImage(forProposedRect: nil, context: nil, hints: nil) },
-            calculate: { _ in expected },
+            calculate: { _ in expected }
         )
 
         #expect(converted)
@@ -75,7 +75,7 @@ struct HistogramLoadingTests {
             await loader.load(
                 image: slowImage,
                 convert: converter,
-                calculate: { image in await gate.calculate(image) },
+                calculate: { image in await gate.calculate(image) }
             )
         }
         await gate.waitUntilStarted(width: slowWidth)
@@ -84,7 +84,7 @@ struct HistogramLoadingTests {
             await loader.load(
                 image: fastImage,
                 convert: converter,
-                calculate: { image in await gate.calculate(image) },
+                calculate: { image in await gate.calculate(image) }
             )
         }
         await gate.waitUntilStarted(width: fastWidth)

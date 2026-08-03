@@ -185,8 +185,8 @@ private func waitForSlotSnapshot(
         activeTasks: Int,
         pendingContinuations: Int,
         maxConcurrent: Int,
-        maxObservedActiveTasks: Int,
-    )) -> Bool,
+        maxObservedActiveTasks: Int
+    )) -> Bool
 ) async throws {
     for _ in 0 ..< 100 {
         let snapshot = await loader.slotSnapshotForTesting()
@@ -198,7 +198,7 @@ private func waitForSlotSnapshot(
 
     let snapshot = await loader.slotSnapshotForTesting()
     Issue.record(
-        "Timed out waiting for slot snapshot. activeTasks=\(snapshot.activeTasks), pendingContinuations=\(snapshot.pendingContinuations), maxConcurrent=\(snapshot.maxConcurrent), maxObservedActiveTasks=\(snapshot.maxObservedActiveTasks)",
+        "Timed out waiting for slot snapshot. activeTasks=\(snapshot.activeTasks), pendingContinuations=\(snapshot.pendingContinuations), maxConcurrent=\(snapshot.maxConcurrent), maxObservedActiveTasks=\(snapshot.maxObservedActiveTasks)"
     )
     throw SlotSnapshotTimeout()
 }

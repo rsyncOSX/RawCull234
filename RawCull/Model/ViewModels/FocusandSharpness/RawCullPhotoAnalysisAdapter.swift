@@ -30,7 +30,7 @@ nonisolated struct RawCullPhotoAnalysisAdapter: Sendable {
     typealias InputLoader = @Sendable (
         RawCullPhotoAnalysisFile,
         Int,
-        SharpnessScoringSource,
+        SharpnessScoringSource
     ) async -> PhotoAnalysisInput?
 
     private let analyzer = PhotoAnalyzer()
@@ -46,14 +46,14 @@ nonisolated struct RawCullPhotoAnalysisAdapter: Sendable {
         maximumPixelSize: Int,
         source: SharpnessScoringSource,
         maximumConcurrentTasks: Int,
-        progress: (@Sendable (_ completedCount: Int, _ totalCount: Int) async -> Void)? = nil,
+        progress: (@Sendable (_ completedCount: Int, _ totalCount: Int) async -> Void)? = nil
     ) async -> [RawCullPhotoAnalysisResult<Identifier>]? {
         let packageRequests = requests.map { request in
             PhotoAnalysisBatchRequest(id: request.id) {
                 await input(
                     for: request.file,
                     maximumPixelSize: maximumPixelSize,
-                    source: source,
+                    source: source
                 )
             }
         }
@@ -63,7 +63,7 @@ nonisolated struct RawCullPhotoAnalysisAdapter: Sendable {
             maximumConcurrentTasks: maximumConcurrentTasks,
             progress: { update in
                 await progress?(update.completedCount, update.totalCount)
-            },
+            }
         ) else { return nil }
 
         return results.map { result in
@@ -78,7 +78,7 @@ nonisolated struct RawCullPhotoAnalysisAdapter: Sendable {
         source: SharpnessScoringSource,
         thresholdPercentile: Float,
         minimumSuccessfulImages: Int,
-        maximumConcurrentTasks: Int,
+        maximumConcurrentTasks: Int
     ) async -> FocusCalibrationResult? {
         guard !files.isEmpty else { return nil }
         let requests = files.enumerated().map { index, file in
@@ -86,7 +86,7 @@ nonisolated struct RawCullPhotoAnalysisAdapter: Sendable {
                 await input(
                     for: file,
                     maximumPixelSize: maximumPixelSize,
-                    source: source,
+                    source: source
                 )
             }
         }
@@ -95,14 +95,14 @@ nonisolated struct RawCullPhotoAnalysisAdapter: Sendable {
             baseConfiguration: baseConfiguration,
             thresholdPercentile: thresholdPercentile,
             minimumSuccessfulImages: minimumSuccessfulImages,
-            maximumConcurrentTasks: maximumConcurrentTasks,
+            maximumConcurrentTasks: maximumConcurrentTasks
         )
     }
 
     private func input(
         for file: RawCullPhotoAnalysisFile,
         maximumPixelSize: Int,
-        source: SharpnessScoringSource,
+        source: SharpnessScoringSource
     ) async -> PhotoAnalysisInput? {
         let boundedSize = maximumPixelSize > 0
             ? min(maximumPixelSize, SharpnessScoringSizeOption.maximumPixelSize)
@@ -115,7 +115,7 @@ nonisolated struct RawCullPhotoAnalysisAdapter: Sendable {
         case .embeddedPreview:
             await RawParserKitImageLoader.shared.thumbnailCGImage(
                 for: file.url,
-                maxPixelSize: boundedSize,
+                maxPixelSize: boundedSize
             )
 
         case .rawDemosaic:
@@ -129,18 +129,18 @@ nonisolated struct RawCullPhotoAnalysisAdapter: Sendable {
             image: image,
             iso: file.iso,
             aperture: file.aperture,
-            normalizedAFPoint: file.normalizedAFPoint,
+            normalizedAFPoint: file.normalizedAFPoint
         )
     }
 
     private static func adapt<Identifier: Sendable>(
         _ result: PhotoAnalysisBatchResult<Identifier>,
-        scoringSource: SharpnessScoringSource,
+        scoringSource: SharpnessScoringSource
     ) -> RawCullPhotoAnalysisResult<Identifier> {
         let saliency = result.analysis?.saliency.map {
             SaliencyInfo(
                 subjectLabel: $0.subjectLabel,
-                subjectConfidence: $0.subjectConfidence,
+                subjectConfidence: $0.subjectConfidence
             )
         }
         let breakdown = result.analysis?.breakdown.map {
@@ -150,13 +150,13 @@ nonisolated struct RawCullPhotoAnalysisAdapter: Sendable {
             id: result.id,
             score: result.analysis?.score,
             saliency: saliency,
-            breakdown: breakdown,
+            breakdown: breakdown
         )
     }
 
     private static func decodeDemosaicedRawThumbnail(
         at url: URL,
-        maximumPixelSize: Int,
+        maximumPixelSize: Int
     ) -> CGImage? {
         guard !Task.isCancelled, let rawFilter = CIRAWFilter(imageURL: url) else { return nil }
 

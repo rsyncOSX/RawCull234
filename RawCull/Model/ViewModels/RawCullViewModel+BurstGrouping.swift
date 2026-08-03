@@ -25,7 +25,7 @@ extension RawCullViewModel {
             await self.runBurstAnalysis(
                 catalog: catalog,
                 files: sorted,
-                generation: generation,
+                generation: generation
             )
         }
         burstAnalysisTask = task
@@ -40,7 +40,7 @@ extension RawCullViewModel {
     private func runBurstAnalysis(
         catalog: URL,
         files sorted: [FileItem],
-        generation: Int,
+        generation: Int
     ) async {
         defer { finishBurstAnalysis(generation: generation) }
         guard isCurrentBurstAnalysis(generation: generation, catalog: catalog) else { return }
@@ -55,7 +55,7 @@ extension RawCullViewModel {
             await similarityModel.importLegacyArtifacts(
                 migrationSnapshot.embeddings,
                 files: sorted,
-                signature: migrationSnapshot.similaritySignature,
+                signature: migrationSnapshot.similaritySignature
             )
         }
         guard isCurrentBurstAnalysis(generation: generation, catalog: catalog) else { return }
@@ -65,22 +65,21 @@ extension RawCullViewModel {
             sorted,
             sharpnessModel.effectiveThumbnailMaxPixelSize,
             currentBurstSharpnessSignature,
-            currentBurstSimilaritySignature,
+            currentBurstSimilaritySignature
         ) {
             guard isCurrentBurstAnalysis(generation: generation, catalog: catalog) else { return }
             let remappedSnapshot = remapCachedSnapshot(snapshot, to: sorted)
             let artifactSetDigest = BurstAnalysisCache.artifactSetDigest(
                 files: sorted,
-                artifacts: similarityModel.embeddings,
+                artifacts: similarityModel.embeddings
             )
             if remappedSnapshot.similarityArtifactSetDigest
-                == artifactSetDigest
-            {
+                == artifactSetDigest {
                 applyCachedBurstAnalysis(
                     remappedSnapshot,
                     catalog: catalog,
                     files: sorted,
-                    generation: generation,
+                    generation: generation
                 )
                 return
             }
@@ -90,7 +89,7 @@ extension RawCullViewModel {
         if sorted.contains(where: { sharpnessModel.scores[$0.id] == nil }) {
             burstAnalysisProgress = BurstAnalysisProgress(
                 step: .scoringSharpness,
-                total: sorted.count,
+                total: sorted.count
             )
             await calibrateAndScoreBurstFiles(sorted)
         }
@@ -99,7 +98,7 @@ extension RawCullViewModel {
         if sorted.contains(where: { similarityModel.embeddings[$0.id] == nil }) {
             burstAnalysisProgress = BurstAnalysisProgress(
                 step: .indexingSimilarity,
-                total: sorted.count,
+                total: sorted.count
             )
             await similarityModel.indexFiles(sorted)
         }
@@ -113,13 +112,13 @@ extension RawCullViewModel {
             let savedStatesBySignature = Dictionary(
                 uniqueKeysWithValues: migrationSnapshot
                     .reviewStateSnapshots
-                    .map { ($0.signature, $0.state) },
+                    .map { ($0.signature, $0.state) }
             )
             burstReviewStates = restoredBurstReviewStates(
                 savedStatesBySignature: savedStatesBySignature,
                 groups: similarityModel.burstGroups,
                 files: sorted,
-                catalog: catalog,
+                catalog: catalog
             )
         }
         burstAnalysisProgress = BurstAnalysisProgress(step: .ranking)
@@ -127,7 +126,7 @@ extension RawCullViewModel {
         completedBurstAnalysisContext = makeCompletedBurstAnalysisContext(
             catalog: catalog,
             files: sorted,
-            generation: generation,
+            generation: generation
         )
 
         guard isCurrentBurstAnalysis(generation: generation, catalog: catalog) else { return }
@@ -175,7 +174,7 @@ extension RawCullViewModel {
 
         let savedStatesBySignature = Dictionary(
             uniqueKeysWithValues: reviewStateSnapshots(catalog: catalog, files: sorted)
-                .map { ($0.signature, $0.state) },
+                .map { ($0.signature, $0.state) }
         )
         await similarityModel.groupBursts(files: sorted)
         guard !Task.isCancelled, selectedSource?.url == catalog else { return }
@@ -183,7 +182,7 @@ extension RawCullViewModel {
             savedStatesBySignature: savedStatesBySignature,
             groups: similarityModel.burstGroups,
             files: sorted,
-            catalog: catalog,
+            catalog: catalog
         )
         recomputeBurstRankings(files: sorted)
 
@@ -191,7 +190,7 @@ extension RawCullViewModel {
         completedBurstAnalysisContext = makeCompletedBurstAnalysisContext(
             catalog: catalog,
             files: sorted,
-            generation: generation,
+            generation: generation
         )
         await saveBurstAnalysisCache(catalog: catalog, files: sorted, generation: generation)
     }
@@ -258,7 +257,7 @@ extension RawCullViewModel {
         let eligibleGroupIDs = Set(
             filteredBurstGroupsForReviewQueue
                 .filter { $0.fileIDs.count > 1 }
-                .map(\.id),
+                .map(\.id)
         )
         guard let nextGroup = similarityModel.burstGroups
             .dropFirst(currentIndex + 1)
@@ -329,7 +328,7 @@ extension RawCullViewModel {
             markedReviewed: burstAnalysisResults.values.count { result in
                 result.fileIDs.count > 1 && result.reviewState == .reviewed
             },
-            needsReview: reviewCounts.needsReview,
+            needsReview: reviewCounts.needsReview
         )
     }
 
@@ -392,7 +391,7 @@ extension RawCullViewModel {
     /// cache rebuilds without bouncing to MainActor.
     nonisolated static func sharpestFile(
         in files: [FileItem],
-        scores: [UUID: Float],
+        scores: [UUID: Float]
     ) -> FileItem? {
         files.max(by: { (scores[$0.id] ?? 0) < (scores[$1.id] ?? 0) })
     }
@@ -438,7 +437,7 @@ extension RawCullViewModel {
             maxScore: sharpnessModel.maxScore,
             saliencyInfo: sharpnessModel.saliencyInfo,
             boundaryEvidence: similarityModel.burstBoundaryEvidence,
-            reviewStates: burstReviewStates,
+            reviewStates: burstReviewStates
         )
         burstAnalysisResults = Dictionary(uniqueKeysWithValues: results.map { ($0.groupID, $0) })
         applyManualWinnerOverrides(files: files)
@@ -465,7 +464,7 @@ extension RawCullViewModel {
         guard let selectedSource else { return }
         cullingModel.pruneStaleBurstOverrides(
             validFileNames: Set(self.files.map(\.name)),
-            in: selectedSource.url,
+            in: selectedSource.url
         )
 
         let filesByID = Dictionary(uniqueKeysWithValues: files.map { ($0.id, $0) })
@@ -484,7 +483,7 @@ extension RawCullViewModel {
     private func captureUndo(groupID: Int, files: [FileItem]) {
         lastBurstUndoEntry = BurstUndoEntry(
             groupID: groupID,
-            previousRatingsByFileName: Dictionary(uniqueKeysWithValues: files.map { ($0.name, getRating(for: $0)) }),
+            previousRatingsByFileName: Dictionary(uniqueKeysWithValues: files.map { ($0.name, getRating(for: $0)) })
         )
     }
 
@@ -500,7 +499,7 @@ extension RawCullViewModel {
     private func setBurstReviewState(
         _ state: BurstReviewState,
         groupID: Int,
-        persist: Bool = true,
+        persist: Bool = true
     ) {
         switch state {
         case .none:
@@ -530,7 +529,7 @@ extension RawCullViewModel {
             await saveBurstAnalysisCache(
                 catalog: context.catalog,
                 files: contextFiles,
-                generation: context.generation,
+                generation: context.generation
             )
         }
     }
@@ -539,13 +538,13 @@ extension RawCullViewModel {
         _ snapshot: BurstAnalysisCacheSnapshot,
         catalog: URL,
         files: [FileItem],
-        generation: Int,
+        generation: Int
     ) {
         similarityModel.applyCachedBurstAnalysis(snapshot)
         sharpnessModel.applyPreloadedScores(
             files,
             preloadedScores: snapshot.sharpnessScores,
-            preloadedSaliency: snapshot.saliencyInfo,
+            preloadedSaliency: snapshot.saliencyInfo
         )
         burstReviewStates = cachedReviewStates(from: snapshot, files: files)
         burstAnalysisResults = Dictionary(uniqueKeysWithValues: snapshot.results.map { result in
@@ -557,7 +556,7 @@ extension RawCullViewModel {
         completedBurstAnalysisContext = makeCompletedBurstAnalysisContext(
             catalog: catalog,
             files: files,
-            generation: generation,
+            generation: generation
         )
     }
 
@@ -584,7 +583,7 @@ extension RawCullViewModel {
     private func saveBurstAnalysisCache(
         catalog: URL,
         files: [FileItem],
-        generation: Int,
+        generation: Int
     ) async {
         guard isCurrentBurstAnalysis(generation: generation, catalog: catalog),
               let context = completedBurstAnalysisContext,
@@ -601,14 +600,14 @@ extension RawCullViewModel {
             similaritySignature: context.similaritySignature,
             similarityArtifactSetDigest: BurstAnalysisCache.artifactSetDigest(
                 files: files,
-                artifacts: similarityModel.embeddings,
+                artifacts: similarityModel.embeddings
             ),
             files: files.map {
                 BurstAnalysisCacheFile(
                     id: $0.id,
                     path: $0.url.path,
                     size: $0.size,
-                    modificationDate: $0.dateModified,
+                    modificationDate: $0.dateModified
                 )
             },
             embeddings: scoped(similarityModel.embeddings, to: files),
@@ -617,7 +616,7 @@ extension RawCullViewModel {
             groups: similarityModel.burstGroups,
             boundaryEvidence: similarityModel.burstBoundaryEvidence,
             results: Array(burstAnalysisResults.values).sorted { $0.groupID < $1.groupID },
-            reviewStateSnapshots: reviewStateSnapshots(catalog: catalog, files: files),
+            reviewStateSnapshots: reviewStateSnapshots(catalog: catalog, files: files)
         )
         guard isCurrentBurstAnalysis(generation: generation, catalog: catalog) else { return }
         await burstAnalysisCacheSave(snapshot, catalog)
@@ -626,7 +625,7 @@ extension RawCullViewModel {
     func cachedReviewStates(from snapshot: BurstAnalysisCacheSnapshot, files: [FileItem]? = nil) -> [Int: BurstReviewState] {
         guard let catalog = selectedSource?.url else { return [:] }
         let savedStatesBySignature = Dictionary(
-            uniqueKeysWithValues: snapshot.reviewStateSnapshots.map { ($0.signature, $0.state) },
+            uniqueKeysWithValues: snapshot.reviewStateSnapshots.map { ($0.signature, $0.state) }
         )
         let filesByID = Dictionary(uniqueKeysWithValues: (files ?? self.files).map { ($0.id, $0) })
 
@@ -656,14 +655,14 @@ extension RawCullViewModel {
         savedStatesBySignature: [BurstGroupSignature: BurstReviewState],
         groups: [BurstGroup],
         files: [FileItem],
-        catalog: URL,
+        catalog: URL
     ) -> [Int: BurstReviewState] {
         let filesByID = Dictionary(uniqueKeysWithValues: files.map { ($0.id, $0) })
         return Dictionary(uniqueKeysWithValues: groups.compactMap { group in
             guard let signature = burstSignature(
                 for: group,
                 filesByID: filesByID,
-                catalog: catalog,
+                catalog: catalog
             ),
                 let state = savedStatesBySignature[signature],
                 state != .none
@@ -675,7 +674,7 @@ extension RawCullViewModel {
     func burstSignature(
         for group: BurstGroup,
         filesByID: [UUID: FileItem],
-        catalog: URL?,
+        catalog: URL?
     ) -> BurstGroupSignature? {
         let groupFiles = group.fileIDs.compactMap { filesByID[$0] }
         return BurstGroupSignature(files: groupFiles, catalog: catalog)
@@ -683,7 +682,7 @@ extension RawCullViewModel {
 
     private func remapCachedSnapshot(
         _ snapshot: BurstAnalysisCacheSnapshot,
-        to currentFiles: [FileItem],
+        to currentFiles: [FileItem]
     ) -> BurstAnalysisCacheSnapshot {
         let cachedFilesByID = Dictionary(uniqueKeysWithValues: snapshot.files.map { ($0.id, $0) })
         let currentByPath = Dictionary(uniqueKeysWithValues: currentFiles.map { ($0.url.path, $0.id) })
@@ -714,7 +713,7 @@ extension RawCullViewModel {
                 cameraChanged: item.cameraChanged,
                 lensChanged: item.lensChanged,
                 startsNewGroup: item.startsNewGroup,
-                reasons: item.reasons,
+                reasons: item.reasons
             )
         }
         let results = snapshot.results.map { result in
@@ -732,7 +731,7 @@ extension RawCullViewModel {
                         metadataComponent: candidate.metadataComponent,
                         confidence: candidate.confidence,
                         reasons: candidate.reasons,
-                        cautions: candidate.cautions,
+                        cautions: candidate.cautions
                     )
                 },
                 recommendedFileID: result.recommendedFileID.map(remap),
@@ -741,7 +740,7 @@ extension RawCullViewModel {
                 reviewState: result.reviewState,
                 isSafeForOneClickCulling: result.isSafeForOneClickCulling,
                 reasons: result.reasons,
-                cautions: result.cautions,
+                cautions: result.cautions
             )
         }
 
@@ -771,7 +770,7 @@ extension RawCullViewModel {
             groups: groups,
             boundaryEvidence: evidence,
             results: results,
-            reviewStateSnapshots: snapshot.reviewStateSnapshots,
+            reviewStateSnapshots: snapshot.reviewStateSnapshots
         )
     }
 
@@ -782,30 +781,30 @@ extension RawCullViewModel {
     var currentBurstSimilaritySignature: BurstSimilaritySignature {
         BurstSimilaritySignature(
             groupingConfig: BurstGroupingConfig(
-                visualDistanceThreshold: similarityModel.burstSensitivity,
+                visualDistanceThreshold: similarityModel.burstSensitivity
             ),
             embeddingThumbnailMaxPixelSize: SimilarityScoringModel.embeddingThumbnailMaxPixelSize,
             visionFeaturePrintRevision: Int(SimilarityScoringModel.featurePrintRevision),
-            embeddingPipelineVersion: SimilarityScoringModel.embeddingPipelineVersion,
+            embeddingPipelineVersion: SimilarityScoringModel.embeddingPipelineVersion
         )
     }
 
     private func makeCompletedBurstAnalysisContext(
         catalog: URL,
         files: [FileItem],
-        generation: Int,
+        generation: Int
     ) -> CompletedBurstAnalysisContext {
         CompletedBurstAnalysisContext(
             catalog: catalog,
             orderedFileIDs: files.map(\.id),
             orderedFilePaths: files.map(\.url.path),
             similaritySignature: currentBurstSimilaritySignature,
-            generation: generation,
+            generation: generation
         )
     }
 
     private func filesForCompletedBurstAnalysis(
-        _ context: CompletedBurstAnalysisContext,
+        _ context: CompletedBurstAnalysisContext
     ) -> [FileItem]? {
         let currentByID = Dictionary(uniqueKeysWithValues: files.map { ($0.id, $0) })
         let currentByPath = Dictionary(uniqueKeysWithValues: files.map { ($0.url.path, $0) })

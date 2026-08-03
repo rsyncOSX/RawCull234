@@ -56,7 +56,7 @@ struct SidebarARWCatalogFileView: View {
                                 systemImage: verticalimages == true ? "text.justify" : "photo.stack",
                                 text: verticalimages ? "Table" : "Images",
                                 helpText: "View table or images",
-                                style: .softCapsule,
+                                style: .softCapsule
                             ) {
                                 verticalimages.toggle()
                             }
@@ -66,7 +66,7 @@ struct SidebarARWCatalogFileView: View {
                                     systemImage: "arrow.counterclockwise",
                                     text: "Clear",
                                     helpText: "Clear rated files",
-                                    style: .softCapsule,
+                                    style: .softCapsule
                                 ) {
                                     viewModel.alertType = .clearRatedFiles
                                     viewModel.showingAlert = true
@@ -78,7 +78,7 @@ struct SidebarARWCatalogFileView: View {
                                 systemImage: "photo.badge.arrow.down",
                                 text: "Cache JPGs",
                                 helpText: "Cache extracted JPG previews for this catalog",
-                                style: .softCapsule,
+                                style: .softCapsule
                             ) {
                                 viewModel.alertType = .createJPGDiskCache
                                 viewModel.showingAlert = true
@@ -86,7 +86,7 @@ struct SidebarARWCatalogFileView: View {
                             .disabled(
                                 selectedSource == nil ||
                                     files.isEmpty ||
-                                    viewModel.creatingthumbnails,
+                                    viewModel.creatingthumbnails
                             )
                         }
                         .padding()
@@ -126,7 +126,7 @@ struct SidebarARWCatalogFileView: View {
                         .padding()
                         .overlay(
                             RoundedRectangle(cornerRadius: 12)
-                                .stroke(Color.gray.opacity(0.3), lineWidth: 1),
+                                .stroke(Color.gray.opacity(0.3), lineWidth: 1)
                         )
                     }
                 }

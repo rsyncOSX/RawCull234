@@ -7,7 +7,7 @@ nonisolated enum ThumbnailPreloadGridGate {
     static func shouldBlock(
         activeCatalogURL: URL?,
         selectedCatalogURL: URL?,
-        hasActivePreloader: Bool,
+        hasActivePreloader: Bool
     ) -> Bool {
         guard hasActivePreloader,
               let activeCatalogURL,

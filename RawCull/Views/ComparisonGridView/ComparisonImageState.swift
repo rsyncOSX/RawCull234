@@ -55,7 +55,7 @@ enum SharpnessComparisonSummary {
         fileIDs: [FileItem.ID],
         scores: [FileItem.ID: Float],
         breakdowns: [FileItem.ID: SharpnessBreakdown],
-        winnerID: FileItem.ID?,
+        winnerID: FileItem.ID?
     ) -> SharpnessComparisonContext? {
         guard fileIDs.contains(fileID) else { return nil }
         let hasAnySubjectBreakdown = fileIDs.contains { breakdowns[$0]?.subjectScore != nil }
@@ -86,14 +86,14 @@ enum SharpnessComparisonSummary {
 
         return SharpnessComparisonContext(
             rankTitle: rankTitle,
-            deltaParts: deltaParts,
+            deltaParts: deltaParts
         )
     }
 
     private nonisolated static func rankScore(
         for fileID: FileItem.ID,
         scores: [FileItem.ID: Float],
-        breakdowns: [FileItem.ID: SharpnessBreakdown],
+        breakdowns: [FileItem.ID: SharpnessBreakdown]
     ) -> Float {
         breakdowns[fileID]?.subjectScore ?? scores[fileID] ?? 0
     }

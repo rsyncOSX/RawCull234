@@ -10,7 +10,7 @@ nonisolated struct FullSizePreviewLoader: FullSizePreviewLoading {
     static var shared: FullSizePreviewLoader {
         FullSizePreviewLoader(
             rawLoader: RawParserKitImageLoader.shared,
-            fullSizeCache: SharedMemoryCache.shared.fullSizeJPGDiskCache,
+            fullSizeCache: SharedMemoryCache.shared.fullSizeJPGDiskCache
         )
     }
 
@@ -19,7 +19,7 @@ nonisolated struct FullSizePreviewLoader: FullSizePreviewLoading {
 
     init(
         rawLoader: any RawImageLoading = RawParserKitImageLoader.shared,
-        fullSizeCache: FullSizeJPGDiskCache,
+        fullSizeCache: FullSizeJPGDiskCache
     ) {
         self.rawLoader = rawLoader
         self.fullSizeCache = fullSizeCache

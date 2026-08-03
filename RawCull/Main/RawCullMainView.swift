@@ -58,14 +58,14 @@ struct RawCullMainView: View {
                         progress: $viewModel.progress,
                         estimatedSeconds: $viewModel.estimatedSeconds,
                         max: viewModel.max,
-                        statusText: "Extracting JPGs",
+                        statusText: "Extracting JPGs"
                     )
                     .frame(maxWidth: 480)
                     .padding(16)
                     .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 12))
                     .overlay(
                         RoundedRectangle(cornerRadius: 12)
-                            .stroke(Color.primary.opacity(0.12), lineWidth: 1),
+                            .stroke(Color.primary.opacity(0.12), lineWidth: 1)
                     )
                     .shadow(color: .black.opacity(0.25), radius: 12, y: 4)
                     .padding(.bottom, 24)
@@ -84,7 +84,7 @@ struct RawCullMainView: View {
                     config: Bindable(viewModel.sharpnessModel.focusMaskModel).config,
                     thumbnailMaxPixelSize: Bindable(viewModel.sharpnessModel).thumbnailMaxPixelSize,
                     scoringQuality: Bindable(viewModel.sharpnessModel).scoringQuality,
-                    scoringSource: Bindable(viewModel.sharpnessModel).scoringSource,
+                    scoringSource: Bindable(viewModel.sharpnessModel).scoringSource
                 )
 
             case .extractJPGs:
@@ -105,14 +105,14 @@ struct RawCullMainView: View {
                 sheetType: $viewModel.sheetType,
                 selectedSource: $viewModel.selectedSource,
                 remotedatanumbers: $viewModel.remotedatanumbers,
-                showcopytask: $viewModel.showcopyARWFilesView,
+                showcopytask: $viewModel.showcopyARWFilesView
             )
         }
         .alert(item: $viewModel.operationFailurePresentation) { presentation in
             Alert(
                 title: Text(presentation.title),
                 message: Text(presentation.message),
-                dismissButton: .default(Text("OK")),
+                dismissButton: .default(Text("OK"))
             )
         }
         .alert("Changes Not Saved", isPresented: persistenceErrorIsPresented) {
@@ -129,7 +129,7 @@ struct RawCullMainView: View {
                 gridthumbnailviewmodel.open(
                     cullingModel: viewModel.cullingModel,
                     selectedSource: viewModel.selectedSource,
-                    filteredFiles: viewModel.filteredFiles,
+                    filteredFiles: viewModel.filteredFiles
                 )
             } else {
                 gridthumbnailviewmodel.close()
@@ -152,7 +152,7 @@ struct RawCullMainView: View {
     private var persistenceErrorIsPresented: Binding<Bool> {
         Binding(
             get: { viewModel.cullingModel.persistenceError != nil },
-            set: { _ in },
+            set: { _ in }
         )
     }
 
@@ -164,7 +164,7 @@ struct RawCullMainView: View {
                 sources: $viewModel.sources,
                 selectedSource: $viewModel.selectedSource,
                 isShowingPicker: $viewModel.isShowingPicker,
-                cullingModel: viewModel.cullingModel,
+                cullingModel: viewModel.cullingModel
             )
         } content: {
             SidebarARWCatalogFileView(
@@ -177,7 +177,7 @@ struct RawCullMainView: View {
                 nsImage: $nsImage,
                 cgImage: $cgImage,
                 issorting: viewModel.issorting,
-                max: viewModel.max,
+                max: viewModel.max
             )
             .navigationTitle((viewModel.selectedSource?.name ?? "Files") +
                 " (\(viewModel.filteredFiles.count) files)")
@@ -209,7 +209,7 @@ struct RawCullMainView: View {
                 cgImage: $cgImage,
                 nsImage: $nsImage,
                 selectedFileID: $viewModel.selectedFileID,
-                abort: abort,
+                abort: abort
             )
         }
         .task {
@@ -221,13 +221,13 @@ struct RawCullMainView: View {
                 maxfilesHandler: { _ in },
                 estimatedTimeHandler: { _ in },
                 memorypressurewarning: viewModel.setMemoryPressureWarning,
-                onExtractionNeeded: {},
+                onExtractionNeeded: {}
             )
             await SharedMemoryCache.shared.setFileHandlers(handlers)
         }
         .inspector(isPresented: $viewModel.hideInspector) {
             FileInspectorView(
-                file: viewModel.selectedFile,
+                file: viewModel.selectedFile
             )
         }
         .fileImporter(isPresented: $viewModel.isShowingPicker, allowedContentTypes: [.folder]) { result in
@@ -248,7 +248,7 @@ struct RawCullMainView: View {
                     onAppearAction: startMemoryWarningFlash,
                     onClose: {
                         dismissedMemoryPressureWarning = true
-                    },
+                    }
                 )
                 .transition(.move(edge: .top).combined(with: .opacity))
             }
@@ -264,7 +264,6 @@ struct RawCullMainView: View {
 
     // MARK: - Grid mode
 
-    @ViewBuilder
     private var gridSplit: some View {
         Group {
             if viewModel.thumbnailPreloadBlocksGrid {
@@ -273,7 +272,7 @@ struct RawCullMainView: View {
                 GridThumbnailView(
                     viewModel: viewModel,
                     nsImage: $nsImage,
-                    cgImage: $cgImage,
+                    cgImage: $cgImage
                 )
             }
         }
@@ -284,7 +283,6 @@ struct RawCullMainView: View {
 
     // MARK: - Similarity grid mode
 
-    @ViewBuilder
     private var similarityGridSplit: some View {
         Group {
             if viewModel.thumbnailPreloadBlocksGrid {
@@ -293,7 +291,7 @@ struct RawCullMainView: View {
                 SimilarityGridView(
                     viewModel: viewModel,
                     nsImage: $nsImage,
-                    cgImage: $cgImage,
+                    cgImage: $cgImage
                 )
             }
         }
@@ -304,7 +302,6 @@ struct RawCullMainView: View {
 
     // MARK: - Rated grid mode
 
-    @ViewBuilder
     private var ratedGridSplit: some View {
         Group {
             if viewModel.thumbnailPreloadBlocksGrid {
@@ -315,7 +312,7 @@ struct RawCullMainView: View {
                     catalogURL: viewModel.selectedSource?.url,
                     onPhotoSelected: { file in
                         viewModel.selectedFileID = file.id
-                    },
+                    }
                 )
             }
         }
@@ -348,7 +345,7 @@ struct RawCullMainView: View {
             BurstCullingWorkspaceView(
                 viewModel: viewModel,
                 groupID: groupID,
-                onCompare: { showsDetailedBurstComparison = true },
+                onCompare: { showsDetailedBurstComparison = true }
             )
             .navigationTitle((viewModel.selectedSource?.name ?? "Catalog") + " — Burst")
         } else {
@@ -357,12 +354,12 @@ struct RawCullMainView: View {
                     sources: $viewModel.sources,
                     selectedSource: $viewModel.selectedSource,
                     isShowingPicker: $viewModel.isShowingPicker,
-                    cullingModel: viewModel.cullingModel,
+                    cullingModel: viewModel.cullingModel
                 )
             } detail: {
                 ComparisonGridView(
                     viewModel: viewModel,
-                    showCandidateInspector: $showCandidateInspector,
+                    showCandidateInspector: $showCandidateInspector
                 )
                 .navigationTitle("Compare images")
                 .toolbar { toolbarContent }
@@ -392,7 +389,7 @@ struct RawCullMainView: View {
             sharpnessScores: viewModel.sharpnessModel.scores,
             sharpnessBreakdowns: viewModel.sharpnessModel.breakdowns,
             focusPoints: viewModel.focusPoints,
-            rating: viewModel.selectedFile.map { viewModel.getRating(for: $0) } ?? 0,
+            rating: viewModel.selectedFile.map { viewModel.getRating(for: $0) } ?? 0
         )
     }
 

@@ -20,7 +20,7 @@ struct DiscoverFiles {
             guard let enumerator = fileManager.enumerator(
                 at: catalogURL,
                 includingPropertiesForKeys: [.isRegularFileKey],
-                options: recursive ? [] : [.skipsSubdirectoryDescendants],
+                options: recursive ? [] : [.skipsSubdirectoryDescendants]
             ) else { return urls }
 
             while let fileURL = enumerator.nextObject() as? URL {

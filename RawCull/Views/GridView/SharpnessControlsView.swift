@@ -128,7 +128,7 @@ struct SharpnessControlsView: View {
             isDisabled: viewModel.sharpnessModel.isScoring,
             // showsScoringBadgeToggle: true,
             showsParametersButton: true,
-            style: .compactInfo,
+            style: .compactInfo
         )
 
         // Score button — calibrates from the burst then scores
@@ -170,7 +170,7 @@ struct SharpnessControlsView: View {
             .help(
                 viewModel.sharpnessModel.sortBySharpness
                     ? "Stop sorting by sharpness"
-                    : "Sort thumbnails sharpest-first",
+                    : "Sort thumbnails sharpest-first"
             )
             .onChange(of: viewModel.sharpnessModel.sortBySharpness) { _, isEnabled in
                 if isEnabled {
@@ -192,12 +192,12 @@ struct SharpnessControlsView: View {
             .font(.caption)
             .disabled(
                 viewModel.selectedFile == nil
-                    && !viewModel.similarityModel.sortBySimilarity,
+                    && !viewModel.similarityModel.sortBySimilarity
             )
             .help(
                 viewModel.similarityModel.sortBySimilarity
                     ? "Stop sorting by similarity"
-                    : "Rank all images by visual similarity to the selected image",
+                    : "Rank all images by visual similarity to the selected image"
             )
             .onChange(of: viewModel.similarityModel.sortBySimilarity) { _, isEnabled in
                 if isEnabled {

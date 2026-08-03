@@ -23,7 +23,7 @@ extension RawCullViewModel {
         await similarityModel.rankSimilar(
             to: anchor.id,
             using: files,
-            saliencyInfo: sharpnessModel.saliencyInfo,
+            saliencyInfo: sharpnessModel.saliencyInfo
         )
         await handleSortOrderChange()
     }

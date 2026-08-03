@@ -46,7 +46,7 @@ final class CacheDelegate: NSObject, NSCacheDelegate, @unchecked Sendable {
                 let liveCount = SharedMemoryCache.shared.getGridCacheCount()
                 Logger.process.debugMessageOnly(
                     "EVICT grid path=\(thumb.requestKey?.source.standardizedPath ?? "<nil>") cost=\(thumb.cost) " +
-                        "liveCost=\(liveCost) liveLimit=\(liveLimit) liveCount=\(liveCount)",
+                        "liveCost=\(liveCost) liveLimit=\(liveLimit) liveCount=\(liveCount)"
                 )
             #endif
         } else if cache === SharedMemoryCache.shared.memoryCache {
@@ -64,7 +64,7 @@ final class CacheDelegate: NSObject, NSCacheDelegate, @unchecked Sendable {
                 let liveCount = SharedMemoryCache.shared.getMemoryCacheCount()
                 Logger.process.debugMessageOnly(
                     "EVICT mem path=\(thumb.requestKey?.source.standardizedPath ?? "<nil>") cost=\(thumb.cost) " +
-                        "liveCost=\(liveCost) liveLimit=\(liveLimit) liveCount=\(liveCount)",
+                        "liveCost=\(liveCost) liveLimit=\(liveLimit) liveCount=\(liveCount)"
                 )
             #endif
         } else {
@@ -72,7 +72,7 @@ final class CacheDelegate: NSObject, NSCacheDelegate, @unchecked Sendable {
             #if DEBUG
                 Logger.process.debugMessageOnly(
                     "EVICT unknown cache=\(ObjectIdentifier(cache).debugDescription) " +
-                        "path=\(thumb.requestKey?.source.standardizedPath ?? "<nil>") cost=\(thumb.cost)",
+                        "path=\(thumb.requestKey?.source.standardizedPath ?? "<nil>") cost=\(thumb.cost)"
                 )
             #endif
         }

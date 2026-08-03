@@ -6,7 +6,7 @@ import Testing
 private func makeSortTestFile(
     name: String,
     size: Int64,
-    date: Date,
+    date: Date
 ) -> FileItem {
     FileItem(
         url: URL(fileURLWithPath: "/tmp/\(name)"),
@@ -14,7 +14,7 @@ private func makeSortTestFile(
         size: size,
         dateModified: date,
         exifData: nil,
-        afFocusNormalized: nil,
+        afFocusNormalized: nil
     )
 }
 
@@ -40,7 +40,7 @@ struct ScanFilesSortTests {
         let sorted = await ScanFiles.sortFiles(
             files,
             by: [KeyPathComparator(\FileItem.name)],
-            searchText: "",
+            searchText: ""
         )
 
         #expect(fileNames(sorted) == ["a.ARW", "B.ARW", "C.NEF"])
@@ -57,7 +57,7 @@ struct ScanFilesSortTests {
         let sorted = await ScanFiles.sortFiles(
             files,
             by: [KeyPathComparator(\FileItem.dateModified, order: .reverse)],
-            searchText: "",
+            searchText: ""
         )
 
         #expect(fileNames(sorted) == ["recent.ARW", "middle.ARW", "old.ARW"])
@@ -74,7 +74,7 @@ struct ScanFilesSortTests {
         let sorted = await ScanFiles.sortFiles(
             files,
             by: [KeyPathComparator(\FileItem.size)],
-            searchText: "",
+            searchText: ""
         )
 
         #expect(fileNames(sorted) == ["small.ARW", "medium.ARW", "large.ARW"])
@@ -91,7 +91,7 @@ struct ScanFilesSortTests {
         let sorted = await ScanFiles.sortFiles(
             files,
             by: [KeyPathComparator(\FileItem.name)],
-            searchText: "ARW",
+            searchText: "ARW"
         )
 
         #expect(fileNames(sorted) == ["Alpha.ARW", "beta.arw"])
@@ -108,7 +108,7 @@ struct ScanFilesSortTests {
         let sorted = await ScanFiles.sortFiles(
             files,
             by: [KeyPathComparator(\FileItem.name)],
-            searchText: "bird",
+            searchText: "bird"
         )
 
         #expect(fileNames(sorted) == ["bird-close.ARW", "bird-wide.NEF"])

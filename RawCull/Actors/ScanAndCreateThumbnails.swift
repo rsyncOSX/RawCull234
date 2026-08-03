@@ -38,7 +38,7 @@ actor ScanAndCreateThumbnails {
     init(
         config _: CacheConfig? = nil,
         diskCache: DiskCacheManager? = nil,
-        rawLoader: any RawImageLoading = RawParserKitImageLoader.shared,
+        rawLoader: any RawImageLoading = RawParserKitImageLoader.shared
     ) {
         self.diskCache = diskCache ?? DiskCacheManager()
         self.rawLoader = rawLoader
@@ -115,7 +115,7 @@ actor ScanAndCreateThumbnails {
                             source.0,
                             fingerprint: source.1,
                             targetSize: targetSize,
-                            itemIndex: index,
+                            itemIndex: index
                         )
                     }
                 }
@@ -135,7 +135,7 @@ actor ScanAndCreateThumbnails {
         _ url: URL,
         fingerprint: ThumbnailSourceFingerprint?,
         targetSize: Int,
-        itemIndex _: Int,
+        itemIndex _: Int
     ) async {
         if Task.isCancelled {
             return
@@ -145,14 +145,13 @@ actor ScanAndCreateThumbnails {
             ThumbnailRequestKey(
                 source: $0,
                 purpose: .preview,
-                requestedMaxPixelSize: targetSize,
+                requestedMaxPixelSize: targetSize
             )
         }
 
         // A. Check RAM
         if let previewKey,
-           let wrapper = SharedMemoryCache.shared.object(forKey: previewKey)
-        {
+           let wrapper = SharedMemoryCache.shared.object(forKey: previewKey) {
             storeInGridCache(wrapper.image, source: previewKey.source)
             // Do not re-admit to memoryCache: object(forKey:) already touched
             // LRU, and scan-order admission would compete with UI-driven LRU
@@ -170,8 +169,7 @@ actor ScanAndCreateThumbnails {
 
         // B. Check Disk
         if let previewKey,
-           let diskImage = await diskCache.load(for: previewKey)
-        {
+           let diskImage = await diskCache.load(for: previewKey) {
             // Mirror to the grid cache only. Leaving memoryCache admission to
             // RequestThumbnail (its branch B promotes on user-driven hits)
             // keeps LRU ordering aligned with UI traffic and prevents
@@ -197,14 +195,14 @@ actor ScanAndCreateThumbnails {
             if let previewKey {
                 SharedMemoryCache.shared.endThumbnailExtraction(
                     key: previewKey,
-                    cancelled: Task.isCancelled,
+                    cancelled: Task.isCancelled
                 )
             }
         }
 
         guard let image = await rawLoader.thumbnailImage(
             for: url,
-            maxPixelSize: targetSize,
+            maxPixelSize: targetSize
         ),
             let cgImage = image.cgImage(forProposedRect: nil, context: nil, hints: nil)
         else { return }
@@ -289,7 +287,7 @@ actor ScanAndCreateThumbnails {
         let key = ThumbnailRequestKey(
             source: source,
             purpose: .grid,
-            requestedMaxPixelSize: 200,
+            requestedMaxPixelSize: 200
         )
         guard SharedMemoryCache.shared.gridObject(forKey: key) == nil else { return }
         let gridSize: CGFloat = 200
@@ -309,7 +307,7 @@ actor ScanAndCreateThumbnails {
             in: NSRect(origin: .zero, size: newSize),
             from: NSRect(origin: .zero, size: size),
             operation: .copy,
-            fraction: 1.0,
+            fraction: 1.0
         )
         result.unlockFocus()
         return result

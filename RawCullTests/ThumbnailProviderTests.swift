@@ -116,7 +116,7 @@ struct CacheConfigTests {
         let config = CacheConfig(
             totalCostLimit: 1_000_000,
             countLimit: 25,
-            gridTotalCostLimit: 2_000_000,
+            gridTotalCostLimit: 2_000_000
         )
 
         #expect(config.totalCostLimit == 1_000_000)
@@ -134,7 +134,7 @@ struct CacheConfigTests {
             usedMemoryBytes: used,
             userPreviewMaxMB: 4096,
             userGridMaxMB: 1024,
-            pressureLevel: .normal,
+            pressureLevel: .normal
         )
 
         #expect(limits.previewMB == 2048)
@@ -151,7 +151,7 @@ struct CacheConfigTests {
             usedMemoryBytes: used,
             userPreviewMaxMB: 4096,
             userGridMaxMB: 1024,
-            pressureLevel: .normal,
+            pressureLevel: .normal
         )
 
         #expect(limits.previewMB == 3072)
@@ -168,7 +168,7 @@ struct CacheConfigTests {
             usedMemoryBytes: used,
             userPreviewMaxMB: 8000,
             userGridMaxMB: 2000,
-            pressureLevel: .normal,
+            pressureLevel: .normal
         )
 
         #expect(limits.previewMB == 4096)
@@ -185,7 +185,7 @@ struct CacheConfigTests {
             usedMemoryBytes: used,
             userPreviewMaxMB: 2500,
             userGridMaxMB: 900,
-            pressureLevel: .normal,
+            pressureLevel: .normal
         )
 
         #expect(limits.previewMB == 2500)
@@ -202,7 +202,7 @@ struct CacheConfigTests {
             usedMemoryBytes: used,
             userPreviewMaxMB: 4096,
             userGridMaxMB: 1024,
-            pressureLevel: .warning,
+            pressureLevel: .warning
         )
 
         #expect(limits.previewMB == 1280)

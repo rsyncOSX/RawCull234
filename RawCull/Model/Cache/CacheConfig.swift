@@ -47,7 +47,7 @@ nonisolated enum CacheRecommendationPolicy {
         usedMemoryBytes: UInt64,
         userPreviewMaxMB: Int,
         userGridMaxMB: Int,
-        pressureLevel: SharedMemoryCache.MemoryPressureLevel,
+        pressureLevel: SharedMemoryCache.MemoryPressureLevel
     ) -> Limits {
         let baseline = baselineLimits(physicalMemoryBytes: physicalMemoryBytes)
         let tierCap = tierCapLimits(physicalMemoryBytes: physicalMemoryBytes)
@@ -57,7 +57,7 @@ nonisolated enum CacheRecommendationPolicy {
             let gridMB = max(CacheSettingsLimits.gridMinMB, roundUpMB(Int(Double(baseline.gridMB) * 0.6)))
             return Limits(
                 previewMB: min(previewMB, userPreviewMaxMB),
-                gridMB: min(gridMB, userGridMaxMB),
+                gridMB: min(gridMB, userGridMaxMB)
             )
         }
 
@@ -72,7 +72,7 @@ nonisolated enum CacheRecommendationPolicy {
 
         return Limits(
             previewMB: min(max(previewMB, baseline.previewMB), tierCap.previewMB, userPreviewMaxMB),
-            gridMB: min(max(gridMB, baseline.gridMB), tierCap.gridMB, userGridMaxMB),
+            gridMB: min(max(gridMB, baseline.gridMB), tierCap.gridMB, userGridMaxMB)
         )
     }
 
@@ -101,7 +101,7 @@ struct CacheConfig {
     nonisolated init(
         totalCostLimit: Int,
         countLimit: Int,
-        gridTotalCostLimit: Int = 400 * 1024 * 1024,
+        gridTotalCostLimit: Int = 400 * 1024 * 1024
     ) {
         self.totalCostLimit = totalCostLimit
         self.countLimit = countLimit
@@ -111,12 +111,12 @@ struct CacheConfig {
     // periphery:ignore
     nonisolated static let production = CacheConfig(
         totalCostLimit: 500 * 1024 * 1024, // ~500 MB for ~112 1024x1024 images
-        countLimit: 1000,
+        countLimit: 1000
     )
 
     // periphery:ignore
     nonisolated static let testing = CacheConfig(
         totalCostLimit: 100_000, // Very small for testing evictions
-        countLimit: 5,
+        countLimit: 5
     )
 }

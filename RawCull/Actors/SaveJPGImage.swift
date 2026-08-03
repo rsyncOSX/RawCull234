@@ -32,12 +32,12 @@ actor SaveJPGImage {
         _ jpegData: Data,
         originalURL: URL,
         destinationCatalogURL: URL,
-        exportMode: ExtractJPGExportMode,
+        exportMode: ExtractJPGExportMode
     ) async throws {
         let outputURL = Self.outputURL(
             for: originalURL,
             in: destinationCatalogURL,
-            exportMode: exportMode,
+            exportMode: exportMode
         )
 
         Logger.process.info("ExtractEmbeddedPreview: Attempting to save to \(outputURL.path)")
@@ -51,7 +51,7 @@ actor SaveJPGImage {
     nonisolated static func outputURL(
         for originalURL: URL,
         in destinationCatalogURL: URL,
-        exportMode: ExtractJPGExportMode,
+        exportMode: ExtractJPGExportMode
     ) -> URL {
         let baseName = originalURL.deletingPathExtension().lastPathComponent
         let outputName: String = switch exportMode {
@@ -76,7 +76,7 @@ actor SaveJPGImage {
             mutableData,
             UTType.jpeg.identifier as CFString,
             1,
-            nil,
+            nil
         ) else {
             return nil
         }

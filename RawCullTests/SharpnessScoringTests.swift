@@ -144,8 +144,8 @@ struct SharpnessScoringTests {
         #expect(
             descriptor
                 == PhotoAnalyzer.sharpnessDescriptor(
-                    for: model.effectiveFocusConfig,
-                ),
+                    for: model.effectiveFocusConfig
+                )
         )
         #expect(signature.scoringSource == .rawDemosaic)
         #expect(signature.thumbnailMaxPixelSize == 1536)
@@ -176,7 +176,7 @@ struct SharpnessScoringTests {
 
         let decoded = try JSONDecoder().decode(
             SharpnessScoringSignature.self,
-            from: Data(legacy.utf8),
+            from: Data(legacy.utf8)
         )
         let current = SharpnessScoringModel().scoringSignature
 
@@ -200,9 +200,9 @@ struct SharpnessScoringTests {
                     image: image,
                     iso: file.iso,
                     aperture: file.aperture,
-                    normalizedAFPoint: file.normalizedAFPoint,
+                    normalizedAFPoint: file.normalizedAFPoint
                 )
-            },
+            }
         )
         let model = SharpnessScoringModel(analysisAdapterOverride: adapter)
         let files = [makeSharpnessTestFile()]
@@ -214,7 +214,7 @@ struct SharpnessScoringTests {
             await model.scoreFiles(files)
             await completion.markCompleted(
                 sortBySharpness: model.sortBySharpness,
-                scoringTotal: model.scoringTotal,
+                scoringTotal: model.scoringTotal
             )
         }
 
@@ -249,7 +249,7 @@ private func makeSharpnessTestFile() -> FileItem {
         size: 1,
         dateModified: Date(),
         exifData: nil,
-        afFocusNormalized: nil,
+        afFocusNormalized: nil
     )
 }
 
@@ -262,7 +262,7 @@ private func makeSharpnessTestImage(size: Int = 128) -> CGImage? {
               bitsPerComponent: 8,
               bytesPerRow: size * 4,
               space: colorSpace,
-              bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue,
+              bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
           )
     else { return nil }
 
@@ -462,7 +462,7 @@ struct FocusNumericHelperTests {
             globalScore: 0.03,
             subjectScore: 0.04,
             afPointScore: 0.05,
-            blurGateSigma: 0.004,
+            blurGateSigma: 0.004
         )
         #expect(result == .motionBlur)
     }
@@ -473,7 +473,7 @@ struct FocusNumericHelperTests {
             globalScore: 0.30,
             subjectScore: 0.10,
             afPointScore: 0.11,
-            blurGateSigma: 0.03,
+            blurGateSigma: 0.03
         )
         #expect(result == .missedFocus)
     }
@@ -484,7 +484,7 @@ struct FocusNumericHelperTests {
             globalScore: 0.24,
             subjectScore: 0.22,
             afPointScore: 0.26,
-            blurGateSigma: 0.03,
+            blurGateSigma: 0.03
         )
         #expect(result == .none)
     }

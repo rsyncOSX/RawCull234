@@ -27,7 +27,7 @@ struct ComparisonGridView: View {
                     if burstComparisonResult != nil {
                         BurstComparisonEvidenceView(
                             inspectorIsPresented: showCandidateInspector,
-                            onBack: viewModel.returnToActiveBurstGroupView,
+                            onBack: viewModel.returnToActiveBurstGroupView
                         )
                         .padding(.horizontal, 8)
                         .padding(.vertical, 6)
@@ -60,7 +60,7 @@ struct ComparisonGridView: View {
                                             Task {
                                                 await reloadImage(for: file)
                                             }
-                                        },
+                                        }
                                     )
                                     .frame(width: geometry.size.width, height: geometry.size.height)
                                     .id(file.id)
@@ -103,7 +103,7 @@ struct ComparisonGridView: View {
                 ContentUnavailableView(
                     "Select Images to Compare",
                     systemImage: "rectangle.split.2x1",
-                    description: Text("Select two to four thumbnails in a grid view, then use Compare."),
+                    description: Text("Select two to four thumbnails in a grid view, then use Compare.")
                 )
             }
         }
@@ -147,7 +147,7 @@ struct ComparisonGridView: View {
             selectedFileID: viewModel.selectedFileID,
             activeBurstComparisonGroupID: viewModel.activeBurstComparisonGroupID,
             finalistFocusActive: finalistFocusActive,
-            burstAnalysisResult: viewModel.burstAnalysisResult(for:),
+            burstAnalysisResult: viewModel.burstAnalysisResult(for:)
         )
     }
 
@@ -169,7 +169,7 @@ struct ComparisonGridView: View {
 
     private var canApplyOneClickCulling: Bool {
         burstComparisonResult?.canApplyOneClickCulling(
-            hasSharpnessScores: !viewModel.sharpnessModel.scores.isEmpty,
+            hasSharpnessScores: !viewModel.sharpnessModel.scores.isEmpty
         ) ?? false
     }
 
@@ -184,7 +184,7 @@ struct ComparisonGridView: View {
             },
             set: { newValue in
                 useThumbnailSourceByFileID[file.id] = newValue
-            },
+            }
         )
     }
 
@@ -195,7 +195,7 @@ struct ComparisonGridView: View {
             },
             set: { newValue in
                 viewportStatesByFileID[file.id] = newValue
-            },
+            }
         )
     }
 
@@ -203,7 +203,7 @@ struct ComparisonGridView: View {
         let result = await ComparisonGridImageCoordinator.loadImages(
             files: files,
             sourceFlags: useThumbnailSourceByFileID,
-            viewModel: viewModel,
+            viewModel: viewModel
         )
         imageStates = result.states
         useThumbnailSourceByFileID = result.sourceFlags
@@ -214,7 +214,7 @@ struct ComparisonGridView: View {
         let state = await ComparisonGridImageCoordinator.reloadImage(
             for: file,
             sourceFlags: useThumbnailSourceByFileID,
-            viewModel: viewModel,
+            viewModel: viewModel
         )
         guard !Task.isCancelled else { return }
         imageStates[file.id] = state
@@ -224,7 +224,7 @@ struct ComparisonGridView: View {
         let updatedStates = await ComparisonGridImageCoordinator.regenerateFocusMasks(
             files: files,
             states: imageStates,
-            viewModel: viewModel,
+            viewModel: viewModel
         )
         guard !Task.isCancelled else { return }
         imageStates = updatedStates
@@ -239,13 +239,13 @@ struct ComparisonGridView: View {
     private func ratingDisplay(for file: FileItem) -> RatingDisplay {
         RatingDisplay(
             rating: viewModel.getRating(for: file),
-            isExplicit: viewModel.taggedNamesCache.contains(file.name),
+            isExplicit: viewModel.taggedNamesCache.contains(file.name)
         )
     }
 
     private func burstCandidate(
         for file: FileItem,
-        in analysis: BurstAnalysisResult?,
+        in analysis: BurstAnalysisResult?
     ) -> BurstCandidateScore? {
         guard let analysis,
               analysis.fileIDs.contains(file.id)
@@ -263,7 +263,7 @@ struct ComparisonGridView: View {
             fileIDs: files.map(\.id),
             scores: viewModel.sharpnessModel.scores,
             breakdowns: comparisonBreakdowns(),
-            winnerID: comparisonWinnerFile()?.id,
+            winnerID: comparisonWinnerFile()?.id
         )
     }
 
@@ -356,7 +356,7 @@ struct ComparisonGridView: View {
 
         guard let action = ComparisonGridKeyAction.resolve(
             characters: event.characters,
-            keyCode: event.keyCode,
+            keyCode: event.keyCode
         ) else { return .ignored }
 
         return handleKeyAction(action)
@@ -426,7 +426,7 @@ struct ComparisonGridView: View {
               let destinationIndex = ComparisonGridNavigation.destinationIndex(
                   from: currentIndex,
                   itemCount: files.count,
-                  direction: direction,
+                  direction: direction
               )
         else { return }
 
@@ -470,7 +470,7 @@ struct ComparisonGridView: View {
             navigationIDs: files.map(\.id),
             initialSource: .embeddedJPG,
             initialZoomMode: .actualPixels,
-            showFocusPointsOnOpen: true,
+            showFocusPointsOnOpen: true
         )
         return .handled
     }
@@ -505,7 +505,7 @@ private struct BurstComparisonEvidenceView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
             Button("Back To Group", action: onBack)
-                // .controlSize(.mini)
+            // .controlSize(.mini)
 
             Text(inspectorHint)
                 .font(.caption2)

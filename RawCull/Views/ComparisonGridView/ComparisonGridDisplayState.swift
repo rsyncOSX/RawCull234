@@ -14,7 +14,7 @@ struct ComparisonGridDisplayState {
         selectedFileID: FileItem.ID?,
         activeBurstComparisonGroupID: Int?,
         finalistFocusActive: Bool,
-        burstAnalysisResult: (Int) -> BurstAnalysisResult?,
+        burstAnalysisResult: (Int) -> BurstAnalysisResult?
     ) {
         if let activeBurstComparisonGroupID {
             burstComparisonResult = burstAnalysisResult(activeBurstComparisonGroupID)

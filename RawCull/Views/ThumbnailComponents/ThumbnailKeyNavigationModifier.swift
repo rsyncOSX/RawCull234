@@ -73,7 +73,7 @@ struct ThumbnailKeyNavigationModifier: ViewModifier {
                             navigationIDs: files.map(\.id),
                             initialSource: .embeddedJPG,
                             initialZoomMode: .actualPixels,
-                            showFocusPointsOnOpen: true,
+                            showFocusPointsOnOpen: true
                         )
                         return nil
 
@@ -176,7 +176,7 @@ extension View {
     func thumbnailKeyNavigation(
         viewModel: RawCullViewModel,
         axis: ThumbnailNavigationAxis,
-        files: (() -> [FileItem])? = nil,
+        files: (() -> [FileItem])? = nil
     ) -> some View {
         modifier(ThumbnailKeyNavigationModifier(viewModel: viewModel, axis: axis, filesOverride: files))
     }

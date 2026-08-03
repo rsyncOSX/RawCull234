@@ -17,7 +17,7 @@ struct CullingScoringResult {
         saliencySubject: String?,
         scoringSignature: SharpnessScoringSignature? = nil,
         fileSize: Int64? = nil,
-        modificationDate: Date? = nil,
+        modificationDate: Date? = nil
     ) {
         self.fileName = fileName
         self.score = score
@@ -42,7 +42,7 @@ final class CullingModel {
         saveDelayNanoseconds: UInt64 = 350_000_000,
         saveHandler: @escaping @Sendable ([SavedFiles]) async throws -> Void = { savedFiles in
             try await WriteSavedFilesJSON.write(savedFiles)
-        },
+        }
     ) {
         self.saveDelayNanoseconds = saveDelayNanoseconds
         self.saveHandler = saveHandler
@@ -97,7 +97,7 @@ final class CullingModel {
                 catalogIndex: catalogIndex,
                 fileName: fileName,
                 dateTagged: date,
-                rating: rating,
+                rating: rating
             )
         }
         scheduleSave()
@@ -113,7 +113,7 @@ final class CullingModel {
                 catalogIndex: catalogIndex,
                 fileName: fileName,
                 dateTagged: date,
-                rating: rating,
+                rating: rating
             )
         }
         scheduleSave()
@@ -133,7 +133,7 @@ final class CullingModel {
                 updateSaliencySubject: true,
                 scoringSignature: result.scoringSignature,
                 scoringFileSize: result.fileSize,
-                scoringModificationDate: result.modificationDate,
+                scoringModificationDate: result.modificationDate
             )
         }
         scheduleSave()
@@ -146,7 +146,7 @@ final class CullingModel {
         let normalizedOverride = BurstWinnerOverride(
             id: override.id,
             winnerFileName: override.winnerFileName,
-            memberFileNames: Self.canonicalMemberNames(override.memberFileNames),
+            memberFileNames: Self.canonicalMemberNames(override.memberFileNames)
         )
         let newMembership = normalizedOverride.memberFileNames
 
@@ -248,7 +248,7 @@ final class CullingModel {
         savedFiles.append(SavedFiles(
             catalog: catalog,
             dateStart: dateStart,
-            filerecord: FileRecord(fileName: nil, dateTagged: nil, dateCopied: nil, rating: nil),
+            filerecord: FileRecord(fileName: nil, dateTagged: nil, dateCopied: nil, rating: nil)
         ))
         let index = savedFiles.index(before: savedFiles.endIndex)
         savedFiles[index].filerecords = []
@@ -265,7 +265,7 @@ final class CullingModel {
         updateSaliencySubject: Bool = false,
         scoringSignature: SharpnessScoringSignature? = nil,
         scoringFileSize: Int64? = nil,
-        scoringModificationDate: Date? = nil,
+        scoringModificationDate: Date? = nil
     ) {
         if let recordIndex = savedFiles[catalogIndex].filerecords?.firstIndex(where: { $0.fileName == fileName }) {
             if let rating {
@@ -294,7 +294,7 @@ final class CullingModel {
             saliencySubject: saliencySubject,
             sharpnessScoringSignature: scoringSignature,
             sharpnessFileSize: scoringFileSize,
-            sharpnessModificationDate: scoringModificationDate,
+            sharpnessModificationDate: scoringModificationDate
         ))
     }
 }

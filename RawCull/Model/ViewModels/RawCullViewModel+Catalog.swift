@@ -10,7 +10,7 @@ extension RawCullViewModel {
         ThumbnailPreloadGridGate.shouldBlock(
             activeCatalogURL: activeCatalogLoadURL,
             selectedCatalogURL: selectedSource?.url,
-            hasActivePreloader: currentScanAndCreateThumbnailsActor != nil,
+            hasActivePreloader: currentScanAndCreateThumbnailsActor != nil
         )
     }
 
@@ -89,7 +89,7 @@ extension RawCullViewModel {
             onProgress: { [weak self] count in
                 guard let self, self.isActiveCatalogLoad(url) else { return }
                 onProgress?(count)
-            },
+            }
         )
         guard isActiveCatalogLoad(url), !Task.isCancelled else { return }
 
@@ -108,7 +108,7 @@ extension RawCullViewModel {
         let sortedFiles = await ScanFiles.sortFiles(
             scannedFiles,
             by: sortOrder,
-            searchText: searchText,
+            searchText: searchText
         )
         guard isActiveCatalogLoad(url), !Task.isCancelled else { return }
 
@@ -137,7 +137,7 @@ extension RawCullViewModel {
         sharpnessModel.applyPreloadedScores(
             files,
             preloadedScores: sharpnessModel.scores,
-            preloadedSaliency: sharpnessModel.saliencyInfo,
+            preloadedSaliency: sharpnessModel.saliencyInfo
         )
 
         if !processedURLs.contains(url) {
@@ -164,7 +164,7 @@ extension RawCullViewModel {
                 onExtractionNeeded: { [weak self] in
                     guard let self, self.isActiveCatalogLoad(url) else { return }
                     self.extractionNeeded()
-                },
+                }
             )
 
             let scanAndCreateThumbnails = ScanAndCreateThumbnails()
@@ -175,7 +175,7 @@ extension RawCullViewModel {
             preloadTask = Task {
                 await scanAndCreateThumbnails.preloadCatalog(
                     at: url,
-                    targetSize: thumbnailSizePreview,
+                    targetSize: thumbnailSizePreview
                 )
             }
 

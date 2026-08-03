@@ -8,9 +8,9 @@ struct MemoryWarningLabelView: View {
     init(
         memoryWarningOpacity: Binding<Double> = .constant(0.8),
         onAppearAction: @escaping () -> Void = {},
-        onClose: (() -> Void)? = nil,
+        onClose: (() -> Void)? = nil
     ) {
-        self._memoryWarningOpacity = memoryWarningOpacity
+        _memoryWarningOpacity = memoryWarningOpacity
         self.onAppearAction = onAppearAction
         self.onClose = onClose
     }

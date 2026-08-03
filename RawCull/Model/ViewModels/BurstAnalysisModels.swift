@@ -28,10 +28,6 @@ nonisolated struct BurstGroupSignature: Codable, Hashable {
         return relativePath.isEmpty ? file.name : relativePath
     }
 
-    static func == (lhs: Self, rhs: Self) -> Bool {
-        lhs.memberKeys == rhs.memberKeys
-    }
-
     func hash(into hasher: inout Hasher) {
         hasher.combine(memberKeys)
     }
@@ -53,7 +49,7 @@ struct CompletedBurstAnalysisContext: Equatable {
 struct BurstGroupPresentation: Equatable {
     nonisolated static func recommendationBadge(
         for candidate: BurstCandidateScore,
-        in result: BurstAnalysisResult,
+        in result: BurstAnalysisResult
     ) -> String? {
         guard result.recommendedFileID == candidate.fileID else { return nil }
 

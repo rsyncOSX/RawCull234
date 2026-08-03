@@ -4,26 +4,26 @@ import Foundation
 func makeThumbnailRequestKey(
     url: URL,
     fileSize: Int64 = 1,
-    modificationDate: Date = Date(timeIntervalSince1970: 1_000),
+    modificationDate: Date = Date(timeIntervalSince1970: 1000),
     purpose: ThumbnailPurpose = .preview,
     requestedMaxPixelSize: Int = 256,
-    schemaVersion: Int = ThumbnailSourceFingerprint.currentCacheSchemaVersion,
+    schemaVersion: Int = ThumbnailSourceFingerprint.currentCacheSchemaVersion
 ) -> ThumbnailRequestKey {
     ThumbnailRequestKey(
         source: ThumbnailSourceFingerprint(
             url: url,
             fileSize: fileSize,
             modificationDate: modificationDate,
-            cacheSchemaVersion: schemaVersion,
+            cacheSchemaVersion: schemaVersion
         ),
         purpose: purpose,
-        requestedMaxPixelSize: requestedMaxPixelSize,
+        requestedMaxPixelSize: requestedMaxPixelSize
     )
 }
 
 func makeIsolatedCache(
     name: String = #function,
-    config: CacheConfig = .testing,
+    config: CacheConfig = .testing
 ) async -> SharedMemoryCache {
     let safeName = name
         .replacingOccurrences(of: "`", with: "")
@@ -38,7 +38,7 @@ func makeIsolatedCache(
     let cache = SharedMemoryCache(
         diskCache: DiskCacheManager(cacheDirectory: thumbnailDirectory),
         fullSizeJPGCache: FullSizeJPGDiskCache(cacheDirectory: fullSizeDirectory),
-        tracksEvictions: false,
+        tracksEvictions: false
     )
     await cache.resetForTesting(config: config)
     return cache
@@ -46,7 +46,7 @@ func makeIsolatedCache(
 
 func makeIsolatedThumbnailProvider(
     name: String = #function,
-    config: CacheConfig = .testing,
+    config: CacheConfig = .testing
 ) async -> (RequestThumbnail, SharedMemoryCache) {
     let cache = await makeIsolatedCache(name: name, config: config)
     let provider = RequestThumbnail(memoryCache: cache)
@@ -83,7 +83,7 @@ func makeIsolatedSavedFilesURL(name: String = #function) -> URL {
 }
 
 func makeIsolatedSimilarityArtifactStore(
-    name: String = #function,
+    name: String = #function
 ) -> PerFileAnalysisArtifactStore {
     let safeName = name
         .replacingOccurrences(of: "`", with: "")
@@ -93,7 +93,7 @@ func makeIsolatedSimilarityArtifactStore(
         .appendingPathComponent("RawCullVerifyTests", isDirectory: true)
         .appendingPathComponent(
             "\(safeName)-\(UUID().uuidString)",
-            isDirectory: true,
+            isDirectory: true
         )
         .appendingPathComponent("SimilarityArtifacts", isDirectory: true)
     return PerFileAnalysisArtifactStore(storageDirectory: directory)

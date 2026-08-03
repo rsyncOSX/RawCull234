@@ -14,7 +14,7 @@ struct RawCullDetailContainerView: View {
             cgImage: $cgImage,
             nsImage: $nsImage,
             selectedFileID: $selectedFileID,
-            file: viewModel.selectedFile,
+            file: viewModel.selectedFile
         )
 
         // Move the conditional labels inside the ZStack so they participate in the ViewBuilder
@@ -22,7 +22,7 @@ struct RawCullDetailContainerView: View {
         if viewModel.focusaborttask {
             AbortTaskFocusView(
                 focusaborttask: $viewModel.focusaborttask,
-                abort: abort,
+                abort: abort
             )
         }
     }

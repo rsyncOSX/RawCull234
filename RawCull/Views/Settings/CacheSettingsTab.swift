@@ -41,7 +41,7 @@ struct CacheSettingsTab: View {
                     gridLimit: formatBytes(SharedMemoryCache.shared.gridThumbnailCache.totalCostLimit),
                     gridConfiguredLimit: formatMegabytes(settingsManager.gridCacheSizeMB),
                     gridCount: currentGridCacheCount,
-                    freeMemory: formatBytes(Int(freeMemoryBytes())),
+                    freeMemory: formatBytes(Int(freeMemoryBytes()))
                 )
 
                 DiskCachesSection(
@@ -52,7 +52,7 @@ struct CacheSettingsTab: View {
                     similarityArtifactSize: formatBytes(currentSimilarityArtifactCacheSize),
                     similarityArtifactCount: currentSimilarityArtifactCacheCount,
                     similarityArtifactPath: displayPath(
-                        PerFileAnalysisArtifactStore.shared.storageDirectory,
+                        PerFileAnalysisArtifactStore.shared.storageDirectory
                     ),
                     burstAnalysisSize: formatBytes(currentBurstAnalysisCacheSize),
                     burstAnalysisCount: currentBurstAnalysisCacheCount,
@@ -60,13 +60,13 @@ struct CacheSettingsTab: View {
                     isLoading: isLoadingDiskCaches,
                     purgingCache: purgingCache,
                     cachePendingPurge: $cachePendingPurge,
-                    showPurgeConfirmation: $showPurgeConfirmation,
+                    showPurgeConfirmation: $showPurgeConfirmation
                 )
             }
         }
         .confirmationDialog(
             "Clear \(cachePendingPurge?.title ?? "Cache")?",
-            isPresented: $showPurgeConfirmation,
+            isPresented: $showPurgeConfirmation
         ) {
             if let cachePendingPurge {
                 Button("Clear", role: .destructive) {
@@ -177,7 +177,9 @@ private enum DiskCacheKind: Hashable, Identifiable {
     case similarityArtifacts
     case burstAnalysis
 
-    var id: Self { self }
+    var id: Self {
+        self
+    }
 
     var title: String {
         switch self {
@@ -230,14 +232,14 @@ private struct MemoryCachesSection: View {
                     icon: "photo",
                     title: "Preview Cache",
                     size: previewSize,
-                    detail: "\(previewCount) previews · \(previewLimit) current limit · \(previewConfiguredLimit) configured maximum",
+                    detail: "\(previewCount) previews · \(previewLimit) current limit · \(previewConfiguredLimit) configured maximum"
                 )
 
                 MemoryCacheRow(
                     icon: "square.grid.2x2",
                     title: "Grid Thumbnail Cache",
                     size: gridSize,
-                    detail: "\(gridCount) thumbnails · \(gridLimit) current limit · \(gridConfiguredLimit) configured maximum",
+                    detail: "\(gridCount) thumbnails · \(gridLimit) current limit · \(gridConfiguredLimit) configured maximum"
                 )
 
                 Divider()
@@ -330,7 +332,7 @@ private struct DiskCachesSection: View {
                     isPurging: purgingCache == .thumbnails,
                     isPurgeInProgress: purgingCache != nil,
                     cachePendingPurge: $cachePendingPurge,
-                    showPurgeConfirmation: $showPurgeConfirmation,
+                    showPurgeConfirmation: $showPurgeConfirmation
                 )
 
                 Divider()
@@ -345,7 +347,7 @@ private struct DiskCachesSection: View {
                     isPurging: purgingCache == .fullSizeJPGs,
                     isPurgeInProgress: purgingCache != nil,
                     cachePendingPurge: $cachePendingPurge,
-                    showPurgeConfirmation: $showPurgeConfirmation,
+                    showPurgeConfirmation: $showPurgeConfirmation
                 )
 
                 Divider()
@@ -360,7 +362,7 @@ private struct DiskCachesSection: View {
                     isPurging: purgingCache == .similarityArtifacts,
                     isPurgeInProgress: purgingCache != nil,
                     cachePendingPurge: $cachePendingPurge,
-                    showPurgeConfirmation: $showPurgeConfirmation,
+                    showPurgeConfirmation: $showPurgeConfirmation
                 )
 
                 Divider()
@@ -375,7 +377,7 @@ private struct DiskCachesSection: View {
                     isPurging: purgingCache == .burstAnalysis,
                     isPurgeInProgress: purgingCache != nil,
                     cachePendingPurge: $cachePendingPurge,
-                    showPurgeConfirmation: $showPurgeConfirmation,
+                    showPurgeConfirmation: $showPurgeConfirmation
                 )
             }
         }
@@ -442,5 +444,4 @@ private struct DiskCacheRow: View {
             .accessibilityLabel("Clear \(kind.title)")
         }
     }
-
 }

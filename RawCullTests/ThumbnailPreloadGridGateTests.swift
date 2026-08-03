@@ -10,12 +10,12 @@ struct ThumbnailPreloadGridGateTests {
         #expect(ThumbnailPreloadGridGate.shouldBlock(
             activeCatalogURL: active,
             selectedCatalogURL: URL(fileURLWithPath: "/tmp/./catalog-a"),
-            hasActivePreloader: true,
+            hasActivePreloader: true
         ))
         #expect(!ThumbnailPreloadGridGate.shouldBlock(
             activeCatalogURL: active,
             selectedCatalogURL: URL(fileURLWithPath: "/tmp/catalog-b"),
-            hasActivePreloader: true,
+            hasActivePreloader: true
         ))
     }
 
@@ -26,17 +26,17 @@ struct ThumbnailPreloadGridGateTests {
         #expect(!ThumbnailPreloadGridGate.shouldBlock(
             activeCatalogURL: catalog,
             selectedCatalogURL: catalog,
-            hasActivePreloader: false,
+            hasActivePreloader: false
         ))
         #expect(!ThumbnailPreloadGridGate.shouldBlock(
             activeCatalogURL: nil,
             selectedCatalogURL: catalog,
-            hasActivePreloader: true,
+            hasActivePreloader: true
         ))
         #expect(!ThumbnailPreloadGridGate.shouldBlock(
             activeCatalogURL: catalog,
             selectedCatalogURL: nil,
-            hasActivePreloader: true,
+            hasActivePreloader: true
         ))
     }
 

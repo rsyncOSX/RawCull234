@@ -34,7 +34,7 @@ struct CullingGridRenderCacheKey: Hashable {
         scoresCount: Int,
         scoreRevision: Int,
         maxScore: Float,
-        burstAnalysisResults: [Int: BurstAnalysisResult],
+        burstAnalysisResults: [Int: BurstAnalysisResult]
     ) {
         var structureHasher = Hasher()
         for group in burstGroups {
@@ -53,10 +53,10 @@ struct CullingGridRenderCacheKey: Hashable {
             filesHasher.combine(file.id)
         }
 
-        self.burstGroupsCount = burstGroups.count
-        self.burstStructureHash = structureHasher.finalize()
-        self.filesCount = files.count
-        self.filesStructureHash = filesHasher.finalize()
+        burstGroupsCount = burstGroups.count
+        burstStructureHash = structureHasher.finalize()
+        filesCount = files.count
+        filesStructureHash = filesHasher.finalize()
         self.ratingFilter = ratingFilter
         self.reviewQueueFilter = reviewQueueFilter
         self.scoresCount = scoresCount
@@ -72,7 +72,7 @@ struct CullingGridRenderCache {
     static func rebuild(
         files: [FileItem],
         burstGroups: [BurstGroup],
-        scores: [UUID: Float],
+        scores: [UUID: Float]
     ) -> CullingGridRenderCache {
         let lookup = Dictionary(uniqueKeysWithValues: files.map { ($0.id, $0) })
 
@@ -87,7 +87,7 @@ struct CullingGridRenderCache {
 
         return CullingGridRenderCache(
             visibleBurstGroups: visibleGroups,
-            hasSharpnessScoresSnapshot: !scores.isEmpty,
+            hasSharpnessScoresSnapshot: !scores.isEmpty
         )
     }
 }
@@ -98,7 +98,7 @@ enum BurstGroupCleanViewPolicy {
     static func visibleFiles(
         in files: [FileItem],
         rankedFileIDs: [FileItem.ID],
-        isCollapsed: Bool,
+        isCollapsed: Bool
     ) -> [FileItem] {
         let filesByID = Dictionary(uniqueKeysWithValues: files.map { ($0.id, $0) })
         var ordered = rankedFileIDs.compactMap { filesByID[$0] }

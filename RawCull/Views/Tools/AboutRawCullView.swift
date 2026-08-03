@@ -44,7 +44,7 @@ struct AboutRawCullView: View {
                 LazyVGrid(
                     columns: [GridItem(.adaptive(minimum: 340), spacing: 16, alignment: .top)],
                     alignment: .leading,
-                    spacing: 16,
+                    spacing: 16
                 ) {
                     ForEach(shortcutSections) { section in
                         ShortcutSectionCard(section: section)
@@ -220,7 +220,7 @@ private struct ShortcutSection: Identifiable {
                 ShortcutRow(["3", "T"], "Apply rating 3 and advance"),
                 ShortcutRow(["4"], "Apply rating 4 and advance"),
                 ShortcutRow(["5"], "Apply rating 5 and advance")
-            ],
+            ]
         ),
         burstGroups,
         ShortcutSection(
@@ -233,7 +233,7 @@ private struct ShortcutSection: Identifiable {
                 ShortcutRow(["J"], "Show the embedded JPEG"),
                 ShortcutRow(["R"], "Show the developed RAW preview"),
                 ShortcutRow(["Z"], "Open actual-pixel inspection")
-            ],
+            ]
         ),
         zoomPreview,
         manualComparison,
@@ -246,7 +246,7 @@ private struct ShortcutSection: Identifiable {
             shortcuts: [
                 ShortcutRow(["⌘J"], "Extract JPEGs"),
                 ShortcutRow(["⌘K"], "Abort the active task")
-            ],
+            ]
         )
     ]
 
@@ -261,7 +261,7 @@ private struct ShortcutSection: Identifiable {
             ShortcutRow(["2"], "Keep the top two photos in the burst"),
             ShortcutRow(["U"], "Undo the last burst action"),
             ShortcutRow(["Esc"], "Leave burst grouping")
-        ],
+        ]
     )
 
     static let zoomPreview = ShortcutSection(
@@ -280,7 +280,7 @@ private struct ShortcutSection: Identifiable {
             ShortcutRow(["3", "T"], "Apply rating 3 and advance"),
             ShortcutRow(["4", "5"], "Apply rating 4 or 5 and advance"),
             ShortcutRow(["Esc"], "Close the zoom preview")
-        ],
+        ]
     )
 
     static let manualComparison = ShortcutSection(
@@ -300,7 +300,7 @@ private struct ShortcutSection: Identifiable {
             ShortcutRow(["1", "2"], "Apply rating 2 and advance"),
             ShortcutRow(["3", "T"], "Apply rating 3 and advance"),
             ShortcutRow(["4", "5"], "Apply rating 4 or 5 and advance")
-        ],
+        ]
     )
 
     static let burstReview = ShortcutSection(
@@ -323,7 +323,7 @@ private struct ShortcutSection: Identifiable {
             ShortcutRow(["3", "T"], "Apply rating 3 and advance"),
             ShortcutRow(["4", "5"], "Apply rating 4 or 5 and advance"),
             ShortcutRow(["Esc"], "Return to the burst group")
-        ],
+        ]
     )
 }
 

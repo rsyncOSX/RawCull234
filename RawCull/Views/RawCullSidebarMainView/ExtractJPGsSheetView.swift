@@ -74,7 +74,7 @@ struct ExtractJPGsSheetView: View {
                     guard let destination = viewModel.extractJPGDestination else { return }
                     viewModel.startSelectedJPGExtraction(
                         destination: destination,
-                        exportMode: viewModel.extractJPGExportMode,
+                        exportMode: viewModel.extractJPGExportMode
                     )
                     dismiss()
                 }
@@ -89,7 +89,7 @@ struct ExtractJPGsSheetView: View {
             if case let .success(url) = result {
                 viewModel.extractJPGDestination = ARWSourceCatalog(
                     name: url.lastPathComponent,
-                    url: url,
+                    url: url
                 )
             }
         }

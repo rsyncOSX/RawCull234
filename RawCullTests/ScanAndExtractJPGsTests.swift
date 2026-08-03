@@ -34,7 +34,7 @@ struct ScanAndExtractJPGsTests {
                 recorder.estimatedSeconds.append(seconds)
             },
             memorypressurewarning: { _ in },
-            onExtractionNeeded: {},
+            onExtractionNeeded: {}
         )
 
         await actor.setFileHandlers(handlers)
@@ -44,7 +44,7 @@ struct ScanAndExtractJPGsTests {
         let snapshot = await MainActor.run {
             (
                 maxFiles: recorder.maxFiles,
-                progressUpdates: recorder.progressUpdates,
+                progressUpdates: recorder.progressUpdates
             )
         }
 

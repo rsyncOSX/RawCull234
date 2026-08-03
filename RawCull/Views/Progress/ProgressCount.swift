@@ -29,7 +29,7 @@ struct ProgressCount: View {
                 Circle()
                     .stroke(
                         Color.gray.opacity(0.2),
-                        lineWidth: 6,
+                        lineWidth: 6
                     )
 
                 if max > 0 {
@@ -39,12 +39,12 @@ struct ProgressCount: View {
                             LinearGradient(
                                 colors: [.blue, .cyan],
                                 startPoint: .topLeading,
-                                endPoint: .bottomTrailing,
+                                endPoint: .bottomTrailing
                             ),
                             style: StrokeStyle(
                                 lineWidth: 6,
-                                lineCap: .round,
-                            ),
+                                lineCap: .round
+                            )
                         )
                         .rotationEffect(.degrees(-90))
                         .animation(.spring(response: 0.6, dampingFraction: 0.8), value: progress)

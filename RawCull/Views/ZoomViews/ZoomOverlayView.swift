@@ -26,7 +26,7 @@ nonisolated enum ZoomOverlayKeyAction: Equatable {
     nonisolated static func resolve(
         characters: String?,
         keyCode: UInt16,
-        navigationAxis: ZoomOverlayNavigationAxis,
+        navigationAxis: ZoomOverlayNavigationAxis
     ) -> ZoomOverlayKeyAction? {
         if let action = action(for: characters) {
             return action
@@ -139,7 +139,7 @@ nonisolated enum ZoomViewportMath {
             x: (viewportSize.width - size.width) / 2,
             y: (viewportSize.height - size.height) / 2,
             width: size.width,
-            height: size.height,
+            height: size.height
         )
     }
 
@@ -154,7 +154,7 @@ nonisolated enum ZoomViewportMath {
     static func actualPixelsTransform(
         imageSize: CGSize,
         viewportSize: CGSize,
-        normalizedFocusPoint: CGPoint?,
+        normalizedFocusPoint: CGPoint?
     ) -> ZoomViewportTransform {
         let scale = actualPixelsScale(imageSize: imageSize, viewportSize: viewportSize)
         guard let normalizedFocusPoint,
@@ -171,30 +171,30 @@ nonisolated enum ZoomViewportMath {
 
         let point = CGPoint(
             x: fitRect.minX + normalizedFocusPoint.x * fitRect.width,
-            y: fitRect.minY + normalizedFocusPoint.y * fitRect.height,
+            y: fitRect.minY + normalizedFocusPoint.y * fitRect.height
         )
         let viewportCenter = CGPoint(x: viewportSize.width / 2, y: viewportSize.height / 2)
         let desiredOffset = CGSize(
             width: (viewportCenter.x - point.x) * scale,
-            height: (viewportCenter.y - point.y) * scale,
+            height: (viewportCenter.y - point.y) * scale
         )
         let scaledImageSize = CGSize(width: fitRect.width * scale, height: fitRect.height * scale)
         return ZoomViewportTransform(
             scale: scale,
-            offset: clampedOffset(desiredOffset, scaledImageSize: scaledImageSize, viewportSize: viewportSize),
+            offset: clampedOffset(desiredOffset, scaledImageSize: scaledImageSize, viewportSize: viewportSize)
         )
     }
 
     private static func clampedOffset(
         _ offset: CGSize,
         scaledImageSize: CGSize,
-        viewportSize: CGSize,
+        viewportSize: CGSize
     ) -> CGSize {
         let maxX = max(0, (scaledImageSize.width - viewportSize.width) / 2)
         let maxY = max(0, (scaledImageSize.height - viewportSize.height) / 2)
         return CGSize(
             width: min(max(offset.width, -maxX), maxX),
-            height: min(max(offset.height, -maxY), maxY),
+            height: min(max(offset.height, -maxY), maxY)
         )
     }
 }
@@ -269,7 +269,7 @@ struct ZoomOverlayView: View {
                     navigationButton(
                         previousNavigationIcon,
                         help: previousNavigationHelp,
-                        isDisabled: !canNavigatePrevious,
+                        isDisabled: !canNavigatePrevious
                     ) {
                         navigateSelection(by: -1)
                     }
@@ -277,7 +277,7 @@ struct ZoomOverlayView: View {
                     navigationButton(
                         nextNavigationIcon,
                         help: nextNavigationHelp,
-                        isDisabled: !canNavigateNext,
+                        isDisabled: !canNavigateNext
                     ) {
                         navigateSelection(by: 1)
                     }
@@ -293,7 +293,7 @@ struct ZoomOverlayView: View {
                             currentRating: ratingDisplay(for: selectedFile),
                             onSelect: { rating in
                                 viewModel.updateRatingAndAdvance(for: selectedFile, rating: rating, in: orderedZoomFiles)
-                            },
+                            }
                         )
                     }
 
@@ -323,7 +323,7 @@ struct ZoomOverlayView: View {
                         canReset: currentScale != 1.0 || offset != .zero,
                         onZoomOut: { decreaseZoom() },
                         onZoomReset: { withAnimation(.spring()) { resetToFit() } },
-                        onZoomIn: { increaseZoom() },
+                        onZoomIn: { increaseZoom() }
                     )
                 }
                 .padding(.bottom, 20)
@@ -341,28 +341,28 @@ struct ZoomOverlayView: View {
             handleKeyAction(ZoomOverlayKeyAction.resolve(
                 characters: nil,
                 keyCode: 123,
-                navigationAxis: viewModel.zoomOverlayNavigationAxis,
+                navigationAxis: viewModel.zoomOverlayNavigationAxis
             ))
         }
         .onKeyPress(.rightArrow) {
             handleKeyAction(ZoomOverlayKeyAction.resolve(
                 characters: nil,
                 keyCode: 124,
-                navigationAxis: viewModel.zoomOverlayNavigationAxis,
+                navigationAxis: viewModel.zoomOverlayNavigationAxis
             ))
         }
         .onKeyPress(.upArrow) {
             handleKeyAction(ZoomOverlayKeyAction.resolve(
                 characters: nil,
                 keyCode: 126,
-                navigationAxis: viewModel.zoomOverlayNavigationAxis,
+                navigationAxis: viewModel.zoomOverlayNavigationAxis
             ))
         }
         .onKeyPress(.downArrow) {
             handleKeyAction(ZoomOverlayKeyAction.resolve(
                 characters: nil,
                 keyCode: 125,
-                navigationAxis: viewModel.zoomOverlayNavigationAxis,
+                navigationAxis: viewModel.zoomOverlayNavigationAxis
             ))
         }
         .onKeyPress(.escape) {
@@ -373,7 +373,7 @@ struct ZoomOverlayView: View {
             handleKeyAction(ZoomOverlayKeyAction.resolve(
                 characters: press.characters,
                 keyCode: 0,
-                navigationAxis: viewModel.zoomOverlayNavigationAxis,
+                navigationAxis: viewModel.zoomOverlayNavigationAxis
             ))
         }
         .onAppear {
@@ -434,14 +434,14 @@ struct ZoomOverlayView: View {
             onDevelopedRAWFailure: {
                 sourceSelection.markDevelopedRAWUnavailable()
                 showRAWFailureMessage()
-            },
+            }
         )
     }
 
     private var useThumbnailSourceBinding: Binding<Bool> {
         Binding(
             get: { sourceSelection.selected == .thumbnail },
-            set: { sourceSelection.select($0 ? .thumbnail : .embeddedJPG) },
+            set: { sourceSelection.select($0 ? .thumbnail : .embeddedJPG) }
         )
     }
 
@@ -525,7 +525,7 @@ struct ZoomOverlayView: View {
         handleKeyAction(ZoomOverlayKeyAction.resolve(
             characters: event.characters,
             keyCode: event.keyCode,
-            navigationAxis: viewModel.zoomOverlayNavigationAxis,
+            navigationAxis: viewModel.zoomOverlayNavigationAxis
         ))
     }
 
@@ -583,7 +583,7 @@ struct ZoomOverlayView: View {
     private func ratingDisplay(for file: FileItem) -> RatingDisplay {
         RatingDisplay(
             rating: viewModel.getRating(for: file),
-            isExplicit: viewModel.taggedNamesCache.contains(file.name),
+            isExplicit: viewModel.taggedNamesCache.contains(file.name)
         )
     }
 
@@ -627,7 +627,7 @@ struct ZoomOverlayView: View {
             afPoint: selectedFile.afFocusNormalized,
             iso: selectedFile.exifData?.isoValue ?? 400,
             aperture: selectedFile.exifData?.apertureValue,
-            scoringSource: sourceSelection.selected == .developedRAW ? .rawDemosaic : .embeddedPreview,
+            scoringSource: sourceSelection.selected == .developedRAW ? .rawDemosaic : .embeddedPreview
         )
         guard !Task.isCancelled else { return }
         await MainActor.run {
@@ -715,11 +715,11 @@ struct ZoomOverlayView: View {
                     if currentScale > 1.0 {
                         offset = CGSize(
                             width: lastOffset.width + value.translation.width,
-                            height: lastOffset.height + value.translation.height,
+                            height: lastOffset.height + value.translation.height
                         )
                     }
                 }
-                .onEnded { _ in lastOffset = offset },
+                .onEnded { _ in lastOffset = offset }
         )
     }
 
@@ -747,7 +747,7 @@ struct ZoomOverlayView: View {
                 normalizedX: focusTarget.x,
                 normalizedY: focusTarget.y,
                 boxSize: 16,
-                imageSize: imageSize,
+                imageSize: imageSize
             )
             .stroke(.red, style: StrokeStyle(lineWidth: 2.5, lineCap: .round))
             .shadow(color: .black.opacity(0.8), radius: 2, x: 0, y: 0)
@@ -778,7 +778,7 @@ struct ZoomOverlayView: View {
         _ icon: String,
         help: String,
         isDisabled: Bool,
-        action: @escaping () -> Void,
+        action: @escaping () -> Void
     ) -> some View {
         Button(action: action) {
             Image(systemName: icon)
@@ -817,7 +817,7 @@ struct ZoomOverlayView: View {
         let transform = ZoomViewportMath.actualPixelsTransform(
             imageSize: imageSize,
             viewportSize: viewportSize,
-            normalizedFocusPoint: focusTarget,
+            normalizedFocusPoint: focusTarget
         )
         currentScale = transform.scale
         lastScale = transform.scale
@@ -845,7 +845,7 @@ extension CGImage {
             data: nil, width: newWidth, height: newHeight,
             bitsPerComponent: 8, bytesPerRow: 0,
             space: CGColorSpaceCreateDeviceRGB(),
-            bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue,
+            bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
         ) else { return nil }
         context.interpolationQuality = .medium
         context.draw(self, in: CGRect(x: 0, y: 0, width: newWidth, height: newHeight))

@@ -16,7 +16,7 @@ enum ComparisonImageLoader {
         let cgThumb = await RequestThumbnail.shared.requestThumbnail(
             for: file,
             targetSize: thumbnailSizePreview,
-            purpose: .preview,
+            purpose: .preview
         )
 
         guard !Task.isCancelled else { return (nil, nil) }

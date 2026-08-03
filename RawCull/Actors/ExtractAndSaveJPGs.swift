@@ -60,9 +60,9 @@ actor ExtractAndSaveJPGs {
                 data,
                 originalURL: source,
                 destinationCatalogURL: destination,
-                exportMode: mode,
+                exportMode: mode
             )
-        },
+        }
     ) {
         self.destinationCatalogURL = destinationCatalogURL
         self.exportMode = exportMode

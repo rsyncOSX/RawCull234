@@ -46,7 +46,7 @@ struct ZoomOverlayLaunchContext: Equatable {
     static let `default` = ZoomOverlayLaunchContext(
         initialSource: .thumbnail,
         initialZoomMode: .fit,
-        showFocusPointsOnOpen: false,
+        showFocusPointsOnOpen: false
     )
 }
 
@@ -213,7 +213,7 @@ final class RawCullViewModel {
         [FileItem],
         Int,
         BurstSharpnessSignature,
-        BurstSimilaritySignature,
+        BurstSimilaritySignature
     ) async -> BurstAnalysisCacheSnapshot? = {
         catalog,
         files,
@@ -225,21 +225,21 @@ final class RawCullViewModel {
             files: files,
             thumbnailMaxPixelSize: thumbnailMaxPixelSize,
             sharpnessSignature: sharpnessSignature,
-            similaritySignature: similaritySignature,
+            similaritySignature: similaritySignature
         )
     }
 
     @ObservationIgnored var burstAnalysisMigrationLoad: @MainActor (
-        URL,
+        URL
     ) async -> BurstAnalysisCacheSnapshot? = { catalog in
         await BurstAnalysisCache.shared.loadMigrationCandidate(
-            catalog: catalog,
+            catalog: catalog
         )
     }
 
     @ObservationIgnored var burstAnalysisCacheSave: @MainActor (
         BurstAnalysisCacheSnapshot,
-        URL,
+        URL
     ) async -> Void = { snapshot, catalog in
         await BurstAnalysisCache.shared.save(snapshot, catalog: catalog)
     }
@@ -278,14 +278,14 @@ final class RawCullViewModel {
         navigationIDs: [FileItem.ID]? = nil,
         initialSource: ImagePreviewSource = .thumbnail,
         initialZoomMode: ZoomOverlayInitialZoomMode = .fit,
-        showFocusPointsOnOpen: Bool = false,
+        showFocusPointsOnOpen: Bool = false
     ) {
         zoomOverlayNavigationAxis = mainViewMode == .loupe ? .vertical : .horizontal
         zoomOverlayNavigationContext = navigationIDs.map(ZoomOverlayNavigationContext.init(orderedFileIDs:))
         zoomOverlayLaunchContext = ZoomOverlayLaunchContext(
             initialSource: initialSource,
             initialZoomMode: initialZoomMode,
-            showFocusPointsOnOpen: showFocusPointsOnOpen,
+            showFocusPointsOnOpen: showFocusPointsOnOpen
         )
         zoomOverlayVisible = true
     }

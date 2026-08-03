@@ -39,17 +39,17 @@ struct ImageTableVerticalView: View {
                                         ratingColor: ratingColor(for: file),
                                         onSelect: {
                                             viewModel.selectFile(file)
-                                        },
+                                        }
                                         /*
-                                            // Double clik for tag Image
-                                            onSelected: {
+                                         // Double clik for tag Image
+                                         onSelected: {
 
-                                                 Task {
-                                                     viewModel.selectFile(file)
-                                                     await viewModel.toggleTag(for: file)
-                                                 }
-                                            },
-                                             */
+                                              Task {
+                                                  viewModel.selectFile(file)
+                                                  await viewModel.toggleTag(for: file)
+                                              }
+                                         },
+                                          */
                                     )
                                     .id(file.id)
                                     .onHover { isHovered in
@@ -132,7 +132,7 @@ struct ImageTableVerticalView: View {
     private func ratingDisplay(for file: FileItem) -> RatingDisplay {
         RatingDisplay(
             rating: ratingValue(for: file),
-            isExplicit: viewModel.taggedNamesCache.contains(file.name),
+            isExplicit: viewModel.taggedNamesCache.contains(file.name)
         )
     }
 

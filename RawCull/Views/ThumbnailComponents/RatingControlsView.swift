@@ -125,7 +125,7 @@ struct RatingActionBarView: View {
                         .frame(width: density == .compact ? 20 : 24, height: density == .compact ? 20 : 24)
                         .background(
                             Circle()
-                                .fill(isActive(rating) ? color.opacity(0.95) : color.opacity(0.18)),
+                                .fill(isActive(rating) ? color.opacity(0.95) : color.opacity(0.18))
                         )
                 }
                 .buttonStyle(.plain)

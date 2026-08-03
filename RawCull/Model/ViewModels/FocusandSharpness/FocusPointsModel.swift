@@ -14,9 +14,9 @@ struct FocusPointsModel: Identifiable {
     let focusPoints: [FocusPoint]
 
     init(sourceFile: String, focusLocations: [String]) {
-        self.id = UUID()
+        id = UUID()
         self.sourceFile = sourceFile
-        self.focusPoints = focusLocations.compactMap { FocusPoint(focusLocation: $0) }
+        focusPoints = focusLocations.compactMap { FocusPoint(focusLocation: $0) }
     }
 }
 
@@ -32,7 +32,7 @@ struct FocusPoint: Identifiable {
             .split(separator: " ")
             .compactMap { Double($0) }
         guard parts.count == 4 else { return nil }
-        self.id = UUID()
+        id = UUID()
         sensorWidth = CGFloat(parts[0])
         sensorHeight = CGFloat(parts[1])
         x = CGFloat(parts[2])

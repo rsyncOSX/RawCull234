@@ -11,7 +11,7 @@ struct ExecuteCopyFilesStartupTests {
 
         let result = manager.startcopyfiles(
             fallbacksource: "/tmp/rawcull-source",
-            fallbackdest: "/tmp/rawcull-destination",
+            fallbackdest: "/tmp/rawcull-destination"
         )
 
         guard case .failure(.noMatchingFiles) = result else {
@@ -28,7 +28,7 @@ struct ExecuteCopyFilesStartupTests {
 
         let result = manager.startcopyfiles(
             fallbacksource: "/tmp/rawcull-source",
-            fallbackdest: "/tmp/rawcull-destination",
+            fallbackdest: "/tmp/rawcull-destination"
         )
 
         guard case .failure(.noMatchingFiles) = result else {
@@ -48,7 +48,7 @@ struct ExecuteCopyFilesStartupTests {
 
         let result = manager.startcopyfiles(
             fallbacksource: "/tmp/rawcull-source",
-            fallbackdest: "/tmp/rawcull-destination",
+            fallbackdest: "/tmp/rawcull-destination"
         )
 
         guard case .failure(.missingViewModel) = result else {
@@ -126,7 +126,7 @@ struct ExecuteCopyFilesStartupTests {
     private func makeManager(
         viewModel: RawCullViewModel,
         copytaggedfiles: Bool = true,
-        includeListDirectory: URL? = nil,
+        includeListDirectory: URL? = nil
     ) -> ExecuteCopyFiles {
         ExecuteCopyFiles(
             configuration: SynchronizeConfiguration(),
@@ -134,7 +134,7 @@ struct ExecuteCopyFilesStartupTests {
             rating: 1,
             copytaggedfiles: copytaggedfiles,
             sidebarRawCullViewModel: viewModel,
-            includeListDirectory: includeListDirectory,
+            includeListDirectory: includeListDirectory
         )
     }
 

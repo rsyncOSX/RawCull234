@@ -97,7 +97,7 @@ struct RsyncOutputRowView: View {
                     TableColumn("Output from rsync (\(records.count) rows)") { data in
                         ItemizedOutputRow(record: data.record)
                     }
-                },
+                }
             )
         } else {
             return AnyView(EmptyView())

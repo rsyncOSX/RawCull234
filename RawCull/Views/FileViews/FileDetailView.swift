@@ -25,7 +25,7 @@ struct FileDetailView: View {
             VStack(spacing: 20) {
                 MainThumbnailImageView(
                     url: file.url,
-                    file: file,
+                    file: file
                 )
             }
             .padding()
@@ -59,14 +59,14 @@ struct FileDetailView: View {
                 colors: [Color(red: 0.71, green: 0.55, blue: 0.39).opacity(0.10), .clear],
                 center: UnitPoint(x: 0.3, y: 0.4),
                 startRadius: 0,
-                endRadius: 400,
+                endRadius: 400
             )
             .ignoresSafeArea()
             RadialGradient(
                 colors: [Color(red: 0.31, green: 0.39, blue: 0.55).opacity(0.08), .clear],
                 center: UnitPoint(x: 0.75, y: 0.7),
                 startRadius: 0,
-                endRadius: 380,
+                endRadius: 380
             )
             .ignoresSafeArea()
             grainOverlay
@@ -100,7 +100,7 @@ struct FileDetailView: View {
                 let opacity = Double.random(in: 0.01 ... 0.045, using: &rng)
                 context.fill(
                     Path(CGRect(x: x, y: y, width: 1, height: 1)),
-                    with: .color(.white.opacity(opacity)),
+                    with: .color(.white.opacity(opacity))
                 )
             }
         }

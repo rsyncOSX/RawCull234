@@ -20,7 +20,7 @@ private actor FakeRawImageLoader: RawImageLoading {
         thumbnailCGImageResult: CGImage? = nil,
         thumbnailImageResult: NSImage? = nil,
         previewCGImageResult: CGImage? = nil,
-        suspendPreviewUntilCancelled: Bool = false,
+        suspendPreviewUntilCancelled: Bool = false
     ) {
         self.fileMetadataResult = fileMetadataResult
         self.thumbnailCGImageResult = thumbnailCGImageResult
@@ -71,7 +71,7 @@ private func makeRawImageLoadingTestRoot(_ name: String = #function) throws -> U
 private func makeRawImageLoadingTestCGImage(
     width: Int = 32,
     height: Int = 24,
-    color: NSColor = .red,
+    color: NSColor = .red
 ) throws -> CGImage {
     let context = try #require(CGContext(
         data: nil,
@@ -80,7 +80,7 @@ private func makeRawImageLoadingTestCGImage(
         bitsPerComponent: 8,
         bytesPerRow: 0,
         space: CGColorSpaceCreateDeviceRGB(),
-        bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue,
+        bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
     ))
     context.setFillColor(color.cgColor)
     context.fill(CGRect(x: 0, y: 0, width: width, height: height))
@@ -98,7 +98,7 @@ struct RawImageLoadingIntegrationTests {
         let provider = RequestThumbnail(
             diskCache: DiskCacheManager(cacheDirectory: diskRoot),
             memoryCache: cache,
-            rawLoader: fakeLoader,
+            rawLoader: fakeLoader
         )
         let rawURL = diskRoot.appendingPathComponent("source.arw")
         try Data([0x52, 0x41, 0x57]).write(to: rawURL)
@@ -114,7 +114,7 @@ struct RawImageLoadingIntegrationTests {
     @Test
     func `full size preview loader saves extracted preview and reuses disk cache`() async throws {
         let fakeLoader = try FakeRawImageLoader(
-            previewCGImageResult: makeRawImageLoadingTestCGImage(width: 40, height: 30),
+            previewCGImageResult: makeRawImageLoadingTestCGImage(width: 40, height: 30)
         )
         let root = try makeRawImageLoadingTestRoot()
         defer { try? FileManager.default.removeItem(at: root) }
@@ -133,7 +133,7 @@ struct RawImageLoadingIntegrationTests {
     @Test
     func `full size preview loader prefers sidecar jpg before raw extraction`() async throws {
         let fakeLoader = try FakeRawImageLoader(
-            previewCGImageResult: makeRawImageLoadingTestCGImage(width: 40, height: 30),
+            previewCGImageResult: makeRawImageLoadingTestCGImage(width: 40, height: 30)
         )
         let root = try makeRawImageLoadingTestRoot()
         defer { try? FileManager.default.removeItem(at: root) }
@@ -155,7 +155,7 @@ struct RawImageLoadingIntegrationTests {
     func `cancelled full size preview load does not save extracted image`() async throws {
         let fakeLoader = try FakeRawImageLoader(
             previewCGImageResult: makeRawImageLoadingTestCGImage(width: 40, height: 30),
-            suspendPreviewUntilCancelled: true,
+            suspendPreviewUntilCancelled: true
         )
         let root = try makeRawImageLoadingTestRoot()
         defer { try? FileManager.default.removeItem(at: root) }
@@ -199,12 +199,12 @@ struct RawImageLoadingIntegrationTests {
                 rawFileType: "ARW",
                 rawSizeClass: "L",
                 pixelWidth: 8640,
-                pixelHeight: 5760,
+                pixelHeight: 5760
             ),
             captureDate: captureDate,
-            captureTimeZoneOffsetSeconds: 7_200,
+            captureTimeZoneOffsetSeconds: 7200,
             focusLocation: "8640 5760 4320 2880",
-            focusPoint: CGPoint(x: 0.5, y: 0.5),
+            focusPoint: CGPoint(x: 0.5, y: 0.5)
         )
         let fakeLoader = FakeRawImageLoader(fileMetadataResult: metadata)
         let root = try makeRawImageLoadingTestRoot()
@@ -213,7 +213,7 @@ struct RawImageLoadingIntegrationTests {
         try Data([0x52, 0x41, 0x57]).write(to: rawURL)
         try FileManager.default.setAttributes(
             [.modificationDate: modificationDate],
-            ofItemAtPath: rawURL.path,
+            ofItemAtPath: rawURL.path
         )
         let scanner = ScanFiles(rawLoader: fakeLoader)
 
@@ -224,7 +224,7 @@ struct RawImageLoadingIntegrationTests {
         #expect(file.exifData?.camera == "Sony A1")
         #expect(file.afFocusNormalized == CGPoint(x: 0.5, y: 0.5))
         #expect(file.captureDate == captureDate)
-        #expect(file.captureTimeZoneOffsetSeconds == 7_200)
+        #expect(file.captureTimeZoneOffsetSeconds == 7200)
         #expect(file.dateModified == modificationDate)
         #expect(file.exifData?.exposureTimeSeconds == 0.001)
         #expect(file.exifData?.focalLengthMM == 400)

@@ -11,7 +11,7 @@ extension RawCullMainView {
     var toolbarContent: some ToolbarContent {
         SharedMainToolbarContent(
             viewModel: viewModel,
-            toggleInspector: toggleShowInspector,
+            toggleInspector: toggleShowInspector
         )
     }
 

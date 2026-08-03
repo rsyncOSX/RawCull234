@@ -23,7 +23,7 @@ struct SettingsResetSaveButtons<Middle: View>: View {
         saveMessage: String,
         onReset: @escaping () -> Void,
         onSave: @escaping () -> Void,
-        @ViewBuilder middle: () -> Middle = { EmptyView() },
+        @ViewBuilder middle: () -> Middle = { EmptyView() }
     ) {
         _showResetConfirmation = showResetConfirmation
         _showSaveConfirmation = showSaveConfirmation
@@ -40,7 +40,7 @@ struct SettingsResetSaveButtons<Middle: View>: View {
             label: {
                 Label("Reset to Defaults", systemImage: "arrow.uturn.backward")
                     .font(.system(size: 12, weight: .medium))
-            },
+            }
         )
         .buttonStyle(RefinedGlassButtonStyle())
         .confirmationDialog(
@@ -52,7 +52,7 @@ struct SettingsResetSaveButtons<Middle: View>: View {
             },
             message: {
                 Text(resetMessage)
-            },
+            }
         )
 
         middle
@@ -62,7 +62,7 @@ struct SettingsResetSaveButtons<Middle: View>: View {
             label: {
                 Label("Save Settings", systemImage: "square.and.arrow.down.fill")
                     .font(.system(size: 12, weight: .medium))
-            },
+            }
         )
         .buttonStyle(RefinedGlassButtonStyle())
         .confirmationDialog(
@@ -74,7 +74,7 @@ struct SettingsResetSaveButtons<Middle: View>: View {
             },
             message: {
                 Text(saveMessage)
-            },
+            }
         )
     }
 }

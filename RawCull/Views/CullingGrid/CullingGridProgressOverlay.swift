@@ -8,14 +8,14 @@ struct CullingGridProgressOverlay: View {
             ProgressCount(
                 progress: Binding(
                     get: { Double(viewModel.sharpnessModel.scoringProgress) },
-                    set: { _ in },
+                    set: { _ in }
                 ),
                 estimatedSeconds: Binding(
                     get: { viewModel.sharpnessModel.scoringEstimatedSeconds },
-                    set: { _ in },
+                    set: { _ in }
                 ),
                 max: Double(viewModel.sharpnessModel.scoringTotal),
-                statusText: "Scoring sharpness...",
+                statusText: "Scoring sharpness..."
             )
             .frame(maxWidth: 480)
             .progressOverlayStyle()
@@ -36,16 +36,16 @@ struct CullingGridProgressOverlay: View {
             ProgressCount(
                 progress: Binding(
                     get: { Double(viewModel.similarityModel.indexingProgress) },
-                    set: { _ in },
+                    set: { _ in }
                 ),
                 estimatedSeconds: Binding(
                     get: { viewModel.similarityModel.indexingEstimatedSeconds },
-                    set: { _ in },
+                    set: { _ in }
                 ),
                 max: Double(viewModel.similarityModel.indexingTotal),
                 statusText: viewModel.similarityModel.indexingPhase == .saving
                     ? "Saving similarity artifacts..."
-                    : "Indexing similarity...",
+                    : "Indexing similarity..."
             )
             .frame(maxWidth: 480)
             .progressOverlayStyle()
@@ -63,7 +63,7 @@ private extension View {
             .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 12))
             .overlay(
                 RoundedRectangle(cornerRadius: 12)
-                    .stroke(Color.primary.opacity(0.12), lineWidth: 1),
+                    .stroke(Color.primary.opacity(0.12), lineWidth: 1)
             )
             .shadow(color: .black.opacity(0.25), radius: 12, y: 4)
             .transition(.scale(scale: 0.95).combined(with: .opacity))

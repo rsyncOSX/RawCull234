@@ -50,14 +50,14 @@ struct ImageOverlayControlsView: View {
                 showFocusMask: $showFocusMask,
                 focusMaskAvailable: focusMaskAvailable,
                 shortcutLabel: showShortcutHints ? "F" : nil,
-                density: density,
+                density: density
             )
 
             if hasFocusPoints {
                 FocusPointControllerView(
                     showFocusPoints: $showFocusPoints,
                     shortcutLabel: showShortcutHints ? "A" : nil,
-                    density: density,
+                    density: density
                 )
                 .transition(.opacity)
             }
@@ -67,12 +67,12 @@ struct ImageOverlayControlsView: View {
                     if let imageSourceSelection {
                         ImageSourceSelectorView(
                             selection: imageSourceSelection,
-                            density: density,
+                            density: density
                         )
                     } else {
                         ImageSourceToggleView(
                             useThumbnailSource: $useThumbnailSource,
-                            density: density,
+                            density: density
                         )
                     }
                 }

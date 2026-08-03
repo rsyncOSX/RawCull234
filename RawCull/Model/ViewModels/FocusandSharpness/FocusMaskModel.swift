@@ -17,20 +17,20 @@ final class FocusMaskModel {
         afPoint: CGPoint? = nil,
         iso: Int = 400,
         aperture: Double? = nil,
-        evidence: FocusEvidence? = nil,
+        evidence: FocusEvidence? = nil
     ) async -> NSImage? {
         guard let cgImage = nsImage.cgImage(forProposedRect: nil, context: nil, hints: nil) else { return nil }
         let input = PhotoAnalysisInput(
             image: cgImage,
             iso: iso,
             aperture: aperture,
-            normalizedAFPoint: afPoint,
+            normalizedAFPoint: afPoint
         )
         guard let result = await analyzer.focusMask(
             for: input,
             scale: scale,
             configuration: configOverride ?? config,
-            evidence: evidence,
+            evidence: evidence
         ) else { return nil }
 
         return NSImage(cgImage: result, size: nsImage.size)
@@ -43,18 +43,18 @@ final class FocusMaskModel {
         afPoint: CGPoint? = nil,
         iso: Int = 400,
         aperture: Double? = nil,
-        scoringSource: SharpnessScoringSource = .embeddedPreview,
+        scoringSource: SharpnessScoringSource = .embeddedPreview
     ) async -> (mask: CGImage?, saliency: SaliencyInfo?, breakdown: SharpnessBreakdown?) {
         let input = PhotoAnalysisInput(
             image: cgImage,
             iso: iso,
             aperture: aperture,
-            normalizedAFPoint: afPoint,
+            normalizedAFPoint: afPoint
         )
         let result = await analyzer.analyzeWithFocusMask(
             input,
             scale: scale,
-            configuration: configOverride ?? config,
+            configuration: configOverride ?? config
         )
         let saliency = result.saliency.map {
             SaliencyInfo(subjectLabel: $0.subjectLabel, subjectConfidence: $0.subjectConfidence)
@@ -78,14 +78,14 @@ final class FocusMaskModel {
         scoringSource: SharpnessScoringSource = .embeddedPreview,
         thresholdPercentile: Float = 0.90,
         minSamples: Int = 5,
-        maxConcurrentTasks: Int = 8,
+        maxConcurrentTasks: Int = 8
     ) async -> FocusCalibrationResult? {
         let analysisFiles = files.map {
             RawCullPhotoAnalysisFile(
                 url: $0.url,
                 iso: $0.iso ?? 400,
                 aperture: $0.aperture,
-                normalizedAFPoint: nil,
+                normalizedAFPoint: nil
             )
         }
         guard let result = await fileAdapter.calibrate(
@@ -95,7 +95,7 @@ final class FocusMaskModel {
             source: scoringSource,
             thresholdPercentile: thresholdPercentile,
             minimumSuccessfulImages: minSamples,
-            maximumConcurrentTasks: maxConcurrentTasks,
+            maximumConcurrentTasks: maxConcurrentTasks
         ) else { return nil }
 
         applyCalibration(result)

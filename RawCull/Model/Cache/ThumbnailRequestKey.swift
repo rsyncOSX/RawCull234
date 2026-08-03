@@ -18,12 +18,12 @@ nonisolated struct ThumbnailSourceFingerprint: Hashable, Sendable {
         url: URL,
         fileSize: Int64,
         modificationDate: Date,
-        cacheSchemaVersion: Int = Self.currentCacheSchemaVersion,
+        cacheSchemaVersion: Int = Self.currentCacheSchemaVersion
     ) {
         standardizedPath = url.standardizedFileURL.path
         self.fileSize = fileSize
         modificationTimeMilliseconds = Int64(
-            (modificationDate.timeIntervalSince1970 * 1_000).rounded(),
+            (modificationDate.timeIntervalSince1970 * 1000).rounded()
         )
         self.cacheSchemaVersion = cacheSchemaVersion
     }
@@ -32,7 +32,7 @@ nonisolated struct ThumbnailSourceFingerprint: Hashable, Sendable {
         self.init(
             url: file.url,
             fileSize: file.size,
-            modificationDate: file.dateModified,
+            modificationDate: file.dateModified
         )
     }
 
@@ -41,7 +41,7 @@ nonisolated struct ThumbnailSourceFingerprint: Hashable, Sendable {
     static func readingMetadata(for url: URL) throws -> Self {
         let values = try url.resourceValues(forKeys: [
             .fileSizeKey,
-            .contentModificationDateKey,
+            .contentModificationDateKey
         ])
         guard let fileSize = values.fileSize,
               let modificationDate = values.contentModificationDate
@@ -51,7 +51,7 @@ nonisolated struct ThumbnailSourceFingerprint: Hashable, Sendable {
         return Self(
             url: url,
             fileSize: Int64(fileSize),
-            modificationDate: modificationDate,
+            modificationDate: modificationDate
         )
     }
 
@@ -82,7 +82,7 @@ nonisolated struct ThumbnailRepresentation: Hashable, Sendable {
     /// larger than its actual decoded maximum dimension.
     func canSatisfy(
         request: ThumbnailRepresentation,
-        decodedMaxPixelSize: Int,
+        decodedMaxPixelSize: Int
     ) -> Bool {
         purpose == request.purpose
             && requestedMaxPixelSize >= request.requestedMaxPixelSize
@@ -101,12 +101,12 @@ nonisolated struct ThumbnailRequestKey: Hashable, Sendable {
     init(
         source: ThumbnailSourceFingerprint,
         purpose: ThumbnailPurpose,
-        requestedMaxPixelSize: Int,
+        requestedMaxPixelSize: Int
     ) {
         self.source = source
         representation = ThumbnailRepresentation(
             purpose: purpose,
-            requestedMaxPixelSize: requestedMaxPixelSize,
+            requestedMaxPixelSize: requestedMaxPixelSize
         )
     }
 
@@ -127,14 +127,16 @@ nonisolated struct ThumbnailExtractionMetricsSnapshot: Equatable, Sendable {
 
 /// NSObject bridge required by NSCache. Equality and hashing use the immutable
 /// value key, so independently-created wrappers address the same cache entry.
-nonisolated final class ThumbnailRequestCacheKey: NSObject, @unchecked Sendable {
+final nonisolated class ThumbnailRequestCacheKey: NSObject, @unchecked Sendable {
     let value: ThumbnailRequestKey
 
     init(_ value: ThumbnailRequestKey) {
         self.value = value
     }
 
-    override var hash: Int { value.hashValue }
+    override var hash: Int {
+        value.hashValue
+    }
 
     override func isEqual(_ object: Any?) -> Bool {
         (object as? ThumbnailRequestCacheKey)?.value == value

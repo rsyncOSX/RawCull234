@@ -25,7 +25,7 @@ actor ScanAndExtractJPGs {
     init(
         urls: [URL],
         fullSizeCache: FullSizeJPGDiskCache? = nil,
-        rawLoader: any RawImageLoading = RawParserKitImageLoader.shared,
+        rawLoader: any RawImageLoading = RawParserKitImageLoader.shared
     ) {
         self.urls = urls
         self.fullSizeCache = fullSizeCache ?? SharedMemoryCache.shared.fullSizeJPGDiskCache

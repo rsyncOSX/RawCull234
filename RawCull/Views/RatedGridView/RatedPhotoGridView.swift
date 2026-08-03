@@ -17,7 +17,7 @@ struct RatedPhotoGridView: View {
                     columns: [
                         GridItem(.adaptive(minimum: CGFloat(settings.thumbnailSizeGrid)), spacing: 8)
                     ],
-                    spacing: 8,
+                    spacing: 8
                 ) {
                     ForEach(ratedFiles, id: \.id) { file in
                         RatedImageItemView(
@@ -27,7 +27,7 @@ struct RatedPhotoGridView: View {
                             isSelected: viewModel.selectedFileID == file.id,
                             isMultiSelected: viewModel.selectedFileIDs.contains(file.id),
                             onSelected: { handleToggleSelection(for: file) },
-                            onDoubleSelected: { handleDoubleSelect(for: file) },
+                            onDoubleSelected: { handleDoubleSelect(for: file) }
                         )
                         .id(file.id)
                     }
@@ -60,7 +60,7 @@ struct RatedPhotoGridView: View {
             .compactMap(\.fileName)
             .sorted { $0.localizedStandardCompare($1) == .orderedAscending }
         let byName = Dictionary(
-            uniqueKeysWithValues: viewModel.filteredFiles.map { ($0.name, $0) },
+            uniqueKeysWithValues: viewModel.filteredFiles.map { ($0.name, $0) }
         )
         return names.compactMap { byName[$0] }
     }

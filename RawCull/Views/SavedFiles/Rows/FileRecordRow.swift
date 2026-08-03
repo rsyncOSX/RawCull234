@@ -48,7 +48,7 @@ struct FileRecordRow: View {
                 } else {
                     Color.clear
                 }
-            },
+            }
         )
         .contentShape(Rectangle())
         .accessibilityElement(children: .ignore)

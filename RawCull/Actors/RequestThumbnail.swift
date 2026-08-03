@@ -20,7 +20,7 @@ actor RequestThumbnail {
     init(
         diskCache: DiskCacheManager? = nil,
         memoryCache: SharedMemoryCache = .shared,
-        rawLoader: any RawImageLoading = RawParserKitImageLoader.shared,
+        rawLoader: any RawImageLoading = RawParserKitImageLoader.shared
     ) {
         self.diskCache = diskCache ?? DiskCacheManager()
         self.memoryCache = memoryCache
@@ -43,12 +43,12 @@ actor RequestThumbnail {
     func requestThumbnail(
         for file: FileItem,
         targetSize: Int,
-        purpose: ThumbnailPurpose = .preview,
+        purpose: ThumbnailPurpose = .preview
     ) async -> CGImage? {
         let key = ThumbnailRequestKey(
             source: ThumbnailSourceFingerprint(file: file),
             purpose: purpose,
-            requestedMaxPixelSize: targetSize,
+            requestedMaxPixelSize: targetSize
         )
         return await requestThumbnail(for: file.url, key: key)
     }
@@ -59,7 +59,7 @@ actor RequestThumbnail {
     func requestThumbnail(
         for url: URL,
         targetSize: Int,
-        purpose: ThumbnailPurpose = .preview,
+        purpose: ThumbnailPurpose = .preview
     ) async -> CGImage? {
         guard let fingerprint = try? ThumbnailSourceFingerprint.readingMetadata(for: url) else {
             guard !Task.isCancelled else { return nil }
@@ -70,7 +70,7 @@ actor RequestThumbnail {
         let key = ThumbnailRequestKey(
             source: fingerprint,
             purpose: purpose,
-            requestedMaxPixelSize: targetSize,
+            requestedMaxPixelSize: targetSize
         )
         return await requestThumbnail(for: url, key: key)
     }
@@ -126,7 +126,7 @@ actor RequestThumbnail {
 
         guard let cgImage = await rawLoader.thumbnailCGImage(
             for: url,
-            maxPixelSize: key.representation.requestedMaxPixelSize,
+            maxPixelSize: key.representation.requestedMaxPixelSize
         ) else {
             throw RawImageLoadingError.invalidSource
         }

@@ -24,7 +24,7 @@ enum ZoomPreviewHandler {
         source: ImagePreviewSource = .embeddedJPG,
         thumbnailSizePreview: Int = 1616,
         viewModel: RawCullViewModel,
-        onDevelopedRAWFailure: @escaping @MainActor () -> Void = {},
+        onDevelopedRAWFailure: @escaping @MainActor () -> Void = {}
     ) -> Task<Void, Never> {
         if source == .thumbnail {
             Task {
@@ -38,7 +38,7 @@ enum ZoomPreviewHandler {
                 let cgThumb = await RequestThumbnail.shared.requestThumbnail(
                     for: file,
                     targetSize: thumbnailSizePreview,
-                    purpose: .preview,
+                    purpose: .preview
                 )
 
                 guard !Task.isCancelled else { return }

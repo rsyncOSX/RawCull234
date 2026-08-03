@@ -19,7 +19,7 @@ private func makeThumbnailIdentityTestCGImage() throws -> CGImage {
         bitsPerComponent: 8,
         bytesPerRow: 0,
         space: CGColorSpaceCreateDeviceRGB(),
-        bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue,
+        bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
     ) else {
         throw ThumbnailFingerprintError.metadataUnavailable
     }
@@ -39,13 +39,13 @@ struct ThumbnailRequestKeyTests {
             url: firstURL,
             fileSize: 42,
             modificationDate: date,
-            requestedMaxPixelSize: 1_616,
+            requestedMaxPixelSize: 1616
         )
         let second = makeThumbnailRequestKey(
             url: secondURL,
             fileSize: 42,
             modificationDate: date,
-            requestedMaxPixelSize: 1_616,
+            requestedMaxPixelSize: 1616
         )
 
         #expect(first == second)
@@ -57,12 +57,12 @@ struct ThumbnailRequestKeyTests {
         let first = makeThumbnailRequestKey(
             url: url,
             fileSize: 100,
-            modificationDate: Date(timeIntervalSince1970: 10),
+            modificationDate: Date(timeIntervalSince1970: 10)
         )
         let replaced = makeThumbnailRequestKey(
             url: url,
             fileSize: 101,
-            modificationDate: Date(timeIntervalSince1970: 11),
+            modificationDate: Date(timeIntervalSince1970: 11)
         )
 
         #expect(first != replaced)
@@ -81,11 +81,11 @@ struct ThumbnailRequestKeyTests {
     @Test
     func `grid representation cannot satisfy preview and larger preview can satisfy smaller preview`() {
         let grid = ThumbnailRepresentation(purpose: .grid, requestedMaxPixelSize: 200)
-        let largePreview = ThumbnailRepresentation(purpose: .preview, requestedMaxPixelSize: 1_616)
-        let smallPreview = ThumbnailRepresentation(purpose: .preview, requestedMaxPixelSize: 1_024)
+        let largePreview = ThumbnailRepresentation(purpose: .preview, requestedMaxPixelSize: 1616)
+        let smallPreview = ThumbnailRepresentation(purpose: .preview, requestedMaxPixelSize: 1024)
 
         #expect(!grid.canSatisfy(request: smallPreview, decodedMaxPixelSize: 200))
-        #expect(largePreview.canSatisfy(request: smallPreview, decodedMaxPixelSize: 1_616))
+        #expect(largePreview.canSatisfy(request: smallPreview, decodedMaxPixelSize: 1616))
         #expect(!largePreview.canSatisfy(request: smallPreview, decodedMaxPixelSize: 800))
     }
 
@@ -97,17 +97,17 @@ struct ThumbnailRequestKeyTests {
         let source = ThumbnailSourceFingerprint(
             url: URL(fileURLWithPath: "/tmp/separate-representations.arw"),
             fileSize: 10,
-            modificationDate: Date(timeIntervalSince1970: 20),
+            modificationDate: Date(timeIntervalSince1970: 20)
         )
         let gridKey = ThumbnailRequestKey(
             source: source,
             purpose: .grid,
-            requestedMaxPixelSize: 200,
+            requestedMaxPixelSize: 200
         )
         let previewKey = ThumbnailRequestKey(
             source: source,
             purpose: .preview,
-            requestedMaxPixelSize: 1_024,
+            requestedMaxPixelSize: 1024
         )
         let data = try #require(DiskCacheManager.jpegData(from: makeThumbnailIdentityTestCGImage()))
 

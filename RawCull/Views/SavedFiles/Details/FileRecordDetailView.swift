@@ -43,7 +43,7 @@ struct FileRecordDetailView: View {
                 .padding(20)
                 .background(
                     RoundedRectangle(cornerRadius: 12)
-                        .fill(Color(NSColor.controlBackgroundColor)),
+                        .fill(Color(NSColor.controlBackgroundColor))
                 )
 
                 if record.sharpnessScore != nil || record.saliencySubject != nil {
@@ -54,7 +54,7 @@ struct FileRecordDetailView: View {
                             DetailRow(
                                 icon: "viewfinder.circle",
                                 label: "Sharpness",
-                                value: String(format: "%.2f", score),
+                                value: String(format: "%.2f", score)
                             )
                         }
 
@@ -85,7 +85,7 @@ struct FileRecordDetailView: View {
                     .padding(20)
                     .background(
                         RoundedRectangle(cornerRadius: 12)
-                            .fill(Color(NSColor.controlBackgroundColor)),
+                            .fill(Color(NSColor.controlBackgroundColor))
                     )
                     .padding(.top, 12)
                 }

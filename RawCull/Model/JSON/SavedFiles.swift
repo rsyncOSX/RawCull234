@@ -69,7 +69,7 @@ struct SavedFiles: Identifiable, Codable {
                 saliencySubject: record.saliencySubject,
                 sharpnessScoringSignature: record.sharpnessScoringSignature,
                 sharpnessFileSize: record.sharpnessFileSize,
-                sharpnessModificationDate: record.sharpnessModificationDate,
+                sharpnessModificationDate: record.sharpnessModificationDate
             )
         }
         burstWinnerOverrides = data.burstWinnerOverrides
@@ -79,7 +79,7 @@ struct SavedFiles: Identifiable, Codable {
     init(catalog: URL, dateStart: String?, filerecord: FileRecord) {
         self.catalog = catalog
         self.dateStart = dateStart
-        self.filerecords = [filerecord]
+        filerecords = [filerecord]
         burstWinnerOverrides = nil
     }
 }

@@ -94,7 +94,7 @@ struct ComparisonImagePaneView: View {
                     onSelect: { rating in
                         onSelect()
                         onRate(rating)
-                    },
+                    }
                 )
                 .simultaneousGesture(TapGesture().onEnded { onSelect() })
 
@@ -120,7 +120,7 @@ struct ComparisonImagePaneView: View {
                     onZoomIn: {
                         onSelect()
                         increaseZoom()
-                    },
+                    }
                 )
                 .simultaneousGesture(TapGesture().onEnded { onSelect() })
 
@@ -144,7 +144,7 @@ struct ComparisonImagePaneView: View {
                         analysis: burstAnalysis,
                         rating: burstRating,
                         saliencyLabel: saliencyLabel,
-                        isCompact: true,
+                        isCompact: true
                     )
                 }
 
@@ -182,13 +182,13 @@ struct ComparisonImagePaneView: View {
                         if viewportState.scale > 1.0 {
                             viewportState.offset = CGSize(
                                 width: viewportState.lastOffset.width + value.translation.width,
-                                height: viewportState.lastOffset.height + value.translation.height,
+                                height: viewportState.lastOffset.height + value.translation.height
                             )
                         }
                     }
-                    .onEnded { _ in viewportState.lastOffset = viewportState.offset },
+                    .onEnded { _ in viewportState.lastOffset = viewportState.offset }
             )
-            .map { _ in () },
+            .map { _ in () }
         )
     }
 
@@ -308,7 +308,7 @@ struct ComparisonImagePaneView: View {
         if viewportState.showFocusPoints, let focusPoints {
             FocusOverlayView(
                 focusPoints: focusPoints,
-                imageSize: imageSize,
+                imageSize: imageSize
             )
             .allowsHitTesting(false)
             .transition(.opacity.combined(with: .blurReplace))

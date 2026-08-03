@@ -11,7 +11,7 @@ private func makeDiagnosticFileItem(url: URL, size: Int64? = nil) throws -> File
         size: size ?? Int64(values.fileSize ?? 0),
         dateModified: values.contentModificationDate ?? Date(timeIntervalSince1970: 0),
         exifData: nil,
-        afFocusNormalized: nil,
+        afFocusNormalized: nil
     )
 }
 

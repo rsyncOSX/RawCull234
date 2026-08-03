@@ -7,7 +7,7 @@ nonisolated enum ComparisonGridNavigation {
     nonisolated static func destinationIndex(
         from currentIndex: Int,
         itemCount: Int,
-        direction: ComparisonGridNavigationDirection,
+        direction: ComparisonGridNavigationDirection
     ) -> Int? {
         guard itemCount > 0,
               currentIndex >= 0,

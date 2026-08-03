@@ -86,7 +86,7 @@ struct MainThumbnailImageView: View {
                                         }
                                         .onEnded { _ in
                                             viewModel.lastScale = viewModel.scale
-                                        },
+                                        }
                                 )
 
                                 .simultaneousGesture(
@@ -95,13 +95,13 @@ struct MainThumbnailImageView: View {
                                             if viewModel.scale > 1.0 {
                                                 viewModel.offset = CGSize(
                                                     width: viewModel.lastOffset.width + value.translation.width,
-                                                    height: viewModel.lastOffset.height + value.translation.height,
+                                                    height: viewModel.lastOffset.height + value.translation.height
                                                 )
                                             }
                                         }
                                         .onEnded { _ in
                                             viewModel.lastOffset = viewModel.offset
-                                        },
+                                        }
                                 )
 
                             // 2️⃣ Focus mask overlay
@@ -123,7 +123,7 @@ struct MainThumbnailImageView: View {
                             if showFocusPoints, let focusPoints {
                                 FocusOverlayView(
                                     focusPoints: focusPoints,
-                                    imageSize: currentImageSize,
+                                    imageSize: currentImageSize
                                 )
                                 .scaleEffect(viewModel.scale)
                                 .offset(viewModel.offset)
@@ -137,7 +137,7 @@ struct MainThumbnailImageView: View {
                                     HStack(alignment: .top, spacing: 8) {
                                         CurrentRatingBadgeView(
                                             rating: ratingDisplay(for: file),
-                                            density: .compact,
+                                            density: .compact
                                         )
 
                                         VStack(alignment: .leading, spacing: 2) {
@@ -173,7 +173,7 @@ struct MainThumbnailImageView: View {
                                     canReset: viewModel.scale != 1.0 || viewModel.offset != .zero,
                                     onZoomOut: { withAnimation(.spring()) { viewModel.scale = max(0.5, viewModel.scale - 0.2) } },
                                     onZoomReset: { withAnimation(.spring()) { viewModel.resetZoom() } },
-                                    onZoomIn: { withAnimation(.spring()) { viewModel.scale = min(4.0, viewModel.scale + 0.2) } },
+                                    onZoomIn: { withAnimation(.spring()) { viewModel.scale = min(4.0, viewModel.scale + 0.2) } }
                                 )
                                 .padding(.bottom, 12)
                             }
@@ -267,7 +267,7 @@ struct MainThumbnailImageView: View {
                 style: .list,
                 showsShimmer: false,
                 contentMode: .fit,
-                image: $image,
+                image: $image
             )
 
         case .embeddedJPG:
@@ -304,7 +304,7 @@ struct MainThumbnailImageView: View {
         if sourceSelection.selected == .embeddedJPG, let embeddedJPGImage {
             return NSImage(
                 cgImage: embeddedJPGImage,
-                size: NSSize(width: embeddedJPGImage.width, height: embeddedJPGImage.height),
+                size: NSSize(width: embeddedJPGImage.width, height: embeddedJPGImage.height)
             )
         }
         if sourceSelection.selected == .developedRAW, let developedRAWImage {
@@ -326,7 +326,7 @@ struct MainThumbnailImageView: View {
     private var useThumbnailSourceBinding: Binding<Bool> {
         Binding(
             get: { sourceSelection.selected == .thumbnail },
-            set: { sourceSelection.select($0 ? .thumbnail : .embeddedJPG) },
+            set: { sourceSelection.select($0 ? .thumbnail : .embeddedJPG) }
         )
     }
 
@@ -367,7 +367,7 @@ struct MainThumbnailImageView: View {
             viewModel.openZoomOverlay(
                 initialSource: .embeddedJPG,
                 initialZoomMode: .actualPixels,
-                showFocusPointsOnOpen: true,
+                showFocusPointsOnOpen: true
             )
             return .handled
         }
@@ -429,7 +429,7 @@ struct MainThumbnailImageView: View {
     private func ratingDisplay(for file: FileItem) -> RatingDisplay {
         RatingDisplay(
             rating: viewModel.getRating(for: file),
-            isExplicit: viewModel.taggedNamesCache.contains(file.name),
+            isExplicit: viewModel.taggedNamesCache.contains(file.name)
         )
     }
 
@@ -457,7 +457,7 @@ struct MainThumbnailImageView: View {
             afPoint: file?.afFocusNormalized,
             iso: file?.exifData?.isoValue ?? 400,
             aperture: file?.exifData?.apertureValue,
-            evidence: file.flatMap { viewModel.sharpnessModel.breakdowns[$0.id]?.focusEvidence },
+            evidence: file.flatMap { viewModel.sharpnessModel.breakdowns[$0.id]?.focusEvidence }
         )
         guard !Task.isCancelled else { return }
         await MainActor.run {

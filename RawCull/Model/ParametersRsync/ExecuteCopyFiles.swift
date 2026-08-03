@@ -87,10 +87,10 @@ final class ExecuteCopyFiles {
 
     func startcopyfiles(
         fallbacksource: String,
-        fallbackdest: String,
+        fallbackdest: String
     ) -> Result<Void, CopyStartupFailure> {
         guard var arguments = ArgumentsSynchronize(config: config).argumentsSynchronize(
-            dryRun: dryrun,
+            dryRun: dryrun
         ) else {
             return .failure(.rsyncArgumentsUnavailable)
         }
@@ -145,7 +145,7 @@ final class ExecuteCopyFiles {
             return .failure(.sourceAccessFailed)
         }
 
-        self.sourceAccessedURL = sourceURL
+        sourceAccessedURL = sourceURL
 
         guard let destURL = getAccessedURL(fromBookmarkKey: "destBookmark", fallbackPath: fallbackdest) else {
             Logger.process.errorMessageOnly("Failed to access folders")
@@ -153,7 +153,7 @@ final class ExecuteCopyFiles {
             return .failure(.destinationAccessFailed)
         }
 
-        self.destAccessedURL = destURL
+        destAccessedURL = destURL
 
         arguments.append(sourceURL.path + "/")
         arguments.append(destURL.path + "/")
@@ -165,7 +165,7 @@ final class ExecuteCopyFiles {
             arguments: arguments,
             hiddenID: 0,
             handlers: streamingHandlers,
-            useFileHandler: true,
+            useFileHandler: true
         )
 
         do {
@@ -187,19 +187,19 @@ final class ExecuteCopyFiles {
         copytaggedfiles: Bool = true,
         sidebarRawCullViewModel: RawCullViewModel,
         includeListDirectory: URL? = nil,
-        fileManager: FileManager = .default,
+        fileManager: FileManager = .default
     ) {
-        self.config = configuration
+        config = configuration
         self.dryrun = dryrun
         self.rating = rating
         self.sidebarRawCullViewModel = sidebarRawCullViewModel
         self.copytaggedfiles = copytaggedfiles
-        self.includeListDirectoryOverride = includeListDirectory
+        includeListDirectoryOverride = includeListDirectory
         self.fileManager = fileManager
 
         let (stream, continuation) = AsyncStream.makeStream(of: Int.self)
-        self.progressStream = stream
-        self.progressContinuation = continuation
+        progressStream = stream
+        progressContinuation = continuation
     }
 
     isolated deinit {
@@ -224,10 +224,10 @@ final class ExecuteCopyFiles {
                 Task { @MainActor in
                     await self?.handleProcessTermination(
                         stringoutputfromrsync: output,
-                        hiddenID: hiddenID,
+                        hiddenID: hiddenID
                     )
                 }
-            },
+            }
         )
     }
 
@@ -243,7 +243,7 @@ final class ExecuteCopyFiles {
         // Create the result
         let result = CopyDataResult(
             output: stringoutputfromrsync,
-            viewOutput: viewOutput,
+            viewOutput: viewOutput
         )
 
         // Call completion handler - let it finish before cleanup
@@ -335,7 +335,7 @@ final class ExecuteCopyFiles {
             throw NSError(
                 domain: "ExecuteCopyFiles",
                 code: 2,
-                userInfo: [NSLocalizedDescriptionKey: "Failed to write filelist to URL: \(error)"],
+                userInfo: [NSLocalizedDescriptionKey: "Failed to write filelist to URL: \(error)"]
             )
         }
     }
@@ -349,7 +349,7 @@ final class ExecuteCopyFiles {
                     resolvingBookmarkData: bookmarkData,
                     options: .withSecurityScope,
                     relativeTo: nil,
-                    bookmarkDataIsStale: &isStale,
+                    bookmarkDataIsStale: &isStale
                 )
                 guard url.startAccessingSecurityScopedResource() else {
                     Logger.process.errorMessageOnly(": Failed to start accessing bookmark for \(key)")

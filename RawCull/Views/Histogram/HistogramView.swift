@@ -22,7 +22,7 @@ final class HistogramLoadingModel {
     func load(
         image: NSImage?,
         convert: ImageConverter,
-        calculate: Calculator,
+        calculate: Calculator
     ) async -> Bool {
         generation &+= 1
         let loadGeneration = generation
@@ -67,8 +67,8 @@ struct HistogramView: View {
                     LinearGradient(
                         gradient: Gradient(colors: [.blue, .purple]),
                         startPoint: .top,
-                        endPoint: .bottom,
-                    ),
+                        endPoint: .bottom
+                    )
                 )
                 // Inset slightly to prevent clipping
                 .padding(2)
@@ -80,7 +80,7 @@ struct HistogramView: View {
                 convert: { image in
                     image.cgImage(forProposedRect: nil, context: nil, hints: nil)
                 },
-                calculate: HistogramLoadingModel.calculateHistogram,
+                calculate: HistogramLoadingModel.calculateHistogram
             )
             if nsImage != nil, !converted {
                 Logger.process.warning("HistogramView: could not convert the selected image to CGImage")

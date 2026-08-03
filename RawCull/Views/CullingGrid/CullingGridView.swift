@@ -50,7 +50,7 @@ private struct BurstGroupHeaderView: View {
             Button(action: onToggleCollapsed) {
                 Label(
                     isCollapsed ? "Expand burst" : "Collapse burst",
-                    systemImage: isCollapsed ? "chevron.right" : "chevron.down",
+                    systemImage: isCollapsed ? "chevron.right" : "chevron.down"
                 )
                 .labelStyle(.iconOnly)
             }
@@ -224,7 +224,7 @@ struct CullingGridView<Header: View>: View {
                         selectedCount: viewModel.selectedFileIDs.count,
                         rating: $batchRating,
                         onSelectBadge: selectFiles(matchingBadge:),
-                        onApplyRating: applyBatchRating,
+                        onApplyRating: applyBatchRating
                     )
                 }
                 if viewModel.showsBurstGroups {
@@ -282,7 +282,7 @@ struct CullingGridView<Header: View>: View {
                             } else {
                                 LazyVGrid(
                                     columns: [GridItem(.adaptive(minimum: CGFloat(200)), spacing: 12)],
-                                    spacing: 12,
+                                    spacing: 12
                                 ) {
                                     // ── Flat mode (default) ───────────────────────────
                                     ForEach(files, id: \.id) { file in
@@ -297,7 +297,7 @@ struct CullingGridView<Header: View>: View {
                                             ratingDisplay: ratingDisplay(for: file),
                                             ratingColor: ratingColor(for: file),
                                             onSelect: { handleToggleSelection(for: file) },
-                                            onDoubleSelect: { handleDoubleSelect(for: file) },
+                                            onDoubleSelect: { handleDoubleSelect(for: file) }
                                         )
                                         .id(file.id)
                                         .onHover { isHovered in
@@ -362,7 +362,7 @@ struct CullingGridView<Header: View>: View {
             fileID: file.id,
             state: selectionState,
             visibleIDs: visibleSelectionIDs,
-            modifier: CullingGridSelectionModifier(flags: NSEvent.modifierFlags),
+            modifier: CullingGridSelectionModifier(flags: NSEvent.modifierFlags)
         )
         applySelectionState(next)
     }
@@ -378,13 +378,13 @@ struct CullingGridView<Header: View>: View {
             visibleFiles: visibleSelectionFiles,
             burstGroupLookup: viewModel.similarityModel.burstGroupLookup,
             burstAnalysisResults: viewModel.burstAnalysisResults,
-            saliencyInfo: viewModel.sharpnessModel.saliencyInfo,
+            saliencyInfo: viewModel.sharpnessModel.saliencyInfo
         )
         let next = CullingGridSelectionCoordinator.selectFiles(
             matchingIDs: matchingIDs,
             state: selectionState,
             visibleFiles: visibleSelectionFiles,
-            modifier: CullingGridSelectionModifier(flags: NSEvent.modifierFlags),
+            modifier: CullingGridSelectionModifier(flags: NSEvent.modifierFlags)
         )
         applySelectionState(next)
     }
@@ -418,7 +418,7 @@ struct CullingGridView<Header: View>: View {
             for: file,
             showsBurstGroups: viewModel.showsBurstGroups,
             visibleBurstGroups: visibleBurstGroups,
-            files: files,
+            files: files
         )
     }
 
@@ -427,14 +427,14 @@ struct CullingGridView<Header: View>: View {
             visibleFiles: visibleSelectionFiles,
             burstGroupLookup: viewModel.similarityModel.burstGroupLookup,
             burstAnalysisResults: viewModel.burstAnalysisResults,
-            saliencyInfo: viewModel.sharpnessModel.saliencyInfo,
+            saliencyInfo: viewModel.sharpnessModel.saliencyInfo
         )
     }
 
     private var selectionState: CullingGridSelectionState {
         CullingGridSelectionState(
             selectedFileID: viewModel.selectedFileID,
-            selectedFileIDs: viewModel.selectedFileIDs,
+            selectedFileIDs: viewModel.selectedFileIDs
         )
     }
 
@@ -454,7 +454,7 @@ struct CullingGridView<Header: View>: View {
             scoresCount: viewModel.sharpnessModel.scores.count,
             scoreRevision: viewModel.sharpnessModel.scoreRevision,
             maxScore: viewModel.sharpnessModel.maxScore,
-            burstAnalysisResults: viewModel.burstAnalysisResults,
+            burstAnalysisResults: viewModel.burstAnalysisResults
         )
     }
 
@@ -462,7 +462,7 @@ struct CullingGridView<Header: View>: View {
         let cache = CullingGridRenderCache.rebuild(
             files: files,
             burstGroups: reviewFilteredBurstGroups,
-            scores: viewModel.sharpnessModel.scores,
+            scores: viewModel.sharpnessModel.scores
         )
         visibleBurstGroups = cache.visibleBurstGroups
         hasSharpnessScoresSnapshot = cache.hasSharpnessScoresSnapshot
@@ -505,7 +505,7 @@ struct CullingGridView<Header: View>: View {
             ratingDisplay: ratingDisplay(for: file),
             ratingColor: ratingColor(for: file),
             onSelect: { handleToggleSelection(for: file) },
-            onDoubleSelect: { handleDoubleSelect(for: file) },
+            onDoubleSelect: { handleDoubleSelect(for: file) }
         )
     }
 
@@ -515,7 +515,7 @@ struct CullingGridView<Header: View>: View {
         let shownFiles = BurstGroupCleanViewPolicy.visibleFiles(
             in: group.files,
             rankedFileIDs: analysis?.candidates.map(\.fileID) ?? [],
-            isCollapsed: collapsed,
+            isCollapsed: collapsed
         )
 
         return VStack(alignment: .leading, spacing: 0) {
@@ -529,7 +529,7 @@ struct CullingGridView<Header: View>: View {
                     onToggleCollapsed: { toggleBurstGroup(group.id) },
                     onReviewed: markBurstGroupReviewed,
                     onDeferred: deferBurstGroup,
-                    viewModel: viewModel,
+                    viewModel: viewModel
                 )
             }
 
@@ -664,7 +664,7 @@ struct CullingGridView<Header: View>: View {
     private func ratingDisplay(for file: FileItem) -> RatingDisplay {
         RatingDisplay(
             rating: ratingValue(for: file),
-            isExplicit: viewModel.taggedNamesCache.contains(file.name),
+            isExplicit: viewModel.taggedNamesCache.contains(file.name)
         )
     }
 

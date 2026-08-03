@@ -88,7 +88,7 @@ extension RawCullViewModel {
                 saliencySubject: saliency[file.id]?.subjectLabel,
                 scoringSignature: signature,
                 fileSize: file.size,
-                modificationDate: file.dateModified,
+                modificationDate: file.dateModified
             )
         }
         cullingModel.mergeScoringResults(results, in: catalog)

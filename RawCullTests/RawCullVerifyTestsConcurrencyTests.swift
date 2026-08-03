@@ -36,7 +36,7 @@ enum ConcurrencyTests {
             let key = makeThumbnailRequestKey(
                 url: URL(fileURLWithPath: "/tmp/replacement-grid-cache.jpg"),
                 purpose: .grid,
-                requestedMaxPixelSize: 200,
+                requestedMaxPixelSize: 200
             )
             let first = try #require(createTestThumbnail(size: 10))
             let second = try #require(createTestThumbnail(size: 20))
@@ -143,7 +143,7 @@ enum ConcurrencyTests {
             """.utf8)
             try FileManager.default.createDirectory(
                 at: url.deletingLastPathComponent(),
-                withIntermediateDirectories: true,
+                withIntermediateDirectories: true
             )
             try data.write(to: url, options: .atomic)
 

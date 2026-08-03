@@ -179,7 +179,7 @@ final class MemoryDiagnosticsViewModel {
             duplicateExtractionStarts: extraction.duplicateStarts,
             coalescedExtractionWaiters: extraction.coalescedWaiters,
             activeExtractions: extraction.activeExtractions,
-            maximumActiveExtractions: extraction.maximumActiveExtractions,
+            maximumActiveExtractions: extraction.maximumActiveExtractions
         )
         entries.append(entry)
     }

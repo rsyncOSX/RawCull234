@@ -38,14 +38,14 @@ struct ExifSummary: Equatable {
             let sizeClass = exif.rawSizeClass.map { " (\($0))" } ?? ""
             detailRows.append(ExifDetailRow(
                 label: "Dimensions",
-                value: String(format: "%d x %d  %.1f MP%@", w, h, mp, sizeClass),
+                value: String(format: "%d x %d  %.1f MP%@", w, h, mp, sizeClass)
             ))
         }
 
         return ExifSummary(
             exposureParts: exposureParts,
             gearParts: gearParts,
-            detailRows: detailRows,
+            detailRows: detailRows
         )
     }
 
@@ -57,7 +57,7 @@ struct ExifSummary: Equatable {
     private static func appendRow(
         _ label: String,
         _ value: String?,
-        to rows: inout [ExifDetailRow],
+        to rows: inout [ExifDetailRow]
     ) {
         guard let value, !value.isEmpty else { return }
         rows.append(ExifDetailRow(label: label, value: value))
@@ -111,7 +111,7 @@ struct CandidateInspectorContext {
         sharpnessScores: [FileItem.ID: Float],
         sharpnessBreakdowns: [FileItem.ID: SharpnessBreakdown],
         focusPoints: [FocusPointsModel]?,
-        rating: Int,
+        rating: Int
     ) -> Self? {
         guard let selectedFile,
               let result,
@@ -130,7 +130,7 @@ struct CandidateInspectorContext {
                 isSecondBest: result.secondBestFileID == candidate.fileID,
                 isManualWinner: result.reviewState == .manualWinnerOverride
                     && result.recommendedFileID == candidate.fileID,
-                isSelected: selectedFile.id == candidate.fileID,
+                isSelected: selectedFile.id == candidate.fileID
             )
         }
 
@@ -147,13 +147,13 @@ struct CandidateInspectorContext {
             exifSummary: ExifSummary.make(from: selectedFile.exifData),
             rankRows: rankRows,
             groupReasons: result.reasons,
-            groupCautions: result.cautions,
+            groupCautions: result.cautions
         )
     }
 
     private static func focusPointsAvailable(
         for file: FileItem,
-        focusPoints: [FocusPointsModel]?,
+        focusPoints: [FocusPointsModel]?
     ) -> Bool {
         guard let focusPoints else { return file.afFocusNormalized != nil }
         return focusPoints.contains { model in

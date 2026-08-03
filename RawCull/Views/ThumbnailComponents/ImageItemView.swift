@@ -163,7 +163,7 @@ struct ImageItemView: View {
                     file: file,
                     targetSize: thumbnailSize,
                     style: .grid,
-                    showsShimmer: true,
+                    showsShimmer: true
                 )
                 .frame(width: CGFloat(thumbnailSize), height: CGFloat(thumbnailSize))
                 .clipped()
@@ -182,7 +182,7 @@ struct ImageItemView: View {
                     VStack(alignment: .leading, spacing: 4) {
                         CurrentRatingBadgeView(
                             rating: ratingDisplay,
-                            density: .compact,
+                            density: .compact
                         )
 
                         if let groupID = viewModel.similarityModel.burstGroupLookup[file.id],
@@ -192,7 +192,7 @@ struct ImageItemView: View {
                                 candidate: candidate,
                                 analysis: analysis,
                                 rating: ratingValue,
-                                saliencyLabel: viewModel.sharpnessModel.saliencyInfo[file.id]?.subjectLabel,
+                                saliencyLabel: viewModel.sharpnessModel.saliencyInfo[file.id]?.subjectLabel
                             )
                         }
                     }
@@ -203,7 +203,7 @@ struct ImageItemView: View {
             // Selected: strong accent frame inside the image bounds
             .overlay(
                 RoundedRectangle(cornerRadius: 4)
-                    .stroke(selectionColor, lineWidth: isSelectionHighlighted ? imageSelectionLineWidth : 0),
+                    .stroke(selectionColor, lineWidth: isSelectionHighlighted ? imageSelectionLineWidth : 0)
             )
             .clipShape(RoundedRectangle(cornerRadius: 4))
 
@@ -226,11 +226,11 @@ struct ImageItemView: View {
         .clipShape(RoundedRectangle(cornerRadius: 4))
         .overlay(
             RoundedRectangle(cornerRadius: 4)
-                .stroke(borderColor, lineWidth: borderWidth),
+                .stroke(borderColor, lineWidth: borderWidth)
         )
         .background(
             RoundedRectangle(cornerRadius: 4)
-                .fill(isSelectionHighlighted ? selectionColor.opacity(isSelected ? 0.16 : 0.12) : Color.clear),
+                .fill(isSelectionHighlighted ? selectionColor.opacity(isSelected ? 0.16 : 0.12) : Color.clear)
         )
         .shadow(color: .black.opacity(isSelectionHighlighted ? 0.18 : 0.28), radius: isSelectionHighlighted ? 1 : 3, y: 1)
         .scaleEffect(isHovered ? 1.02 : 1.0)

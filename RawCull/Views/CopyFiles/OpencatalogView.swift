@@ -38,7 +38,7 @@ struct OpencatalogView: View {
                                   let bookmarkData = try url.bookmarkData(
                                       options: .withSecurityScope,
                                       includingResourceValuesForKeys: nil,
-                                      relativeTo: nil,
+                                      relativeTo: nil
                                   )
                                   UserDefaults.standard.set(bookmarkData, forKey: bookmarkKey)
                                   selecteditem = url.path
@@ -80,7 +80,7 @@ struct OpencatalogView: View {
                 if !newValue {
                     selectionErrorMessage = nil
                 }
-            },
+            }
         )
     }
 

@@ -54,7 +54,7 @@ nonisolated struct RawParserKitImageLoader: RawImageLoading {
             rawFileType: metadata.rawFileType,
             rawSizeClass: metadata.rawSizeClass,
             pixelWidth: metadata.pixelWidth,
-            pixelHeight: metadata.pixelHeight,
+            pixelHeight: metadata.pixelHeight
         )
         let normalizedFocusPoint = metadata.focusPoint.map {
             CGPoint(x: $0.normalizedX, y: $0.normalizedY)
@@ -64,21 +64,21 @@ nonisolated struct RawParserKitImageLoader: RawImageLoading {
             captureDate: metadata.captureDate,
             captureTimeZoneOffsetSeconds: metadata.captureTimeZoneOffsetSeconds,
             focusLocation: Self.focusLocation(from: metadata),
-            focusPoint: normalizedFocusPoint,
+            focusPoint: normalizedFocusPoint
         )
     }
 
     func thumbnailCGImage(for url: URL, maxPixelSize: Int) async -> CGImage? {
         await RawParserKit.RawImageLoader.shared.thumbnailCGImage(
             for: url,
-            maxPixelSize: maxPixelSize,
+            maxPixelSize: maxPixelSize
         )
     }
 
     func thumbnailImage(for url: URL, maxPixelSize: Int) async -> NSImage? {
         await RawParserKit.RawImageLoader.shared.thumbnail(
             for: url,
-            maxPixelSize: maxPixelSize,
+            maxPixelSize: maxPixelSize
         )
     }
 

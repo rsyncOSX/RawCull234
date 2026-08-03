@@ -21,13 +21,13 @@ struct GridThumbnailView: View {
                 GridThumbnailSelectionView(
                     viewModel: viewModel,
                     nsImage: $nsImage,
-                    cgImage: $cgImage,
+                    cgImage: $cgImage
                 )
             } else {
                 ContentUnavailableView(
                     "No Data",
                     systemImage: "photo.fill",
-                    description: Text("Please select a source from the main window to view thumbnails."),
+                    description: Text("Please select a source from the main window to view thumbnails.")
                 )
             }
         }

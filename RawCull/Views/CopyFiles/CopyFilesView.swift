@@ -34,7 +34,7 @@ struct CopyFilesView: View {
             CopyOptionsSection(
                 copytaggedfiles: $copytaggedfiles,
                 copyratedfiles: $copyratedfiles,
-                dryrun: $dryrun,
+                dryrun: $dryrun
             )
 
             Divider()
@@ -44,7 +44,7 @@ struct CopyFilesView: View {
                 sourcecatalog: $sourcecatalog,
                 destinationcatalog: $destinationcatalog,
                 copytaggedfiles: $copytaggedfiles,
-                copyratedfiles: $copyratedfiles,
+                copyratedfiles: $copyratedfiles
             )
 
             if copyFilesinProgress {
@@ -135,7 +135,7 @@ struct CopyFilesView: View {
             dryrun: dryrun,
             rating: copyratedfiles,
             copytaggedfiles: copytaggedfiles,
-            sidebarRawCullViewModel: viewModel,
+            sidebarRawCullViewModel: viewModel
         )
 
         executionManager?.onCompletion = { result in
@@ -146,7 +146,7 @@ struct CopyFilesView: View {
 
         switch executionManager.startcopyfiles(
             fallbacksource: sourcecatalog,
-            fallbackdest: destinationcatalog,
+            fallbackdest: destinationcatalog
         ) {
         case .success:
             copyFilesinProgress = true
@@ -167,7 +167,7 @@ struct CopyFilesView: View {
 
         remotedatanumbers = RemoteDataNumbers(
             stringoutputfromrsync: result.output,
-            config: configuration,
+            config: configuration
         )
 
         if let viewOutput = result.viewOutput {
@@ -191,7 +191,7 @@ struct CopyFilesView: View {
                 if !newValue {
                     startupErrorMessage = nil
                 }
-            },
+            }
         )
     }
 }

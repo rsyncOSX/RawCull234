@@ -93,7 +93,7 @@ final class SimilarityScoringModel {
 
     init(
         embeddingProvider: @escaping EmbeddingProvider = SimilarityScoringModel.computeEmbedding,
-        artifactStore: PerFileAnalysisArtifactStore = .shared,
+        artifactStore: PerFileAnalysisArtifactStore = .shared
     ) {
         self.embeddingProvider = embeddingProvider
         self.artifactStore = artifactStore
@@ -135,10 +135,9 @@ final class SimilarityScoringModel {
     }
 
     nonisolated static var artifactPipelineSignature:
-        SimilarityArtifactPipelineSignature
-    {
+        SimilarityArtifactPipelineSignature {
         artifactPipelineSignature(
-            thumbnailMaxPixelSize: embeddingThumbnailMaxPixelSize,
+            thumbnailMaxPixelSize: embeddingThumbnailMaxPixelSize
         )
     }
 
@@ -147,7 +146,7 @@ final class SimilarityScoringModel {
     @discardableResult
     func hydrateArtifacts(
         _ files: [FileItem],
-        thumbnailMaxPixelSize: Int = SimilarityScoringModel.embeddingThumbnailMaxPixelSize,
+        thumbnailMaxPixelSize: Int = SimilarityScoringModel.embeddingThumbnailMaxPixelSize
     ) async -> Int {
         guard !files.isEmpty else { return 0 }
 
@@ -155,11 +154,11 @@ final class SimilarityScoringModel {
         let generation = _artifactHydrationGeneration
         let sources = files.map(Self.source(for:))
         let signature = Self.artifactPipelineSignature(
-            thumbnailMaxPixelSize: thumbnailMaxPixelSize,
+            thumbnailMaxPixelSize: thumbnailMaxPixelSize
         )
         let loadResult = await artifactStore.load(
             sources: sources,
-            signature: signature,
+            signature: signature
         )
 
         guard generation == _artifactHydrationGeneration,
@@ -170,9 +169,8 @@ final class SimilarityScoringModel {
             if let existing = embeddings[file.id],
                !RawCullSimilarityArtifactValidation.isCurrent(
                    existing,
-                   signature: signature,
-               )
-            {
+                   signature: signature
+               ) {
                 embeddings.removeValue(forKey: file.id)
             }
         }
@@ -186,7 +184,7 @@ final class SimilarityScoringModel {
     func importLegacyArtifacts(
         _ artifacts: [UUID: Data],
         files: [FileItem],
-        signature: BurstSimilaritySignature,
+        signature: BurstSimilaritySignature
     ) async -> Int {
         guard signature.embeddingThumbnailMaxPixelSize
             == Self.embeddingThumbnailMaxPixelSize,
@@ -197,14 +195,14 @@ final class SimilarityScoringModel {
         let artifactSignature = Self.artifactPipelineSignature
         let sources = files.map(Self.source(for:))
         let sourcesByID = Dictionary(
-            uniqueKeysWithValues: sources.map { ($0.id, $0) },
+            uniqueKeysWithValues: sources.map { ($0.id, $0) }
         )
         let validArtifacts = artifacts.filter { id, payload in
             embeddings[id] == nil
                 && sourcesByID[id] != nil
                 && RawCullSimilarityArtifactValidation.isCurrent(
                     payload,
-                    signature: artifactSignature,
+                    signature: artifactSignature
                 )
         }
         guard !validArtifacts.isEmpty else { return 0 }
@@ -212,7 +210,7 @@ final class SimilarityScoringModel {
         let commitResult = await artifactStore.upsert(
             artifacts: validArtifacts,
             sources: sourcesByID,
-            signature: artifactSignature,
+            signature: artifactSignature
         )
         guard !Task.isCancelled else { return 0 }
 
@@ -226,7 +224,7 @@ final class SimilarityScoringModel {
     func indexFiles(
         _ files: [FileItem],
         thumbnailMaxPixelSize: Int = SimilarityScoringModel.embeddingThumbnailMaxPixelSize,
-        forceRefresh: Bool = false,
+        forceRefresh: Bool = false
     ) async {
         guard !files.isEmpty else { return }
 
@@ -244,7 +242,7 @@ final class SimilarityScoringModel {
         if !forceRefresh {
             await hydrateArtifacts(
                 files,
-                thumbnailMaxPixelSize: thumbnailMaxPixelSize,
+                thumbnailMaxPixelSize: thumbnailMaxPixelSize
             )
             guard _indexingGeneration == generation, !Task.isCancelled else {
                 finishIndexing(generation: generation)
@@ -273,10 +271,10 @@ final class SimilarityScoringModel {
             uniqueKeysWithValues: files.map {
                 let source = Self.source(for: $0)
                 return (source.id, source)
-            },
+            }
         )
         let signature = Self.artifactPipelineSignature(
-            thumbnailMaxPixelSize: thumbnailMaxPixelSize,
+            thumbnailMaxPixelSize: thumbnailMaxPixelSize
         )
         let artifactStore = self.artifactStore
 
@@ -350,7 +348,7 @@ final class SimilarityScoringModel {
                 let commitResult = await artifactStore.upsert(
                     artifacts: localEmbeddings,
                     sources: sourcesByID,
-                    signature: signature,
+                    signature: signature
                 )
 
                 guard !Task.isCancelled else { return }
@@ -364,7 +362,7 @@ final class SimilarityScoringModel {
                     self.embeddings[id] = data
                 }
                 Logger.process.debugMessageOnly(
-                    "SimilarityScoringModel: indexed \(localEmbeddings.count)/\(toIndex.count) files; persisted \(commitResult.committedSourceIDs.count)",
+                    "SimilarityScoringModel: indexed \(localEmbeddings.count)/\(toIndex.count) files; persisted \(commitResult.committedSourceIDs.count)"
                 )
             }
         }
@@ -407,7 +405,7 @@ final class SimilarityScoringModel {
     func rankSimilar(
         to anchorID: UUID,
         using _: [FileItem],
-        saliencyInfo: [UUID: SaliencyInfo] = [:],
+        saliencyInfo: [UUID: SaliencyInfo] = [:]
     ) async {
         guard let anchorData = embeddings[anchorID] else {
             distances = [:]
@@ -498,13 +496,13 @@ final class SimilarityScoringModel {
             let adjacentDistances = Self.computeAdjacentDistances(
                 files: files,
                 embeddings: snapshot,
-                cached: cachedAdjacentDistances,
+                cached: cachedAdjacentDistances
             )
             guard !Task.isCancelled else { return nil }
             return BurstGroupingEngine.group(
                 files: files,
                 adjacentDistances: adjacentDistances,
-                config: config,
+                config: config
             )
         }
         _groupingTask = work
@@ -537,7 +535,7 @@ final class SimilarityScoringModel {
             uniqueKeysWithValues: output.boundaryEvidence.compactMap { evidence in
                 guard let distance = evidence.visualDistance else { return nil }
                 return (BurstPairKey.cacheKey(previousID: evidence.previousID, currentID: evidence.currentID), distance)
-            },
+            }
         )
         _adjacentDistanceCacheSignature = signature
         Logger.process.debugMessageOnly("SimilarityScoringModel: \(burstGroups.count) burst groups from \(files.count) files (threshold \(threshold))")
@@ -554,7 +552,7 @@ final class SimilarityScoringModel {
             uniqueKeysWithValues: snapshot.boundaryEvidence.compactMap { evidence in
                 guard let distance = evidence.visualDistance else { return nil }
                 return (BurstPairKey.cacheKey(previousID: evidence.previousID, currentID: evidence.currentID), distance)
-            },
+            }
         )
         _adjacentDistanceCacheSignature = 0
     }
@@ -567,18 +565,18 @@ final class SimilarityScoringModel {
             url: file.url,
             displayName: file.name,
             fileSize: file.size,
-            modificationDate: file.dateModified,
+            modificationDate: file.dateModified
         )
     }
 
     nonisolated static func artifactPipelineSignature(
-        thumbnailMaxPixelSize: Int,
+        thumbnailMaxPixelSize: Int
     ) -> SimilarityArtifactPipelineSignature {
         SimilarityArtifactPipelineSignature(
             featurePrintRevision: featurePrintRevision,
             representationVersion: VisionFeaturePrint.currentRepresentationVersion,
             thumbnailMaxPixelSize: thumbnailMaxPixelSize,
-            pipelineVersion: embeddingPipelineVersion,
+            pipelineVersion: embeddingPipelineVersion
         )
     }
 
@@ -588,7 +586,7 @@ final class SimilarityScoringModel {
         guard !Task.isCancelled else { return nil }
         guard let cgImage = await RawParserKitImageLoader.shared.thumbnailCGImage(
             for: url,
-            maxPixelSize: maxPixelSize,
+            maxPixelSize: maxPixelSize
         ) else {
             Logger.process.debugMessageOnly("SimilarityScoringModel: could not decode image at \(url.lastPathComponent)")
             return nil
@@ -608,7 +606,7 @@ final class SimilarityScoringModel {
     nonisolated static func computeAdjacentDistances(
         files: [FileItem],
         embeddings: [UUID: Data],
-        cached: [String: Float] = [:],
+        cached: [String: Float] = [:]
     ) -> [String: Float] {
         guard files.count > 1 else { return [:] }
 
@@ -640,7 +638,7 @@ final class SimilarityScoringModel {
     private nonisolated static func featurePrint(
         for id: UUID,
         embeddings: [UUID: Data],
-        featurePrints: inout [UUID: VisionFeaturePrint],
+        featurePrints: inout [UUID: VisionFeaturePrint]
     ) -> VisionFeaturePrint? {
         if let featurePrint = featurePrints[id] {
             return featurePrint

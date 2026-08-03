@@ -43,7 +43,7 @@ struct SavedFilesView: View {
                     systemImage: "trash",
                     text: "Reset",
                     helpText: "Clean up data from previous saves",
-                    style: .softCapsule,
+                    style: .softCapsule
                 ) {
                     showResetAlert = true
                 }
@@ -82,7 +82,7 @@ struct SavedFilesView: View {
                             CatalogRow(
                                 entry: entry,
                                 isSelected: isSelected,
-                                isHovered: hoveredCatalog == entry.id,
+                                isHovered: hoveredCatalog == entry.id
                             )
                         }
                         .buttonStyle(.plain)
@@ -139,7 +139,7 @@ struct SavedFilesView: View {
                             FileRecordRow(
                                 record: record,
                                 isSelected: isSelected,
-                                isHovered: hoveredRecord == record.id,
+                                isHovered: hoveredRecord == record.id
                             )
                         }
                         .buttonStyle(.plain)

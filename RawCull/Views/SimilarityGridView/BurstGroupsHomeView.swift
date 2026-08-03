@@ -13,7 +13,7 @@ struct BurstGroupsHomeView: View {
                 resultsAreAvailable: resultsAreAvailable,
                 showResults: showResults,
                 showScoringParameters: { viewModel.activeSheet = .scoringParams },
-                reindex: reindex,
+                reindex: reindex
             )
             .frame(width: 270)
 
@@ -25,7 +25,7 @@ struct BurstGroupsHomeView: View {
                     BurstScanBanner(
                         isComplete: resultsAreAvailable,
                         isRunning: burstScanIsRunning,
-                        runningText: burstScanStatusText,
+                        runningText: burstScanStatusText
                     ) {
                         burstHomeProgressCounter
                     }
@@ -64,7 +64,6 @@ struct BurstGroupsHomeView: View {
             }
 
             Spacer()
-
         }
     }
 
@@ -74,7 +73,7 @@ struct BurstGroupsHomeView: View {
             BurstHomeProgressCount(
                 progress: viewModel.sharpnessModel.scoringProgress,
                 estimatedSeconds: viewModel.sharpnessModel.scoringEstimatedSeconds,
-                max: viewModel.sharpnessModel.scoringTotal,
+                max: viewModel.sharpnessModel.scoringTotal
             )
         }
 
@@ -82,7 +81,7 @@ struct BurstGroupsHomeView: View {
             BurstHomeProgressCount(
                 progress: viewModel.similarityModel.indexingProgress,
                 estimatedSeconds: viewModel.similarityModel.indexingEstimatedSeconds,
-                max: viewModel.similarityModel.indexingTotal,
+                max: viewModel.similarityModel.indexingTotal
             )
         }
     }
@@ -95,19 +94,19 @@ struct BurstGroupsHomeView: View {
                     count: counts.needsReview,
                     detail: "Open burst list to cull",
                     color: .red,
-                    isEmphasized: true,
+                    isEmphasized: true
                 )
                 BurstQueueMetric(
                     title: "Deferred",
                     count: counts.deferred,
                     detail: "Mark for later",
-                    color: .orange,
+                    color: .orange
                 )
                 BurstQueueMetric(
                     title: "Marked Reviewed",
                     count: counts.markedReviewed,
                     detail: "Done this session",
-                    color: .green,
+                    color: .green
                 )
             }
 
@@ -127,7 +126,7 @@ struct BurstGroupsHomeView: View {
                 BurstSummaryValue(title: "Single images", value: "\(counts.singleImages)")
                 BurstSimilarityThresholdControl(
                     value: $viewModel.similarityModel.burstSensitivity,
-                    valueChanged: similarityThresholdChanged,
+                    valueChanged: similarityThresholdChanged
                 )
             }
 
@@ -139,8 +138,6 @@ struct BurstGroupsHomeView: View {
                 }
                 .buttonStyle(.borderedProminent)
                 .controlSize(.large)
-                
-                
                 .disabled(!resultsAreAvailable || counts.needsReview == 0)
             }
         }
@@ -184,25 +181,25 @@ struct BurstGroupsHomeView: View {
                     title: "Scoring Parameters",
                     detail: "Threshold, pick-of-burst, tag weights",
                     systemImage: "slider.horizontal.3",
-                    action: { viewModel.activeSheet = .scoringParams },
+                    action: { viewModel.activeSheet = .scoringParams }
                 )
                 BurstToolTile(
                     title: "Re-index",
                     detail: "Refresh embeddings for this catalog",
                     systemImage: "arrow.clockwise",
-                    action: reindex,
+                    action: reindex
                 )
                 BurstToolTile(
                     title: "Single Images",
                     detail: "\(counts.singleImages) frames outside burst groups",
                     systemImage: "photo",
-                    action: { showResults(.singleImages) },
+                    action: { showResults(.singleImages) }
                 )
                 BurstToolTile(
                     title: "Index Similarity",
                     detail: "Build or refresh similarity index",
                     systemImage: "scope",
-                    action: indexSimilarity,
+                    action: indexSimilarity
                 )
             }
         }
@@ -215,7 +212,7 @@ struct BurstGroupsHomeView: View {
                 ContentUnavailableView(
                     "No suggested picks",
                     systemImage: "photo.badge.checkmark",
-                    description: Text("Analyze bursts to see recommended frames."),
+                    description: Text("Analyze bursts to see recommended frames.")
                 )
                 .frame(maxWidth: .infinity, minHeight: 100)
             } else {
@@ -230,7 +227,7 @@ struct BurstGroupsHomeView: View {
                                 file: pick.file,
                                 targetSize: 80,
                                 style: .grid,
-                                showsShimmer: true,
+                                showsShimmer: true
                             )
                             .frame(width: 80, height: 52)
                             .compositingGroup()
@@ -333,7 +330,7 @@ struct BurstGroupsHomeView: View {
                 return BurstSuggestedPick(
                     groupID: result.groupID,
                     file: file,
-                    subject: viewModel.sharpnessModel.saliencyInfo[id]?.subjectLabel,
+                    subject: viewModel.sharpnessModel.saliencyInfo[id]?.subjectLabel
                 )
             }
             .prefix(3)
@@ -438,7 +435,7 @@ private struct BurstGroupsSidebar: View {
 
     private func sidebarSection(
         _ title: String,
-        @ViewBuilder content: () -> some View,
+        @ViewBuilder content: () -> some View
     ) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(title)
@@ -535,7 +532,7 @@ private struct BurstQueueMetric: View {
             RoundedRectangle(cornerRadius: 12)
                 .stroke(
                     isEmphasized ? color.opacity(0.55) : Color(nsColor: .separatorColor).opacity(0.6),
-                    lineWidth: 1,
+                    lineWidth: 1
                 )
         }
         .accessibilityElement(children: .combine)
@@ -680,9 +677,9 @@ private struct BurstHomeProgressCount: View {
                             LinearGradient(
                                 colors: [.blue, .cyan],
                                 startPoint: .topLeading,
-                                endPoint: .bottomTrailing,
+                                endPoint: .bottomTrailing
                             ),
-                            style: StrokeStyle(lineWidth: 4, lineCap: .round),
+                            style: StrokeStyle(lineWidth: 4, lineCap: .round)
                         )
                         .rotationEffect(.degrees(-90))
                         .animation(.spring(response: 0.6, dampingFraction: 0.8), value: progress)

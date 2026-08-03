@@ -158,7 +158,7 @@ struct CandidateInspectorView: View {
             ContentUnavailableView(
                 "No Candidate Selected",
                 systemImage: "sidebar.right",
-                description: Text("Select a burst candidate in comparison view to inspect ranking evidence."),
+                description: Text("Select a burst candidate in comparison view to inspect ranking evidence.")
             )
             .padding()
         }
@@ -183,7 +183,7 @@ struct CandidateInspectorView: View {
             patch.ringDetailScore,
             patch.compactDetailScore,
             patch.linearEdgePenalty,
-            patch.belowAFPenalty,
+            patch.belowAFPenalty
         )
     }
 

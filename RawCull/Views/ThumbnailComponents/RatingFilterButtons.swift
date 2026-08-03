@@ -43,7 +43,7 @@ struct RatingFilterButtons: View {
                     .frame(width: 18, height: 18)
                     .background(
                         Circle()
-                            .fill(activeRating == 0 ? Color.accentColor : Color.secondary.opacity(0.2)),
+                            .fill(activeRating == 0 ? Color.accentColor : Color.secondary.opacity(0.2))
                     )
             }
             .buttonStyle(.borderless)

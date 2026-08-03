@@ -10,12 +10,12 @@ struct ZoomOverlayKeyActionTests {
         #expect(ZoomOverlayKeyAction.resolve(
             characters: nil,
             keyCode: 123,
-            navigationAxis: .horizontal,
+            navigationAxis: .horizontal
         ) == .navigatePrevious)
         #expect(ZoomOverlayKeyAction.resolve(
             characters: nil,
             keyCode: 124,
-            navigationAxis: .horizontal,
+            navigationAxis: .horizontal
         ) == .navigateNext)
     }
 
@@ -24,12 +24,12 @@ struct ZoomOverlayKeyActionTests {
         #expect(ZoomOverlayKeyAction.resolve(
             characters: nil,
             keyCode: 126,
-            navigationAxis: .vertical,
+            navigationAxis: .vertical
         ) == .navigatePrevious)
         #expect(ZoomOverlayKeyAction.resolve(
             characters: nil,
             keyCode: 125,
-            navigationAxis: .vertical,
+            navigationAxis: .vertical
         ) == .navigateNext)
     }
 
@@ -38,12 +38,12 @@ struct ZoomOverlayKeyActionTests {
         #expect(ZoomOverlayKeyAction.resolve(
             characters: nil,
             keyCode: 126,
-            navigationAxis: .horizontal,
+            navigationAxis: .horizontal
         ) == nil)
         #expect(ZoomOverlayKeyAction.resolve(
             characters: nil,
             keyCode: 123,
-            navigationAxis: .vertical,
+            navigationAxis: .vertical
         ) == nil)
     }
 
@@ -52,47 +52,47 @@ struct ZoomOverlayKeyActionTests {
         #expect(ZoomOverlayKeyAction.resolve(
             characters: nil,
             keyCode: 53,
-            navigationAxis: .horizontal,
+            navigationAxis: .horizontal
         ) == .escape)
         #expect(ZoomOverlayKeyAction.resolve(
             characters: "+",
             keyCode: 0,
-            navigationAxis: .horizontal,
+            navigationAxis: .horizontal
         ) == .zoomIn)
         #expect(ZoomOverlayKeyAction.resolve(
             characters: "-",
             keyCode: 0,
-            navigationAxis: .horizontal,
+            navigationAxis: .horizontal
         ) == .zoomOut)
         #expect(ZoomOverlayKeyAction.resolve(
             characters: "j",
             keyCode: 0,
-            navigationAxis: .horizontal,
+            navigationAxis: .horizontal
         ) == .toggleEmbeddedJPG)
         #expect(ZoomOverlayKeyAction.resolve(
             characters: "J",
             keyCode: 0,
-            navigationAxis: .horizontal,
+            navigationAxis: .horizontal
         ) == .toggleEmbeddedJPG)
         #expect(ZoomOverlayKeyAction.resolve(
             characters: "r",
             keyCode: 0,
-            navigationAxis: .horizontal,
+            navigationAxis: .horizontal
         ) == .toggleDevelopedRAW)
         #expect(ZoomOverlayKeyAction.resolve(
             characters: "R",
             keyCode: 0,
-            navigationAxis: .horizontal,
+            navigationAxis: .horizontal
         ) == .toggleDevelopedRAW)
         #expect(ZoomOverlayKeyAction.resolve(
             characters: "F",
             keyCode: 0,
-            navigationAxis: .horizontal,
+            navigationAxis: .horizontal
         ) == .toggleFocusMask)
         #expect(ZoomOverlayKeyAction.resolve(
             characters: "a",
             keyCode: 0,
-            navigationAxis: .horizontal,
+            navigationAxis: .horizontal
         ) == .toggleFocusPoints)
     }
 
@@ -101,47 +101,47 @@ struct ZoomOverlayKeyActionTests {
         #expect(ZoomOverlayKeyAction.resolve(
             characters: "x",
             keyCode: 0,
-            navigationAxis: .horizontal,
+            navigationAxis: .horizontal
         ) == .rating(-1))
         #expect(ZoomOverlayKeyAction.resolve(
             characters: "p",
             keyCode: 0,
-            navigationAxis: .horizontal,
+            navigationAxis: .horizontal
         ) == .rating(0))
         #expect(ZoomOverlayKeyAction.resolve(
             characters: "0",
             keyCode: 0,
-            navigationAxis: .horizontal,
+            navigationAxis: .horizontal
         ) == .rating(0))
         #expect(ZoomOverlayKeyAction.resolve(
             characters: "1",
             keyCode: 0,
-            navigationAxis: .horizontal,
+            navigationAxis: .horizontal
         ) == .rating(2))
         #expect(ZoomOverlayKeyAction.resolve(
             characters: "2",
             keyCode: 0,
-            navigationAxis: .horizontal,
+            navigationAxis: .horizontal
         ) == .rating(2))
         #expect(ZoomOverlayKeyAction.resolve(
             characters: "t",
             keyCode: 0,
-            navigationAxis: .horizontal,
+            navigationAxis: .horizontal
         ) == .rating(3))
         #expect(ZoomOverlayKeyAction.resolve(
             characters: "3",
             keyCode: 0,
-            navigationAxis: .horizontal,
+            navigationAxis: .horizontal
         ) == .rating(3))
         #expect(ZoomOverlayKeyAction.resolve(
             characters: "4",
             keyCode: 0,
-            navigationAxis: .horizontal,
+            navigationAxis: .horizontal
         ) == .rating(4))
         #expect(ZoomOverlayKeyAction.resolve(
             characters: "5",
             keyCode: 0,
-            navigationAxis: .horizontal,
+            navigationAxis: .horizontal
         ) == .rating(5))
     }
 
@@ -150,12 +150,12 @@ struct ZoomOverlayKeyActionTests {
         #expect(ZoomOverlayKeyAction.resolve(
             characters: "q",
             keyCode: 12,
-            navigationAxis: .horizontal,
+            navigationAxis: .horizontal
         ) == nil)
         #expect(ZoomOverlayKeyAction.resolve(
             characters: nil,
             keyCode: 36,
-            navigationAxis: .vertical,
+            navigationAxis: .vertical
         ) == nil)
     }
 }
@@ -247,7 +247,7 @@ struct ZoomOverlayLaunchContextTests {
         viewModel.openZoomOverlay(
             initialSource: .embeddedJPG,
             initialZoomMode: .actualPixels,
-            showFocusPointsOnOpen: true,
+            showFocusPointsOnOpen: true
         )
 
         #expect(viewModel.zoomOverlayLaunchContext.initialSource == .embeddedJPG)
@@ -262,7 +262,7 @@ struct ZoomViewportMathTests {
     func `actual-pixels scale maps fitted preview back to image pixels`() {
         let scale = ZoomViewportMath.actualPixelsScale(
             imageSize: CGSize(width: 6000, height: 4000),
-            viewportSize: CGSize(width: 1500, height: 1000),
+            viewportSize: CGSize(width: 1500, height: 1000)
         )
 
         #expect(scale == 4.0)
@@ -272,7 +272,7 @@ struct ZoomViewportMathTests {
     func `actual-pixels scale maps fit-upscaled preview back to image pixels`() {
         let scale = ZoomViewportMath.actualPixelsScale(
             imageSize: CGSize(width: 800, height: 600),
-            viewportSize: CGSize(width: 1600, height: 1200),
+            viewportSize: CGSize(width: 1600, height: 1200)
         )
 
         #expect(scale == 0.5)
@@ -283,7 +283,7 @@ struct ZoomViewportMathTests {
         let transform = ZoomViewportMath.actualPixelsTransform(
             imageSize: CGSize(width: 6000, height: 4000),
             viewportSize: CGSize(width: 1500, height: 1000),
-            normalizedFocusPoint: CGPoint(x: 0.40, y: 0.50),
+            normalizedFocusPoint: CGPoint(x: 0.40, y: 0.50)
         )
 
         #expect(transform.scale == 4.0)
@@ -296,7 +296,7 @@ struct ZoomViewportMathTests {
         let transform = ZoomViewportMath.actualPixelsTransform(
             imageSize: CGSize(width: 6000, height: 4000),
             viewportSize: CGSize(width: 1500, height: 1000),
-            normalizedFocusPoint: nil,
+            normalizedFocusPoint: nil
         )
 
         #expect(transform.scale == 4.0)
@@ -308,7 +308,7 @@ struct ZoomViewportMathTests {
         let transform = ZoomViewportMath.actualPixelsTransform(
             imageSize: CGSize(width: 4000, height: 6000),
             viewportSize: CGSize(width: 1000, height: 1500),
-            normalizedFocusPoint: nil,
+            normalizedFocusPoint: nil
         )
 
         #expect(transform.scale == 4.0)
@@ -319,7 +319,7 @@ struct ZoomViewportMathTests {
     func `actual-pixels scale supports mismatched aspect ratios`() {
         let scale = ZoomViewportMath.actualPixelsScale(
             imageSize: CGSize(width: 6000, height: 4000),
-            viewportSize: CGSize(width: 1200, height: 1200),
+            viewportSize: CGSize(width: 1200, height: 1200)
         )
 
         #expect(scale == 5.0)
@@ -333,14 +333,14 @@ struct ZoomViewportMathTests {
             (CGPoint(x: 0, y: 0), CGSize(width: 2250, height: 1500)),
             (CGPoint(x: 1, y: 0), CGSize(width: -2250, height: 1500)),
             (CGPoint(x: 0, y: 1), CGSize(width: 2250, height: -1500)),
-            (CGPoint(x: 1, y: 1), CGSize(width: -2250, height: -1500)),
+            (CGPoint(x: 1, y: 1), CGSize(width: -2250, height: -1500))
         ]
 
         for (focusPoint, expectedOffset) in cases {
             let transform = ZoomViewportMath.actualPixelsTransform(
                 imageSize: imageSize,
                 viewportSize: viewportSize,
-                normalizedFocusPoint: focusPoint,
+                normalizedFocusPoint: focusPoint
             )
             #expect(transform.scale == 4.0)
             #expect(transform.offset == expectedOffset)
@@ -353,7 +353,7 @@ struct ZoomViewportMathTests {
             CGSize(width: 0, height: 100),
             CGSize(width: -1, height: 100),
             CGSize(width: CGFloat.infinity, height: 100),
-            CGSize(width: CGFloat.nan, height: 100),
+            CGSize(width: CGFloat.nan, height: 100)
         ]
         let validSize = CGSize(width: 100, height: 100)
 
@@ -361,12 +361,12 @@ struct ZoomViewportMathTests {
             let invalidImage = ZoomViewportMath.actualPixelsTransform(
                 imageSize: invalidSize,
                 viewportSize: validSize,
-                normalizedFocusPoint: CGPoint(x: 0.5, y: 0.5),
+                normalizedFocusPoint: CGPoint(x: 0.5, y: 0.5)
             )
             let invalidViewport = ZoomViewportMath.actualPixelsTransform(
                 imageSize: validSize,
                 viewportSize: invalidSize,
-                normalizedFocusPoint: CGPoint(x: 0.5, y: 0.5),
+                normalizedFocusPoint: CGPoint(x: 0.5, y: 0.5)
             )
 
             #expect(invalidImage == ZoomViewportTransform(scale: 1.0, offset: .zero))
@@ -379,7 +379,7 @@ struct ZoomViewportMathTests {
         let transform = ZoomViewportMath.actualPixelsTransform(
             imageSize: CGSize(width: 6000, height: 4000),
             viewportSize: CGSize(width: 1500, height: 1000),
-            normalizedFocusPoint: CGPoint(x: CGFloat.nan, y: 0.5),
+            normalizedFocusPoint: CGPoint(x: CGFloat.nan, y: 0.5)
         )
 
         #expect(transform.scale == 4.0)

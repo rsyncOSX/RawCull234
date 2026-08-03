@@ -130,7 +130,7 @@ struct BurstCullingWorkspaceView: View {
         } label: {
             Label(
                 "Mark Reviewed",
-                systemImage: isReviewed ? "checkmark.circle.fill" : "checkmark.circle",
+                systemImage: isReviewed ? "checkmark.circle.fill" : "checkmark.circle"
             )
         }
         .controlSize(.large)
@@ -147,9 +147,9 @@ struct BurstCullingWorkspaceView: View {
                 .fontWeight(.semibold)
 
             Spacer()
-            
+
             Text("Extraced thumbnail is default, toggle J to view JPG")
-            
+
             Spacer()
 
             keyCap("P/N")
@@ -200,7 +200,7 @@ struct BurstCullingWorkspaceView: View {
                         sourceSelection.select(thumbnailSourceBinding.wrappedValue ? .thumbnail : .embeddedJPG)
                     },
                     showsChrome: false,
-                    allowsDoubleClickZoom: false,
+                    allowsDoubleClickZoom: false
                 )
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .padding(48)
@@ -234,7 +234,6 @@ struct BurstCullingWorkspaceView: View {
 
             ScrollViewReader { proxy in
                 GeometryReader { geo in
-                    
                     ScrollView(.horizontal) {
                         LazyHStack(spacing: 10) {
                             ForEach(files) { file in
@@ -242,7 +241,7 @@ struct BurstCullingWorkspaceView: View {
                                     file: file,
                                     isSelected: file.id == viewModel.selectedFileID,
                                     isSuggested: analysis?.recommendedFileID == file.id,
-                                    isDeferred: analysis?.reviewState == .deferred,
+                                    isDeferred: analysis?.reviewState == .deferred
                                 ) {
                                     viewModel.selectedFileID = file.id
                                 }
@@ -287,7 +286,7 @@ struct BurstCullingWorkspaceView: View {
                 inspectorCard("Rating") {
                     RatingActionBarView(
                         currentRating: selectedFile.map(ratingDisplay(for:)) ?? .unrated,
-                        onSelect: applyRating,
+                        onSelect: applyRating
                     )
                 }
 
@@ -296,9 +295,8 @@ struct BurstCullingWorkspaceView: View {
                         tagStrip(for: selectedFile)
                     }
                 }
-               
+
                 CandidateInspectorView(context: candidateInspectorContext)
-                
             }
             .padding(16)
         }
@@ -315,10 +313,10 @@ struct BurstCullingWorkspaceView: View {
             sharpnessScores: viewModel.sharpnessModel.scores,
             sharpnessBreakdowns: viewModel.sharpnessModel.breakdowns,
             focusPoints: viewModel.focusPoints,
-            rating: viewModel.selectedFile.map { viewModel.getRating(for: $0) } ?? 0,
+            rating: viewModel.selectedFile.map { viewModel.getRating(for: $0) } ?? 0
         )
     }
-    
+
     private var fileDetails: some View {
         VStack(spacing: 12) {
             detailRow("Name", selectedFile?.name ?? "—")
@@ -331,7 +329,7 @@ struct BurstCullingWorkspaceView: View {
 
     private func inspectorCard(
         _ title: String,
-        @ViewBuilder content: () -> some View,
+        @ViewBuilder content: () -> some View
     ) -> some View {
         VStack(alignment: .leading, spacing: 14) {
             Text(title).font(.headline)
@@ -361,7 +359,7 @@ struct BurstCullingWorkspaceView: View {
         HStack(spacing: 8) {
             let rating = RatingDisplay(
                 rating: viewModel.getRating(for: file),
-                isExplicit: viewModel.taggedNamesCache.contains(file.name),
+                isExplicit: viewModel.taggedNamesCache.contains(file.name)
             )
             WorkspaceTag(title: rating.label, color: rating.color)
 
@@ -479,14 +477,14 @@ struct BurstCullingWorkspaceView: View {
     private var thumbnailSourceBinding: Binding<Bool> {
         Binding(
             get: { sourceSelection.selected == .thumbnail },
-            set: { sourceSelection.select($0 ? .thumbnail : .embeddedJPG) },
+            set: { sourceSelection.select($0 ? .thumbnail : .embeddedJPG) }
         )
     }
 
     private func ratingDisplay(for file: FileItem) -> RatingDisplay {
         RatingDisplay(
             rating: viewModel.getRating(for: file),
-            isExplicit: viewModel.taggedNamesCache.contains(file.name),
+            isExplicit: viewModel.taggedNamesCache.contains(file.name)
         )
     }
 
@@ -504,7 +502,7 @@ struct BurstCullingWorkspaceView: View {
         let source = sourceSelection.selected
         let windowFiles = BurstFrameCachePolicy.indices(
             around: selectedIndex,
-            itemCount: files.count,
+            itemCount: files.count
         ).map { files[$0] }
         let retainedKeys = Set(windowFiles.map { cacheKey(for: $0, source: source) })
         imageCache = imageCache.filter { retainedKeys.contains($0.key) }
@@ -514,7 +512,7 @@ struct BurstCullingWorkspaceView: View {
             let loaded = await ensureDecodedImage(
                 for: file,
                 source: source,
-                reportsDevelopedRAWFailure: file.id == selectedFile.id,
+                reportsDevelopedRAWFailure: file.id == selectedFile.id
             )
             guard !Task.isCancelled else { return }
             if file.id == selectedFile.id, !loaded {
@@ -531,7 +529,7 @@ struct BurstCullingWorkspaceView: View {
     private func ensureDecodedImage(
         for file: FileItem,
         source: ImagePreviewSource,
-        reportsDevelopedRAWFailure: Bool,
+        reportsDevelopedRAWFailure: Bool
     ) async -> Bool {
         let key = cacheKey(for: file, source: source)
         if let state = imageCache[key], !state.isLoading {
@@ -545,7 +543,7 @@ struct BurstCullingWorkspaceView: View {
         case .thumbnail, .embeddedJPG:
             decodedState = await ComparisonGridImageCoordinator.loadDecodedState(
                 for: file,
-                useThumbnailSource: source == .thumbnail,
+                useThumbnailSource: source == .thumbnail
             )
 
         case .developedRAW:
@@ -571,7 +569,7 @@ struct BurstCullingWorkspaceView: View {
 
     private func analyzeFocusIfNeeded(
         for file: FileItem,
-        source: ImagePreviewSource,
+        source: ImagePreviewSource
     ) async {
         let key = cacheKey(for: file, source: source)
         guard let state = imageCache[key],
@@ -582,7 +580,7 @@ struct BurstCullingWorkspaceView: View {
         let analyzedState = await ComparisonGridImageCoordinator.analyzeFocus(
             for: file,
             state: state,
-            viewModel: viewModel,
+            viewModel: viewModel
         )
         guard !Task.isCancelled else { return }
         guard imageCache[key] != nil else { return }
@@ -612,7 +610,7 @@ struct BurstCullingWorkspaceView: View {
 
     private func cacheKey(
         for file: FileItem,
-        source: ImagePreviewSource,
+        source: ImagePreviewSource
     ) -> BurstFrameCacheKey {
         BurstFrameCacheKey(fileID: file.id, source: source)
     }
@@ -678,7 +676,7 @@ struct BurstCullingWorkspaceView: View {
         return handleKeyAction(ZoomOverlayKeyAction.resolve(
             characters: characters,
             keyCode: 0,
-            navigationAxis: .horizontal,
+            navigationAxis: .horizontal
         ))
     }
 }
@@ -721,7 +719,7 @@ private struct BurstFilmstripThumbnail: View {
             RoundedRectangle(cornerRadius: 9)
                 .stroke(
                     isSelected ? Color.accentColor : Color(nsColor: .separatorColor),
-                    lineWidth: isSelected ? 3 : 1,
+                    lineWidth: isSelected ? 3 : 1
                 )
         }
     }

@@ -68,7 +68,7 @@ struct DataRaceDetectionTests {
             makeThumbnailRequestKey(
                 url: URL(fileURLWithPath: "/tmp/rawcull-grid-race-\(index).jpg"),
                 purpose: .grid,
-                requestedMaxPixelSize: 200,
+                requestedMaxPixelSize: 200
             )
         }
 
@@ -120,7 +120,7 @@ struct DataRaceDetectionTests {
 
     @Test(
         .timeLimit(.minutes(1)),
-        .tags(.performance),
+        .tags(.performance)
     )
     func `Extreme concurrent load reveals no data races`() async {
         let cache = await makeIsolatedCache()

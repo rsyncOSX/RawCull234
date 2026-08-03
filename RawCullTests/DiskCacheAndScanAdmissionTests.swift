@@ -27,7 +27,7 @@ private func makeCacheTestCGImage(width: Int = 32, height: Int = 24, color: NSCo
         bitsPerComponent: 8,
         bytesPerRow: 0,
         space: colorSpace,
-        bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue,
+        bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
     ))
     context.setFillColor(color.cgColor)
     context.fill(CGRect(x: 0, y: 0, width: width, height: height))
@@ -57,7 +57,7 @@ private func makeQuadrantTestCGImage(width: Int = 80, height: Int = 60) throws -
         bitsPerComponent: 8,
         bytesPerRow: 0,
         space: colorSpace,
-        bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue,
+        bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
     ))
     let halfWidth = width / 2
     let halfHeight = height / 2
@@ -81,7 +81,7 @@ private func makeOrientedQuadrantJPEGData(orientation: Int) throws -> Data {
         data,
         UTType.jpeg.identifier as CFString,
         1,
-        nil,
+        nil
     ))
     let properties: [CFString: Any] = [
         kCGImagePropertyOrientation: orientation,
@@ -101,7 +101,7 @@ private func cornerColors(of image: CGImage) throws -> CornerColors {
         bitsPerComponent: 8,
         bytesPerRow: image.width * 4,
         space: CGColorSpaceCreateDeviceRGB(),
-        bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue,
+        bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
     ))
     context.draw(image, in: CGRect(x: 0, y: 0, width: image.width, height: image.height))
 
@@ -127,7 +127,7 @@ private func cornerColors(of image: CGImage) throws -> CornerColors {
         topLeft: colorAt(x: 2, y: 2),
         topRight: colorAt(x: image.width - 3, y: 2),
         bottomLeft: colorAt(x: 2, y: image.height - 3),
-        bottomRight: colorAt(x: image.width - 3, y: image.height - 3),
+        bottomRight: colorAt(x: image.width - 3, y: image.height - 3)
     )
 }
 
@@ -138,7 +138,7 @@ private func makeOrientedJPEGData(width: Int, height: Int, orientation: Int) thr
         data,
         UTType.jpeg.identifier as CFString,
         1,
-        nil,
+        nil
     ))
     let properties: [CFString: Any] = [
         kCGImagePropertyOrientation: orientation
@@ -155,7 +155,7 @@ private func makeJPEGData(width: Int, height: Int) throws -> Data {
         data,
         UTType.jpeg.identifier as CFString,
         1,
-        nil,
+        nil
     ))
     CGImageDestinationAddImage(destination, image, nil)
     #expect(CGImageDestinationFinalize(destination))
@@ -167,7 +167,7 @@ private func writeOrientedJPEG(
     name: String,
     width: Int,
     height: Int,
-    orientation: Int,
+    orientation: Int
 ) throws -> (URL, Data) {
     let data = try makeOrientedJPEGData(width: width, height: height, orientation: orientation)
     let url = root.appendingPathComponent(name)
@@ -188,7 +188,7 @@ struct OrientationNormalizedImageLoaderTests {
     ])
     func `URL decode applies EXIF orientation to pixels`(
         orientation: Int,
-        expectedCorners: CornerColors,
+        expectedCorners: CornerColors
     ) throws {
         let root = try makeCacheTestRoot()
         defer { try? FileManager.default.removeItem(at: root) }
@@ -210,7 +210,7 @@ struct OrientationNormalizedImageLoaderTests {
             name: "right.jpg",
             width: 80,
             height: 40,
-            orientation: 6,
+            orientation: 6
         )
 
         let image = try #require(OrientationNormalizedImageLoader.loadCGImage(from: url))
@@ -228,7 +228,7 @@ struct OrientationNormalizedImageLoaderTests {
             name: "up.jpg",
             width: 80,
             height: 40,
-            orientation: 1,
+            orientation: 1
         )
 
         let image = try #require(OrientationNormalizedImageLoader.loadCGImage(from: url))
@@ -256,7 +256,7 @@ struct OrientationNormalizedImageLoaderTests {
             name: "right-thumbnail.jpg",
             width: 80,
             height: 40,
-            orientation: 6,
+            orientation: 6
         )
 
         let image = try #require(OrientationNormalizedImageLoader.loadThumbnail(from: url, maxPixelSize: 80))
@@ -274,7 +274,7 @@ struct OrientationNormalizedImageLoaderTests {
             name: "up-thumbnail.jpg",
             width: 80,
             height: 40,
-            orientation: 1,
+            orientation: 1
         )
 
         let image = try #require(OrientationNormalizedImageLoader.loadThumbnail(from: url, maxPixelSize: 80))
@@ -292,7 +292,7 @@ struct OrientationNormalizedImageLoaderTests {
             name: "source-orientation.jpg",
             width: 80,
             height: 40,
-            orientation: 6,
+            orientation: 6
         )
         let image = try makeCacheTestCGImage(width: 80, height: 40)
 
@@ -311,13 +311,13 @@ struct OrientationNormalizedImageLoaderTests {
             name: "source-right.jpg",
             width: 80,
             height: 40,
-            orientation: 6,
+            orientation: 6
         )
         let embeddedData = try makeOrientedJPEGData(width: 80, height: 40, orientation: 1)
 
         let image = try #require(OrientationNormalizedImageLoader.loadEmbeddedPreview(
             from: embeddedData,
-            sourceURL: sourceURL,
+            sourceURL: sourceURL
         ))
 
         #expect(image.width == 80)
@@ -333,13 +333,13 @@ struct OrientationNormalizedImageLoaderTests {
             name: "source-right.jpg",
             width: 80,
             height: 40,
-            orientation: 6,
+            orientation: 6
         )
         let embeddedData = try makeJPEGData(width: 80, height: 40)
 
         let image = try #require(OrientationNormalizedImageLoader.loadEmbeddedPreview(
             from: embeddedData,
-            sourceURL: sourceURL,
+            sourceURL: sourceURL
         ))
 
         #expect(image.width == 40)
@@ -535,15 +535,15 @@ struct ScanAndCreateThumbnailsCacheAdmissionTests {
         try Data().write(to: rawURL)
 
         let diskCache = DiskCacheManager(cacheDirectory: diskDirectory)
-        let previewKey = ThumbnailRequestKey(
-            source: try ThumbnailSourceFingerprint.readingMetadata(for: rawURL),
+        let previewKey = try ThumbnailRequestKey(
+            source: ThumbnailSourceFingerprint.readingMetadata(for: rawURL),
             purpose: .preview,
-            requestedMaxPixelSize: 256,
+            requestedMaxPixelSize: 256
         )
         let gridKey = ThumbnailRequestKey(
             source: previewKey.source,
             purpose: .grid,
-            requestedMaxPixelSize: 200,
+            requestedMaxPixelSize: 200
         )
         let jpegData = try #require(DiskCacheManager.jpegData(from: makeCacheTestCGImage(width: 90, height: 60)))
         await diskCache.save(jpegData, for: previewKey)

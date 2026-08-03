@@ -64,7 +64,7 @@ extension RawCullViewModel {
             maxfilesHandler: maxfilesHandler,
             estimatedTimeHandler: estimatedTimeHandler,
             memorypressurewarning: { _ in },
-            onExtractionNeeded: {},
+            onExtractionNeeded: {}
         )
 
         let destinationURL = destination.url
@@ -73,14 +73,14 @@ extension RawCullViewModel {
             creatingthumbnails = false
             operationFailurePresentation = OperationFailurePresentation(
                 title: "Export Not Started",
-                message: "RawCull could not access the selected destination folder. Choose the folder again and retry.",
+                message: "RawCull could not access the selected destination folder. Choose the folder again and retry."
             )
             return
         }
         let extract = ExtractAndSaveJPGs(
             files: exportFiles,
             destinationCatalogURL: destinationURL,
-            exportMode: exportMode,
+            exportMode: exportMode
         )
         currentExtractAndSaveJPGsActor = extract
 
@@ -97,7 +97,7 @@ extension RawCullViewModel {
                     let firstFailure = result.failures[0]
                     self.operationFailurePresentation = OperationFailurePresentation(
                         title: "Export Incomplete",
-                        message: "\(result.failures.count) of \(result.succeeded + result.failures.count) JPG files could not be saved. First failure: \(firstFailure.fileName): \(firstFailure.message)",
+                        message: "\(result.failures.count) of \(result.succeeded + result.failures.count) JPG files could not be saved. First failure: \(firstFailure.fileName): \(firstFailure.message)"
                     )
                 }
             }
@@ -123,7 +123,7 @@ extension RawCullViewModel {
             maxfilesHandler: maxfilesHandler,
             estimatedTimeHandler: estimatedTimeHandler,
             memorypressurewarning: { _ in },
-            onExtractionNeeded: {},
+            onExtractionNeeded: {}
         )
 
         let actor = ScanAndExtractJPGs(urls: files.map(\.url))
@@ -150,7 +150,7 @@ extension RawCullViewModel {
         let s = SettingsViewModel.shared
         sharpnessModel.thumbnailMaxPixelSize = SharpnessScoringSizeOption.normalizedPixelSize(
             s.scoringThumbnailMaxPixelSize,
-            for: s.scoringQuality,
+            for: s.scoringQuality
         )
         sharpnessModel.focusMaskModel.config.borderInsetFraction = s.scoringBorderInsetFraction
         sharpnessModel.focusMaskModel.config.enableSubjectClassification = s.scoringEnableSubjectClassification

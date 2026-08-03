@@ -16,20 +16,20 @@ struct PerFileAnalysisArtifactStoreTests {
                 url: source.url,
                 fileSize: source.fileSize,
                 modificationDate: source.modificationDate,
-                cacheSchemaVersion: 2,
+                cacheSchemaVersion: 2
             ),
             purpose: .grid,
-            requestedMaxPixelSize: 200,
+            requestedMaxPixelSize: 200
         )
         let preview = ThumbnailRequestKey(
             source: ThumbnailSourceFingerprint(
                 url: source.url,
                 fileSize: source.fileSize,
                 modificationDate: source.modificationDate,
-                cacheSchemaVersion: 3,
+                cacheSchemaVersion: 3
             ),
             purpose: .preview,
-            requestedMaxPixelSize: 1_616,
+            requestedMaxPixelSize: 1616
         )
 
         #expect(grid != preview)
@@ -47,11 +47,11 @@ struct PerFileAnalysisArtifactStoreTests {
         let commit = await store.upsert(
             artifacts: [source.id: payload],
             sources: [source.id: source],
-            signature: signature,
+            signature: signature
         )
         let loaded = await store.load(
             sources: [source],
-            signature: signature,
+            signature: signature
         )
 
         #expect(commit.committedSourceIDs == Set([source.id]))
@@ -63,22 +63,22 @@ struct PerFileAnalysisArtifactStoreTests {
             url: source.url,
             displayName: source.displayName,
             fileSize: source.fileSize + 1,
-            modificationDate: source.modificationDate,
+            modificationDate: source.modificationDate
         )
         let changedPipeline = SimilarityArtifactPipelineSignature(
             featurePrintRevision: signature.featurePrintRevision,
             representationVersion: signature.representationVersion,
             thumbnailMaxPixelSize: signature.thumbnailMaxPixelSize + 1,
-            pipelineVersion: signature.pipelineVersion,
+            pipelineVersion: signature.pipelineVersion
         )
 
         let changedSourceLoad = await store.load(
             sources: [changedSource],
-            signature: signature,
+            signature: signature
         )
         let changedPipelineLoad = await store.load(
             sources: [source],
-            signature: changedPipeline,
+            signature: changedPipeline
         )
 
         #expect(changedSourceLoad.artifacts.isEmpty)
@@ -96,23 +96,23 @@ struct PerFileAnalysisArtifactStoreTests {
         _ = await store.upsert(
             artifacts: [first.id: payload],
             sources: [first.id: first],
-            signature: signature,
+            signature: signature
         )
         let storedRecords = try FileManager.default.contentsOfDirectory(
             at: store.storageDirectory,
-            includingPropertiesForKeys: nil,
+            includingPropertiesForKeys: nil
         )
         let firstRecord = try #require(storedRecords.first)
         _ = await store.upsert(
             artifacts: [second.id: payload],
             sources: [second.id: second],
-            signature: signature,
+            signature: signature
         )
         try Data("truncated".utf8).write(to: firstRecord, options: .atomic)
 
         let loaded = await store.load(
             sources: [first, second],
-            signature: signature,
+            signature: signature
         )
 
         #expect(loaded.artifacts[first.id] == nil)
@@ -120,7 +120,7 @@ struct PerFileAnalysisArtifactStoreTests {
         #expect(
             loaded.misses.contains {
                 $0.sourceID == first.id && $0.reason == .corrupt
-            },
+            }
         )
     }
 
@@ -132,14 +132,14 @@ struct PerFileAnalysisArtifactStoreTests {
         let invalid = try JSONEncoder().encode(
             VisionFeaturePrint(
                 revision: signature.featurePrintRevision,
-                payload: Data([0x00, 0x01]),
-            ),
+                payload: Data([0x00, 0x01])
+            )
         )
 
         let result = await store.upsert(
             artifacts: [source.id: invalid],
             sources: [source.id: source],
-            signature: signature,
+            signature: signature
         )
 
         #expect(result.committedSourceIDs.isEmpty)
@@ -157,7 +157,7 @@ struct PerFileAnalysisArtifactStoreTests {
         _ = await store.upsert(
             artifacts: [source.id: payload],
             sources: [source.id: source],
-            signature: signature,
+            signature: signature
         )
 
         let populated = await store.usage()
@@ -167,8 +167,8 @@ struct PerFileAnalysisArtifactStoreTests {
         let pruned = await store.prune(
             policy: PerFileAnalysisArtifactPruningPolicy(
                 maximumUnusedAge: -1,
-                maximumEntryCount: 0,
-            ),
+                maximumEntryCount: 0
+            )
         )
         #expect(pruned.removedEntryCount == 1)
         #expect((await store.usage()).entryCount == 0)
@@ -176,7 +176,7 @@ struct PerFileAnalysisArtifactStoreTests {
         _ = await store.upsert(
             artifacts: [source.id: payload],
             sources: [source.id: source],
-            signature: signature,
+            signature: signature
         )
         await store.clear()
         #expect((await store.usage()).entryCount == 0)
@@ -194,7 +194,7 @@ struct PerFileAnalysisArtifactStoreTests {
         _ = await store.upsert(
             artifacts: [source.id: original],
             sources: [source.id: source],
-            signature: signature,
+            signature: signature
         )
 
         let replacementTask = Task {
@@ -202,7 +202,7 @@ struct PerFileAnalysisArtifactStoreTests {
             return await store.upsert(
                 artifacts: [source.id: replacement],
                 sources: [source.id: source],
-                signature: signature,
+                signature: signature
             )
         }
         await gate.waitUntilStarted()
@@ -211,7 +211,7 @@ struct PerFileAnalysisArtifactStoreTests {
         let result = await replacementTask.value
         let loaded = await store.load(
             sources: [source],
-            signature: signature,
+            signature: signature
         )
 
         #expect(result.wasCancelled)
@@ -226,22 +226,22 @@ struct PerFileAnalysisArtifactStoreTests {
         defer { try? FileManager.default.removeItem(at: root) }
         let store = PerFileAnalysisArtifactStore(
             storageDirectory: root,
-            beforeRecordCommit: { _ in await gate.beforeCommit() },
+            beforeRecordCommit: { _ in await gate.beforeCommit() }
         )
         let sourceDirectory = URL(fileURLWithPath: "/tmp/ordered-\(UUID().uuidString)")
         let first = SimilarityArtifactSource(
             id: UUID(),
             url: sourceDirectory.appendingPathComponent("a-first.ARW"),
             displayName: "a-first.ARW",
-            fileSize: 1_024,
-            modificationDate: Date(timeIntervalSince1970: 1_000),
+            fileSize: 1024,
+            modificationDate: Date(timeIntervalSince1970: 1000)
         )
         let second = SimilarityArtifactSource(
             id: UUID(),
             url: sourceDirectory.appendingPathComponent("b-second.ARW"),
             displayName: "b-second.ARW",
-            fileSize: 1_024,
-            modificationDate: Date(timeIntervalSince1970: 1_000),
+            fileSize: 1024,
+            modificationDate: Date(timeIntervalSince1970: 1000)
         )
         let payload = try await makeValidVisionArtifact()
         let sources = [first.id: first, second.id: second]
@@ -249,7 +249,7 @@ struct PerFileAnalysisArtifactStoreTests {
             await store.upsert(
                 artifacts: [first.id: payload, second.id: payload],
                 sources: sources,
-                signature: makeArtifactSignature(),
+                signature: makeArtifactSignature()
             )
         }
 
@@ -259,7 +259,7 @@ struct PerFileAnalysisArtifactStoreTests {
         let result = await task.value
         let loaded = await store.load(
             sources: [first, second],
-            signature: makeArtifactSignature(),
+            signature: makeArtifactSignature()
         )
 
         #expect(result.wasCancelled)
@@ -287,7 +287,7 @@ struct PerFileAnalysisArtifactStoreTests {
         _ = await store.upsert(
             artifacts: [source.id: payload],
             sources: [source.id: source],
-            signature: makeArtifactSignature(),
+            signature: makeArtifactSignature()
         )
 
         await store.clear()
@@ -309,26 +309,26 @@ struct SimilarityArtifactPersistenceTests {
         let directory = FileManager.default.temporaryDirectory
             .appendingPathComponent(
                 "RawCullSimilarityPersistence-\(UUID().uuidString)",
-                isDirectory: true,
+                isDirectory: true
             )
         let first = makeArtifactFile(
             directory: directory,
             name: "first.ARW",
             size: 100,
-            modified: 100,
+            modified: 100
         )
         let second = makeArtifactFile(
             directory: directory,
             name: "second.ARW",
             size: 200,
-            modified: 200,
+            modified: 200
         )
 
         let initialModel = SimilarityScoringModel(
             embeddingProvider: { url, _ in
                 await recorder.artifact(for: url)
             },
-            artifactStore: store,
+            artifactStore: store
         )
         await initialModel.indexFiles([first, second])
         #expect(await recorder.requests() == ["first.ARW", "second.ARW"])
@@ -338,19 +338,19 @@ struct SimilarityArtifactPersistenceTests {
             directory: directory,
             name: "first.ARW",
             size: 100,
-            modified: 100,
+            modified: 100
         )
         let reloadedSecond = makeArtifactFile(
             directory: directory,
             name: "second.ARW",
             size: 200,
-            modified: 200,
+            modified: 200
         )
         let reloadedModel = SimilarityScoringModel(
             embeddingProvider: { url, _ in
                 await recorder.artifact(for: url)
             },
-            artifactStore: store,
+            artifactStore: store
         )
         await reloadedModel.indexFiles([reloadedFirst, reloadedSecond])
 
@@ -361,7 +361,7 @@ struct SimilarityArtifactPersistenceTests {
             directory: directory,
             name: "added.ARW",
             size: 300,
-            modified: 300,
+            modified: 300
         )
         await reloadedModel.indexFiles([reloadedFirst, reloadedSecond, added])
         #expect(await recorder.requests() == ["added.ARW"])
@@ -371,13 +371,13 @@ struct SimilarityArtifactPersistenceTests {
             directory: directory,
             name: "first.ARW",
             size: 101,
-            modified: 101,
+            modified: 101
         )
         let finalModel = SimilarityScoringModel(
             embeddingProvider: { url, _ in
                 await recorder.artifact(for: url)
             },
-            artifactStore: store,
+            artifactStore: store
         )
         await finalModel.indexFiles([modifiedFirst, reloadedSecond, added])
 
@@ -391,39 +391,39 @@ struct SimilarityArtifactPersistenceTests {
         let cacheDirectory = FileManager.default.temporaryDirectory
             .appendingPathComponent(
                 "RawCullLegacyBurstMigration-\(UUID().uuidString)",
-                isDirectory: true,
+                isDirectory: true
             )
         let cache = BurstAnalysisCache(cacheDirectory: cacheDirectory)
         let catalog = URL(
-            fileURLWithPath: "/tmp/catalog-\(UUID().uuidString)",
+            fileURLWithPath: "/tmp/catalog-\(UUID().uuidString)"
         )
         let file = makeArtifactFile(
             directory: catalog,
             name: "legacy.ARW",
             size: 100,
-            modified: 100,
+            modified: 100
         )
         let payload = try await makeValidVisionArtifact()
         let similaritySignature = BurstSimilaritySignature(
             groupingConfig: BurstGroupingConfig(
-                visualDistanceThreshold: 0.25,
+                visualDistanceThreshold: 0.25
             ),
             embeddingThumbnailMaxPixelSize:
-                SimilarityScoringModel.embeddingThumbnailMaxPixelSize,
+            SimilarityScoringModel.embeddingThumbnailMaxPixelSize,
             visionFeaturePrintRevision:
-                SimilarityScoringModel.featurePrintRevision,
+            SimilarityScoringModel.featurePrintRevision,
             embeddingPipelineVersion:
-                SimilarityScoringModel.embeddingPipelineVersion,
+            SimilarityScoringModel.embeddingPipelineVersion
         )
         let snapshot = BurstAnalysisCacheSnapshot(
             schemaVersion:
-                BurstAnalysisCache.legacyArtifactMigrationSchemaVersion,
+            BurstAnalysisCache.legacyArtifactMigrationSchemaVersion,
             algorithmVersion: BurstGroupingConfig.algorithmVersion,
             catalogPath: catalog.path,
             thumbnailMaxPixelSize: 512,
             sharpnessSignature: BurstSharpnessSignature(
                 thumbnailMaxPixelSize: 512,
-                config: FocusDetectorConfig(),
+                config: FocusDetectorConfig()
             ),
             similaritySignature: similaritySignature,
             similarityArtifactSetDigest: nil,
@@ -432,8 +432,8 @@ struct SimilarityArtifactPersistenceTests {
                     id: file.id,
                     path: file.url.path,
                     size: file.size,
-                    modificationDate: file.dateModified,
-                ),
+                    modificationDate: file.dateModified
+                )
             ],
             embeddings: [file.id: payload],
             sharpnessScores: [:],
@@ -441,29 +441,29 @@ struct SimilarityArtifactPersistenceTests {
             groups: [],
             boundaryEvidence: [],
             results: [],
-            reviewStateSnapshots: [],
+            reviewStateSnapshots: []
         )
         await cache.save(snapshot, catalog: catalog)
 
         let candidate = try #require(
-            await cache.loadMigrationCandidate(catalog: catalog),
+            await cache.loadMigrationCandidate(catalog: catalog)
         )
         let model = SimilarityScoringModel(
-            artifactStore: store,
+            artifactStore: store
         )
         let imported = await model.importLegacyArtifacts(
             candidate.embeddings,
             files: [file],
-            signature: candidate.similaritySignature,
+            signature: candidate.similaritySignature
         )
         let reloadedFile = makeArtifactFile(
             directory: catalog,
             name: "legacy.ARW",
             size: 100,
-            modified: 100,
+            modified: 100
         )
         let reloadedModel = SimilarityScoringModel(
-            artifactStore: store,
+            artifactStore: store
         )
         await reloadedModel.hydrateArtifacts([reloadedFile])
 
@@ -476,25 +476,25 @@ struct SimilarityArtifactPersistenceTests {
         let store = makeIsolatedSimilarityArtifactStore()
         let payload = try await makeValidVisionArtifact()
         let directory = URL(
-            fileURLWithPath: "/tmp/partial-\(UUID().uuidString)",
+            fileURLWithPath: "/tmp/partial-\(UUID().uuidString)"
         )
         let success = makeArtifactFile(
             directory: directory,
             name: "success.ARW",
             size: 100,
-            modified: 100,
+            modified: 100
         )
         let failure = makeArtifactFile(
             directory: directory,
             name: "failure.ARW",
             size: 200,
-            modified: 200,
+            modified: 200
         )
         let initialModel = SimilarityScoringModel(
             embeddingProvider: { url, _ in
                 url.lastPathComponent == "success.ARW" ? payload : nil
             },
-            artifactStore: store,
+            artifactStore: store
         )
 
         await initialModel.indexFiles([success, failure])
@@ -512,19 +512,19 @@ struct SimilarityArtifactPersistenceTests {
             directory: directory,
             name: "success.ARW",
             size: 100,
-            modified: 100,
+            modified: 100
         )
         let reloadedFailure = makeArtifactFile(
             directory: directory,
             name: "failure.ARW",
             size: 200,
-            modified: 200,
+            modified: 200
         )
         let reloadedModel = SimilarityScoringModel(
             embeddingProvider: { url, _ in
                 await recorder.artifact(for: url)
             },
-            artifactStore: store,
+            artifactStore: store
         )
         await reloadedModel.indexFiles([reloadedSuccess, reloadedFailure])
 
@@ -541,18 +541,18 @@ struct SimilarityArtifactPersistenceTests {
         let blockingFile = root.appendingPathComponent("not-a-directory")
         try Data("block".utf8).write(to: blockingFile)
         let store = PerFileAnalysisArtifactStore(
-            storageDirectory: blockingFile.appendingPathComponent("Similarity", isDirectory: true),
+            storageDirectory: blockingFile.appendingPathComponent("Similarity", isDirectory: true)
         )
         let payload = try await makeValidVisionArtifact()
         let file = makeArtifactFile(
             directory: root,
             name: "usable.ARW",
             size: 100,
-            modified: 100,
+            modified: 100
         )
         let model = SimilarityScoringModel(
             embeddingProvider: { _, _ in payload },
-            artifactStore: store,
+            artifactStore: store
         )
 
         await model.indexFiles([file])
@@ -607,7 +607,9 @@ private actor ArtifactStoreCancellationGate {
     }
 
     func waitUntilStarted() async {
-        if started { return }
+        if started {
+            return
+        }
         await withCheckedContinuation { continuation in
             startWaiters.append(continuation)
         }
@@ -634,19 +636,25 @@ private actor ArtifactStorePartialCommitGate {
         secondCommitStarted = true
         let waiters = startWaiters
         startWaiters = []
-        for waiter in waiters { waiter.resume() }
+        for waiter in waiters {
+            waiter.resume()
+        }
         await withCheckedContinuation { releaseWaiters.append($0) }
     }
 
     func waitUntilSecondCommitIsWaiting() async {
-        if secondCommitStarted { return }
+        if secondCommitStarted {
+            return
+        }
         await withCheckedContinuation { startWaiters.append($0) }
     }
 
     func releaseSecondCommit() {
         let waiters = releaseWaiters
         releaseWaiters = []
-        for waiter in waiters { waiter.resume() }
+        for waiter in waiters {
+            waiter.resume()
+        }
     }
 }
 
@@ -659,8 +667,8 @@ private func makeArtifactSource(name: String) -> SimilarityArtifactSource {
         id: UUID(),
         url: URL(fileURLWithPath: "/tmp/\(UUID().uuidString)/\(name)"),
         displayName: name,
-        fileSize: 1_024,
-        modificationDate: Date(timeIntervalSince1970: 1_000),
+        fileSize: 1024,
+        modificationDate: Date(timeIntervalSince1970: 1000)
     )
 }
 
@@ -668,7 +676,7 @@ private func makeArtifactFile(
     directory: URL,
     name: String,
     size: Int64,
-    modified: TimeInterval,
+    modified: TimeInterval
 ) -> FileItem {
     FileItem(
         url: directory.appendingPathComponent(name),
@@ -677,13 +685,13 @@ private func makeArtifactFile(
         dateModified: Date(timeIntervalSince1970: modified),
         captureDate: nil,
         exifData: nil,
-        afFocusNormalized: nil,
+        afFocusNormalized: nil
     )
 }
 
 private func makeValidVisionArtifact(red: UInt8 = 128) async throws -> Data {
     let colorSpace = try #require(
-        CGColorSpace(name: CGColorSpace.sRGB),
+        CGColorSpace(name: CGColorSpace.sRGB)
     )
     let context = try #require(
         CGContext(
@@ -693,19 +701,19 @@ private func makeValidVisionArtifact(red: UInt8 = 128) async throws -> Data {
             bitsPerComponent: 8,
             bytesPerRow: 16 * 4,
             space: colorSpace,
-            bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue,
-        ),
+            bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
+        )
     )
     context.setFillColor(
         red: CGFloat(red) / 255,
         green: 0.25,
         blue: 0.75,
-        alpha: 1,
+        alpha: 1
     )
     context.fill(CGRect(x: 0, y: 0, width: 16, height: 16))
     let image = try #require(context.makeImage())
     let featurePrint = try await VisionFeaturePrintBackend(
-        revision: SimilarityScoringModel.featurePrintRevision,
+        revision: SimilarityScoringModel.featurePrintRevision
     ).featurePrint(for: image)
     return try JSONEncoder().encode(featurePrint)
 }

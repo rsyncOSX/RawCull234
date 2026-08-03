@@ -98,7 +98,7 @@ struct RemoteDataNumbers: Identifiable, Hashable {
         if let preparedoutputfromrsync, !preparedoutputfromrsync.isEmpty {
             let parsersyncoutput = ParseRsyncOutput(
                 preparedoutputfromrsync,
-                (config?.rsyncVersion3 == true) ? .ver3 : .openrsync,
+                (config?.rsyncVersion3 == true) ? .ver3 : .openrsync
             )
             do {
                 stats = try parsersyncoutput.getstats()
@@ -106,7 +106,7 @@ struct RemoteDataNumbers: Identifiable, Hashable {
             } catch {
                 Logger.process.errorMessageOnly("RemoteDataNumbers: getstats() FAILED - \(error.localizedDescription)")
                 // Ensure sane defaults when stats parsing fails
-                self.defaultvalues()
+                defaultvalues()
             }
 
             filestransferred = parsersyncoutput.formatted_filestransferred

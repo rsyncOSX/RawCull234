@@ -78,7 +78,7 @@ struct ImageSourceSelectorView: View {
     private func sourceButton(
         _ source: ImagePreviewSource,
         icon: String,
-        label: String,
+        label: String
     ) -> some View {
         Button {
             withAnimation(.easeInOut(duration: 0.2)) {

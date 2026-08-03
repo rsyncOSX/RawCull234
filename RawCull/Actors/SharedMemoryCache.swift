@@ -141,7 +141,7 @@ actor SharedMemoryCache {
     init(
         diskCache: DiskCacheManager? = nil,
         fullSizeJPGCache: FullSizeJPGDiskCache? = nil,
-        tracksEvictions: Bool = true,
+        tracksEvictions: Bool = true
     ) {
         self.diskCache = diskCache ?? DiskCacheManager()
         self.fullSizeJPGCache = fullSizeJPGCache ?? FullSizeJPGDiskCache()
@@ -225,7 +225,7 @@ actor SharedMemoryCache {
             usedMemoryBytes: Self.usedSystemMemoryBytes(),
             userPreviewMaxMB: settings.memoryCacheSizeMB,
             userGridMaxMB: settings.gridCacheSizeMB,
-            pressureLevel: currentPressureLevel,
+            pressureLevel: currentPressureLevel
         )
 
         // totalCostLimit is the PRIMARY memory constraint (based on allocated MB)
@@ -237,7 +237,7 @@ actor SharedMemoryCache {
         return CacheConfig(
             totalCostLimit: totalCostLimit,
             countLimit: countLimit,
-            gridTotalCostLimit: gridTotalCostLimit,
+            gridTotalCostLimit: gridTotalCostLimit
         )
     }
 
@@ -245,7 +245,7 @@ actor SharedMemoryCache {
         let total = ProcessInfo.processInfo.physicalMemory
         var stat = vm_statistics64()
         var count = mach_msg_type_number_t(
-            MemoryLayout<vm_statistics64>.size / MemoryLayout<integer_t>.size,
+            MemoryLayout<vm_statistics64>.size / MemoryLayout<integer_t>.size
         )
 
         let result = withUnsafeMutablePointer(to: &stat) {
@@ -535,7 +535,7 @@ actor SharedMemoryCache {
             hits: cacheMemory,
             misses: cacheDisk,
             evictions: evictions,
-            hitRate: hitRate,
+            hitRate: hitRate
         )
     }
 
@@ -699,7 +699,7 @@ private struct ThumbnailExtractionMetrics {
             duplicateStarts: duplicateStarts,
             coalescedWaiters: coalescedWaiters,
             activeExtractions: activeExtractions,
-            maximumActiveExtractions: maximumActiveExtractions,
+            maximumActiveExtractions: maximumActiveExtractions
         )
     }
 

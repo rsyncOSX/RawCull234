@@ -10,7 +10,7 @@ private func makeExtractJPGTestFile(_ name: String) -> FileItem {
         size: 1,
         dateModified: Date(timeIntervalSince1970: 0),
         exifData: nil,
-        afFocusNormalized: nil,
+        afFocusNormalized: nil
     )
 }
 
@@ -50,7 +50,7 @@ struct ExtractJPGsSelectionTests {
         let viewModel = RawCullViewModel()
         let destination = ARWSourceCatalog(
             name: "Destination",
-            url: URL(fileURLWithPath: "/tmp/destination", isDirectory: true),
+            url: URL(fileURLWithPath: "/tmp/destination", isDirectory: true)
         )
 
         viewModel.files = [makeExtractJPGTestFile("A.ARW")]
@@ -68,7 +68,7 @@ struct ExtractJPGsSelectionTests {
         let file = makeExtractJPGTestFile("A.ARW")
         let destination = ARWSourceCatalog(
             name: "Destination",
-            url: URL(fileURLWithPath: "/tmp/destination", isDirectory: true),
+            url: URL(fileURLWithPath: "/tmp/destination", isDirectory: true)
         )
         viewModel.files = [file]
         viewModel.filteredFiles = [file]
@@ -87,7 +87,7 @@ struct ExtractJPGsSelectionTests {
         let viewModel = RawCullViewModel()
         let source = ARWSourceCatalog(
             name: "Source",
-            url: URL(fileURLWithPath: "/tmp/source", isDirectory: true),
+            url: URL(fileURLWithPath: "/tmp/source", isDirectory: true)
         )
 
         viewModel.sources = [source]
@@ -104,11 +104,11 @@ struct ExtractJPGsSelectionTests {
         let viewModel = RawCullViewModel()
         let source = ARWSourceCatalog(
             name: "Source",
-            url: URL(fileURLWithPath: "/tmp/source", isDirectory: true),
+            url: URL(fileURLWithPath: "/tmp/source", isDirectory: true)
         )
         let externalDestination = ARWSourceCatalog(
             name: "Exports",
-            url: URL(fileURLWithPath: "/tmp/exports", isDirectory: true),
+            url: URL(fileURLWithPath: "/tmp/exports", isDirectory: true)
         )
 
         viewModel.sources = [source]
@@ -131,7 +131,7 @@ struct ExtractJPGsOutputURLTests {
         let outputURL = SaveJPGImage.outputURL(
             for: source,
             in: destination,
-            exportMode: .embeddedJPG,
+            exportMode: .embeddedJPG
         )
 
         #expect(outputURL == destination.appendingPathComponent("Alpha.jpg"))
@@ -145,7 +145,7 @@ struct ExtractJPGsOutputURLTests {
         let outputURL = SaveJPGImage.outputURL(
             for: source,
             in: destination,
-            exportMode: .demosaicedRAW,
+            exportMode: .demosaicedRAW
         )
 
         #expect(outputURL == destination.appendingPathComponent("Alpha_demosaic.jpg"))
@@ -164,7 +164,7 @@ struct ExtractJPGsOutputURLTests {
                 Data([0xFF, 0xD8, 0xFF, 0xD9]),
                 originalURL: URL(fileURLWithPath: "/tmp/source/Alpha.ARW"),
                 destinationCatalogURL: root,
-                exportMode: .embeddedJPG,
+                exportMode: .embeddedJPG
             )
         } catch {
             didThrow = true

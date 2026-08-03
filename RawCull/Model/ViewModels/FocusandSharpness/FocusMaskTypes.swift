@@ -38,7 +38,7 @@ nonisolated struct SharpnessBreakdown: Equatable, Sendable {
         focusMaskRegionSource: FocusMaskRegionSource? = nil,
         focusMaskVisualThreshold: Float? = nil,
         focusEvidence: FocusEvidence? = nil,
-        scoringSource: SharpnessScoringSource = .embeddedPreview,
+        scoringSource: SharpnessScoringSource = .embeddedPreview
     ) {
         self.finalScore = finalScore
         self.globalScore = globalScore
@@ -56,7 +56,7 @@ nonisolated struct SharpnessBreakdown: Equatable, Sendable {
 
     init(
         package breakdown: PhotoAnalysisKit.SharpnessBreakdown,
-        scoringSource: SharpnessScoringSource,
+        scoringSource: SharpnessScoringSource
     ) {
         self.init(
             finalScore: breakdown.finalScore,
@@ -70,7 +70,7 @@ nonisolated struct SharpnessBreakdown: Equatable, Sendable {
             focusMaskRegionSource: breakdown.focusMaskRegionSource,
             focusMaskVisualThreshold: breakdown.focusMaskVisualThreshold,
             focusEvidence: breakdown.focusEvidence,
-            scoringSource: scoringSource,
+            scoringSource: scoringSource
         )
     }
 }

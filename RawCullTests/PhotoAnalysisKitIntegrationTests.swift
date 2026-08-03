@@ -17,7 +17,7 @@ struct PhotoAnalysisKitIntegrationTests {
             from: image,
             scale: 1,
             iso: 800,
-            aperture: 4,
+            aperture: 4
         )
 
         #expect(result.mask != nil)
@@ -29,7 +29,7 @@ struct PhotoAnalysisKitIntegrationTests {
     func `package feature prints drive RawCull similarity distance`() async throws {
         let image = try #require(makeIntegrationCheckerboard())
         let backend = VisionFeaturePrintBackend(
-            revision: SimilarityScoringModel.featurePrintRevision,
+            revision: SimilarityScoringModel.featurePrintRevision
         )
         let anchorPrint = try await backend.featurePrint(for: image)
         let candidatePrint = try await backend.featurePrint(for: image)
@@ -59,12 +59,12 @@ struct PhotoAnalysisKitIntegrationTests {
             blurGateSigma: 0.03,
             subjectLabel: "bird",
             subjectConfidence: 0.9,
-            focusFailureKind: .none,
+            focusFailureKind: .none
         )
 
         let breakdown = RawCull.SharpnessBreakdown(
             package: packageBreakdown,
-            scoringSource: .rawDemosaic,
+            scoringSource: .rawDemosaic
         )
 
         #expect(breakdown.finalScore == packageBreakdown.finalScore)
@@ -80,7 +80,7 @@ private func makeIntegrationFile(_ name: String) -> FileItem {
         size: 1,
         dateModified: Date(timeIntervalSince1970: 0),
         exifData: nil,
-        afFocusNormalized: nil,
+        afFocusNormalized: nil
     )
 }
 
@@ -93,7 +93,7 @@ private func makeIntegrationCheckerboard(size: Int = 128) -> CGImage? {
               bitsPerComponent: 8,
               bytesPerRow: size * 4,
               space: colorSpace,
-              bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue,
+              bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
           )
     else { return nil }
 

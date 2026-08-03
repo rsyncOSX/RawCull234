@@ -86,7 +86,7 @@ actor ThumbnailLoader {
             let gridKey = ThumbnailRequestKey(
                 source: ThumbnailSourceFingerprint(file: file),
                 purpose: .grid,
-                requestedMaxPixelSize: 200,
+                requestedMaxPixelSize: 200
             )
             if let wrapper = SharedMemoryCache.shared.gridObject(forKey: gridKey) {
                 return wrapper.image
@@ -103,7 +103,7 @@ actor ThumbnailLoader {
         let cgThumb = await RequestThumbnail.shared.requestThumbnail(
             for: file,
             targetSize: settings.thumbnailSizePreview,
-            purpose: .preview,
+            purpose: .preview
         )
 
         guard !Task.isCancelled else { return nil }
@@ -128,13 +128,13 @@ actor ThumbnailLoader {
             activeTasks: Int,
             pendingContinuations: Int,
             maxConcurrent: Int,
-            maxObservedActiveTasks: Int,
+            maxObservedActiveTasks: Int
         ) {
             (
                 activeTasks: activeTasks,
                 pendingContinuations: pendingContinuations.count,
                 maxConcurrent: maxConcurrent,
-                maxObservedActiveTasks: maxObservedActiveTasks,
+                maxObservedActiveTasks: maxObservedActiveTasks
             )
         }
 

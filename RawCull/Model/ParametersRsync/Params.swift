@@ -11,7 +11,7 @@ import RsyncArguments
 @MainActor
 struct Params {
     func params(
-        config: SynchronizeConfiguration,
+        config: SynchronizeConfiguration
     ) -> Parameters {
         Parameters(
             task: config.task,
@@ -19,7 +19,7 @@ struct Params {
                 archiveMode: DefaultRsyncParameters.archiveMode.rawValue,
                 verboseOutput: DefaultRsyncParameters.verboseOutput.rawValue,
                 compressionEnabled: DefaultRsyncParameters.compressionEnabled.rawValue,
-                deleteExtraneous: "",
+                deleteExtraneous: ""
             ),
             optionalParameters: OptionalRsyncParameters(parameter8: config.parameter8,
                                                         parameter9: config.parameter9,
@@ -36,16 +36,16 @@ struct Params {
                 sshkeypathandidentityfile: "",
                 sharedsshport: "",
                 sharedsshkeypathandidentityfile: "",
-                rsyncversion3: config.rsyncVersion3,
+                rsyncversion3: config.rsyncVersion3
             ),
             paths: PathConfiguration(
                 localCatalog: config.localCatalog,
                 offsiteCatalog: config.offsiteCatalog,
-                sharedPathForRestore: "",
+                sharedPathForRestore: ""
             ),
             snapshotNumber: 0,
             isRsyncDaemon: false,
-            rsyncVersion3: config.rsyncVersion3,
+            rsyncVersion3: config.rsyncVersion3
         )
     }
 }

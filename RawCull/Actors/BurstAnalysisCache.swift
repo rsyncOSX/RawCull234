@@ -26,13 +26,6 @@ nonisolated struct BurstSimilaritySignature: Codable, Equatable {
     var embeddingThumbnailMaxPixelSize: Int
     var visionFeaturePrintRevision: Int
     var embeddingPipelineVersion: Int
-
-    static func == (lhs: Self, rhs: Self) -> Bool {
-        lhs.groupingConfig == rhs.groupingConfig
-            && lhs.embeddingThumbnailMaxPixelSize == rhs.embeddingThumbnailMaxPixelSize
-            && lhs.visionFeaturePrintRevision == rhs.visionFeaturePrintRevision
-            && lhs.embeddingPipelineVersion == rhs.embeddingPipelineVersion
-    }
 }
 
 nonisolated struct SharpnessScoringSignature: Codable, Equatable {
@@ -46,7 +39,7 @@ nonisolated struct SharpnessScoringSignature: Codable, Equatable {
     init(
         scoringSource: SharpnessScoringSource = .embeddedPreview,
         thumbnailMaxPixelSize: Int,
-        config: FocusDetectorConfig,
+        config: FocusDetectorConfig
     ) {
         analysisDescriptor = PhotoAnalyzer.sharpnessDescriptor(for: config)
         self.scoringSource = scoringSource
@@ -63,15 +56,15 @@ nonisolated struct SharpnessScoringSignature: Codable, Equatable {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         analysisDescriptor = try values.decodeIfPresent(
             SharpnessAnalysisDescriptor.self,
-            forKey: .analysisDescriptor,
+            forKey: .analysisDescriptor
         )
         scoringSource = (try? values.decode(
             SharpnessScoringSource.self,
-            forKey: .scoringSource,
+            forKey: .scoringSource
         )) ?? .embeddedPreview
         thumbnailMaxPixelSize = (try? values.decode(
             Int.self,
-            forKey: .thumbnailMaxPixelSize,
+            forKey: .thumbnailMaxPixelSize
         )) ?? 0
     }
 
@@ -79,12 +72,12 @@ nonisolated struct SharpnessScoringSignature: Codable, Equatable {
         var values = encoder.container(keyedBy: CodingKeys.self)
         try values.encodeIfPresent(
             analysisDescriptor,
-            forKey: .analysisDescriptor,
+            forKey: .analysisDescriptor
         )
         try values.encode(scoringSource, forKey: .scoringSource)
         try values.encode(
             thumbnailMaxPixelSize,
-            forKey: .thumbnailMaxPixelSize,
+            forKey: .thumbnailMaxPixelSize
         )
     }
 }
@@ -126,7 +119,7 @@ actor BurstAnalysisCache {
         files: [FileItem],
         thumbnailMaxPixelSize: Int,
         sharpnessSignature: BurstSharpnessSignature,
-        similaritySignature: BurstSimilaritySignature,
+        similaritySignature: BurstSimilaritySignature
     ) async -> BurstAnalysisCacheSnapshot? {
         guard !Task.isCancelled else { return nil }
         let url = cacheURL(for: catalog)
@@ -142,7 +135,7 @@ actor BurstAnalysisCache {
                 files: files,
                 thumbnailMaxPixelSize: thumbnailMaxPixelSize,
                 sharpnessSignature: sharpnessSignature,
-                similaritySignature: similaritySignature,
+                similaritySignature: similaritySignature
             ) else {
                 return nil
             }
@@ -156,7 +149,7 @@ actor BurstAnalysisCache {
     /// per-file artifacts and stable review-state signatures. Derived burst
     /// results are still validated by `load` before they can be applied.
     func loadMigrationCandidate(
-        catalog: URL,
+        catalog: URL
     ) async -> BurstAnalysisCacheSnapshot? {
         guard !Task.isCancelled else { return nil }
         let url = cacheURL(for: catalog)
@@ -169,12 +162,12 @@ actor BurstAnalysisCache {
             guard !Task.isCancelled else { return nil }
             let snapshot = try JSONDecoder().decode(
                 BurstAnalysisCacheSnapshot.self,
-                from: data,
+                from: data
             )
             guard snapshot.catalogPath == catalog.path,
                   snapshot.schemaVersion == Self.schemaVersion
-                    || snapshot.schemaVersion
-                    == Self.legacyArtifactMigrationSchemaVersion
+                  || snapshot.schemaVersion
+                  == Self.legacyArtifactMigrationSchemaVersion
             else { return nil }
             return snapshot
         } catch {
@@ -184,7 +177,7 @@ actor BurstAnalysisCache {
 
     nonisolated static func artifactSetDigest(
         files: [FileItem],
-        artifacts: [UUID: Data],
+        artifacts: [UUID: Data]
     ) -> String {
         let entries = files.compactMap { file -> ArtifactDigestEntry? in
             guard let artifact = artifacts[file.id] else { return nil }
@@ -192,7 +185,7 @@ actor BurstAnalysisCache {
                 path: file.url.standardizedFileURL.path,
                 artifactDigest: SHA256.hash(data: artifact).map {
                     String(format: "%02x", $0)
-                }.joined(),
+                }.joined()
             )
         }.sorted { $0.path < $1.path }
 
@@ -233,13 +226,13 @@ actor BurstAnalysisCache {
             let fileManager = FileManager.default
             let resourceKeys: Set<URLResourceKey> = [
                 .isRegularFileKey,
-                .totalFileAllocatedSizeKey,
+                .totalFileAllocatedSizeKey
             ]
 
             guard let urls = try? fileManager.contentsOfDirectory(
                 at: directory,
                 includingPropertiesForKeys: Array(resourceKeys),
-                options: .skipsHiddenFiles,
+                options: .skipsHiddenFiles
             ) else { return (0, 0) }
 
             var size = 0
@@ -263,7 +256,7 @@ actor BurstAnalysisCache {
             guard let urls = try? fileManager.contentsOfDirectory(
                 at: directory,
                 includingPropertiesForKeys: nil,
-                options: .skipsHiddenFiles,
+                options: .skipsHiddenFiles
             ) else { return }
 
             for fileURL in urls {
@@ -278,7 +271,7 @@ actor BurstAnalysisCache {
         files: [FileItem],
         thumbnailMaxPixelSize: Int,
         sharpnessSignature: BurstSharpnessSignature,
-        similaritySignature: BurstSimilaritySignature,
+        similaritySignature: BurstSimilaritySignature
     ) -> Bool {
         guard snapshot.schemaVersion == Self.schemaVersion,
               snapshot.similarityArtifactSetDigest != nil,

@@ -25,35 +25,35 @@ struct FocusSettingsTab: View {
                             label: "Threshold",
                             value: $vm.sharpnessModel.focusMaskModel.config.threshold,
                             range: 0.01 ... 0.70,
-                            hint: "Lower = more highlighted, Higher = only sharpest edges",
+                            hint: "Lower = more highlighted, Higher = only sharpest edges"
                         )
 
                         LabeledSlider(
                             label: "Pre-blur",
                             value: $vm.sharpnessModel.focusMaskModel.config.preBlurRadius,
                             range: 0.3 ... 4.0,
-                            hint: "Higher = ignore more background texture",
+                            hint: "Higher = ignore more background texture"
                         )
 
                         LabeledSlider(
                             label: "Amplify",
                             value: $vm.sharpnessModel.focusMaskModel.config.energyMultiplier,
                             range: 1.0 ... 20.0,
-                            hint: "Visual-only amplification before the overlay threshold",
+                            hint: "Visual-only amplification before the overlay threshold"
                         )
 
                         LabeledSlider(
                             label: "Erosion",
                             value: $vm.sharpnessModel.focusMaskModel.config.erosionRadius,
                             range: 0.0 ... 2.0,
-                            hint: "Higher = removes more isolated noise pixels",
+                            hint: "Higher = removes more isolated noise pixels"
                         )
 
                         LabeledSlider(
                             label: "Dilation",
                             value: $vm.sharpnessModel.focusMaskModel.config.dilationRadius,
                             range: 0.0 ... 3.0,
-                            hint: "Higher = expands and connects nearby mask regions",
+                            hint: "Higher = expands and connects nearby mask regions"
                         )
                     }
                 }
@@ -68,7 +68,7 @@ struct FocusSettingsTab: View {
                     resetMessage: "Reset focus mask and focus point settings to defaults?",
                     saveMessage: "Save focus settings to disk?",
                     onReset: { resetToDefaults() },
-                    onSave: { Task { await saveSettings() } },
+                    onSave: { Task { await saveSettings() } }
                 )
             }
         }

@@ -11,7 +11,7 @@ private func makeGridTestFile(_ name: String, id: UUID = UUID()) -> FileItem {
         size: 1,
         dateModified: Date(timeIntervalSince1970: 0),
         exifData: nil,
-        afFocusNormalized: nil,
+        afFocusNormalized: nil
     )
 }
 
@@ -19,7 +19,7 @@ private func makeBurstResult(
     groupID: Int,
     fileIDs: [FileItem.ID],
     recommendedFileID: FileItem.ID,
-    reviewState: BurstReviewState = .algorithmReviewed,
+    reviewState: BurstReviewState = .algorithmReviewed
 ) -> BurstAnalysisResult {
     BurstAnalysisResult(
         groupID: groupID,
@@ -35,7 +35,7 @@ private func makeBurstResult(
                 metadataComponent: 0.0,
                 confidence: .medium,
                 reasons: [],
-                cautions: [],
+                cautions: []
             )
         ],
         recommendedFileID: recommendedFileID,
@@ -44,7 +44,7 @@ private func makeBurstResult(
         reviewState: reviewState,
         isSafeForOneClickCulling: true,
         reasons: [],
-        cautions: [],
+        cautions: []
     )
 }
 
@@ -54,7 +54,7 @@ private func makeReviewQueueResult(
     confidence: BurstDecisionConfidence,
     reviewState: BurstReviewState = .none,
     cautions: [String] = [],
-    isSafeForOneClickCulling: Bool = false,
+    isSafeForOneClickCulling: Bool = false
 ) -> BurstAnalysisResult {
     BurstAnalysisResult(
         groupID: groupID,
@@ -66,7 +66,7 @@ private func makeReviewQueueResult(
         reviewState: reviewState,
         isSafeForOneClickCulling: isSafeForOneClickCulling,
         reasons: [],
-        cautions: cautions,
+        cautions: cautions
     )
 }
 
@@ -82,7 +82,7 @@ struct CullingGridCoordinatorTests {
             fileID: ids[2],
             state: initial,
             visibleIDs: ids,
-            modifier: .normal,
+            modifier: .normal
         )
         #expect(normal.selectedFileID == ids[2])
         #expect(normal.selectedFileIDs.isEmpty)
@@ -91,7 +91,7 @@ struct CullingGridCoordinatorTests {
             fileID: ids[3],
             state: normal,
             visibleIDs: ids,
-            modifier: .command,
+            modifier: .command
         )
         #expect(command.selectedFileID == ids[3])
         #expect(command.selectedFileIDs == [ids[2], ids[3]])
@@ -100,7 +100,7 @@ struct CullingGridCoordinatorTests {
             fileID: ids[0],
             state: command,
             visibleIDs: ids,
-            modifier: .shift,
+            modifier: .shift
         )
         #expect(shift.selectedFileID == ids[3])
         #expect(shift.selectedFileIDs == Set(ids[0 ... 3]))
@@ -113,14 +113,14 @@ struct CullingGridCoordinatorTests {
         let result = makeBurstResult(
             groupID: 7,
             fileIDs: [best.id, subject.id],
-            recommendedFileID: best.id,
+            recommendedFileID: best.id
         )
 
         let items = CullingGridSelectionCoordinator.badgeSelectionItems(
             visibleFiles: [best, subject],
             burstGroupLookup: [best.id: 7, subject.id: 7],
             burstAnalysisResults: [7: result],
-            saliencyInfo: [subject.id: SaliencyInfo(subjectLabel: "person")],
+            saliencyInfo: [subject.id: SaliencyInfo(subjectLabel: "person")]
         )
 
         let countsByLabel = Dictionary(uniqueKeysWithValues: items.map { ($0.label, $0.count) })
@@ -132,7 +132,7 @@ struct CullingGridCoordinatorTests {
             visibleFiles: [best, subject],
             burstGroupLookup: [best.id: 7, subject.id: 7],
             burstAnalysisResults: [7: result],
-            saliencyInfo: [subject.id: SaliencyInfo(subjectLabel: "person")],
+            saliencyInfo: [subject.id: SaliencyInfo(subjectLabel: "person")]
         )
         #expect(matching == [subject.id])
     }
@@ -147,7 +147,7 @@ struct CullingGridCoordinatorTests {
         let cache = CullingGridRenderCache.rebuild(
             files: [winner, visible],
             burstGroups: [group],
-            scores: [winner.id: 0.7, visible.id: 0.4],
+            scores: [winner.id: 0.7, visible.id: 0.4]
         )
 
         #expect(cache.visibleBurstGroups.map(\.id) == [3])
@@ -165,12 +165,12 @@ struct CullingGridCoordinatorTests {
         let collapsed = BurstGroupCleanViewPolicy.visibleFiles(
             in: [first, second, third, fourth],
             rankedFileIDs: [third.id, first.id, fourth.id, second.id],
-            isCollapsed: true,
+            isCollapsed: true
         )
         let expanded = BurstGroupCleanViewPolicy.visibleFiles(
             in: [first, second, third, fourth],
             rankedFileIDs: [third.id, first.id, fourth.id, second.id],
-            isCollapsed: false,
+            isCollapsed: false
         )
 
         #expect(collapsed.map(\.id) == [third.id, first.id, fourth.id])
@@ -187,7 +187,7 @@ struct CullingGridCoordinatorTests {
         let visible = BurstGroupCleanViewPolicy.visibleFiles(
             in: [first, second, third, fourth],
             rankedFileIDs: [third.id],
-            isCollapsed: true,
+            isCollapsed: true
         )
 
         #expect(visible.map(\.id) == [third.id, first.id, second.id])
@@ -205,7 +205,7 @@ struct CullingGridCoordinatorTests {
             groups: [BurstGroup] = [group],
             files: [FileItem] = [first, middle, last],
             scoreRevision: Int = 4,
-            maxScore: Float = 0.8,
+            maxScore: Float = 0.8
         ) -> CullingGridRenderCacheKey {
             CullingGridRenderCacheKey(
                 burstGroups: groups,
@@ -215,7 +215,7 @@ struct CullingGridCoordinatorTests {
                 scoresCount: 3,
                 scoreRevision: scoreRevision,
                 maxScore: maxScore,
-                burstAnalysisResults: [:],
+                burstAnalysisResults: [:]
             )
         }
 
@@ -249,7 +249,7 @@ struct CullingGridCoordinatorTests {
 
         let flags = ComparisonGridImageCoordinator.syncSourceStates(
             for: [first, second],
-            sourceFlags: [first.id: true, staleID: true],
+            sourceFlags: [first.id: true, staleID: true]
         )
 
         #expect(flags == [first.id: true, second.id: false])
@@ -262,7 +262,7 @@ struct CullingGridCoordinatorTests {
             groupID: 2,
             confidence: .high,
             cautions: ["Top two are close"],
-            isSafeForOneClickCulling: true,
+            isSafeForOneClickCulling: true
         )
         let reviewed = makeReviewQueueResult(groupID: 3, confidence: .low, reviewState: .reviewed)
         let deferred = makeReviewQueueResult(groupID: 4, confidence: .low, reviewState: .deferred)
@@ -301,13 +301,13 @@ struct CullingGridCoordinatorTests {
                 groupID: 2,
                 fileIDs: [deferredFile.id, deferredPeer.id],
                 confidence: .low,
-                reviewState: .deferred,
+                reviewState: .deferred
             ),
             3: makeReviewQueueResult(
                 groupID: 3,
                 fileIDs: [reviewedFile.id, reviewedPeer.id],
                 confidence: .low,
-                reviewState: .reviewed,
+                reviewState: .reviewed
             )
         ]
 
@@ -340,13 +340,13 @@ struct CullingGridCoordinatorTests {
                 groupID: 1,
                 fileIDs: first.map(\.id),
                 confidence: .low,
-                reviewState: .reviewed,
+                reviewState: .reviewed
             ),
             3: makeReviewQueueResult(
                 groupID: 3,
                 fileIDs: reviewed.map(\.id),
                 confidence: .low,
-                reviewState: .reviewed,
+                reviewState: .reviewed
             ),
             4: makeReviewQueueResult(groupID: 4, fileIDs: next.map(\.id), confidence: .low)
         ]
@@ -387,7 +387,7 @@ struct CullingGridCoordinatorTests {
         let viewModel = RawCullViewModel()
         let catalog = ARWSourceCatalog(
             name: "Catalog",
-            url: URL(fileURLWithPath: "/tmp/catalog-\(UUID().uuidString)"),
+            url: URL(fileURLWithPath: "/tmp/catalog-\(UUID().uuidString)")
         )
         viewModel.selectedSource = catalog
         viewModel.cullingModel = CullingModel(saveDelayNanoseconds: 0, saveHandler: { _ in })
@@ -415,13 +415,13 @@ struct CullingGridCoordinatorTests {
         let viewModel = RawCullViewModel()
         let catalog = ARWSourceCatalog(
             name: "Catalog",
-            url: URL(fileURLWithPath: "/tmp/catalog-\(UUID().uuidString)"),
+            url: URL(fileURLWithPath: "/tmp/catalog-\(UUID().uuidString)")
         )
         viewModel.selectedSource = catalog
         viewModel.cullingModel = CullingModel(saveDelayNanoseconds: 0, saveHandler: { _ in })
         viewModel.cullingModel.mergeScoringResults(
             [CullingScoringResult(fileName: current[0].name, score: 0.75, saliencySubject: nil)],
-            in: catalog.url,
+            in: catalog.url
         )
         viewModel.files = current + next
         viewModel.similarityModel.burstGroups = [
@@ -462,20 +462,20 @@ struct CullingGridCoordinatorTests {
                 groupID: 2,
                 fileIDs: deferredFiles.map(\.id),
                 confidence: .low,
-                reviewState: .deferred,
+                reviewState: .deferred
             ),
             4: makeReviewQueueResult(
                 groupID: 4,
                 fileIDs: reviewedFiles.map(\.id),
                 confidence: .low,
-                reviewState: .reviewed,
+                reviewState: .reviewed
             ),
             5: makeReviewQueueResult(
                 groupID: 5,
                 fileIDs: appliedFiles.map(\.id),
                 confidence: .high,
                 reviewState: .decisionApplied,
-                isSafeForOneClickCulling: true,
+                isSafeForOneClickCulling: true
             )
         ]
 
@@ -483,7 +483,7 @@ struct CullingGridCoordinatorTests {
             singleImages: 2,
             deferred: 1,
             markedReviewed: 1,
-            needsReview: 1,
+            needsReview: 1
         ))
 
         viewModel.markBurstGroupReviewed(groupID: 1)
@@ -522,7 +522,7 @@ struct CullingGridCoordinatorTests {
             1: makeReviewQueueResult(
                 groupID: 1,
                 fileIDs: [first.id, second.id],
-                confidence: .low,
+                confidence: .low
             )
         ]
 
@@ -555,12 +555,12 @@ struct CullingGridCoordinatorTests {
             0: makeReviewQueueResult(
                 groupID: 0,
                 fileIDs: [singleton.id],
-                confidence: .low,
+                confidence: .low
             ),
             1: makeReviewQueueResult(
                 groupID: 1,
                 fileIDs: [first.id, second.id],
-                confidence: .low,
+                confidence: .low
             )
         ]
 

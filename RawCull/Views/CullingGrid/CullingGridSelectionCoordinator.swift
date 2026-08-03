@@ -28,7 +28,7 @@ enum CullingGridSelectionCoordinator {
         fileID: FileItem.ID,
         state: CullingGridSelectionState,
         visibleIDs: [FileItem.ID],
-        modifier: CullingGridSelectionModifier,
+        modifier: CullingGridSelectionModifier
     ) -> CullingGridSelectionState {
         var next = state
 
@@ -64,7 +64,7 @@ enum CullingGridSelectionCoordinator {
         matchingIDs: Set<FileItem.ID>,
         state: CullingGridSelectionState,
         visibleFiles: [FileItem],
-        modifier: CullingGridSelectionModifier,
+        modifier: CullingGridSelectionModifier
     ) -> CullingGridSelectionState {
         guard !matchingIDs.isEmpty else { return state }
         var next = state
@@ -93,14 +93,14 @@ enum CullingGridSelectionCoordinator {
         visibleFiles: [FileItem],
         burstGroupLookup: [FileItem.ID: Int],
         burstAnalysisResults: [Int: BurstAnalysisResult],
-        saliencyInfo: [FileItem.ID: SaliencyInfo],
+        saliencyInfo: [FileItem.ID: SaliencyInfo]
     ) -> [BatchBadgeSelectionItem] {
         let counts = visibleFiles.reduce(into: [String: Int]()) { result, file in
             for label in badgeLabels(
                 for: file,
                 burstGroupLookup: burstGroupLookup,
                 burstAnalysisResults: burstAnalysisResults,
-                saliencyInfo: saliencyInfo,
+                saliencyInfo: saliencyInfo
             ) {
                 result[label, default: 0] += 1
             }
@@ -125,7 +125,7 @@ enum CullingGridSelectionCoordinator {
         for file: FileItem,
         burstGroupLookup: [FileItem.ID: Int],
         burstAnalysisResults: [Int: BurstAnalysisResult],
-        saliencyInfo: [FileItem.ID: SaliencyInfo],
+        saliencyInfo: [FileItem.ID: SaliencyInfo]
     ) -> Set<String> {
         var labels: Set<String> = []
 
@@ -149,7 +149,7 @@ enum CullingGridSelectionCoordinator {
         visibleFiles: [FileItem],
         burstGroupLookup: [FileItem.ID: Int],
         burstAnalysisResults: [Int: BurstAnalysisResult],
-        saliencyInfo: [FileItem.ID: SaliencyInfo],
+        saliencyInfo: [FileItem.ID: SaliencyInfo]
     ) -> Set<FileItem.ID> {
         Set(visibleFiles
             .filter {
@@ -157,7 +157,7 @@ enum CullingGridSelectionCoordinator {
                     for: $0,
                     burstGroupLookup: burstGroupLookup,
                     burstAnalysisResults: burstAnalysisResults,
-                    saliencyInfo: saliencyInfo,
+                    saliencyInfo: saliencyInfo
                 )
                 .contains(badge)
             }
@@ -168,7 +168,7 @@ enum CullingGridSelectionCoordinator {
         for file: FileItem,
         showsBurstGroups: Bool,
         visibleBurstGroups: [CullingGridVisibleBurstGroup],
-        files: [FileItem],
+        files: [FileItem]
     ) -> [FileItem.ID] {
         if showsBurstGroups,
            let group = visibleBurstGroups.first(where: { group in

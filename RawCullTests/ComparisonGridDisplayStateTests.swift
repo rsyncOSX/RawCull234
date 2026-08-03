@@ -11,7 +11,7 @@ private func makeComparisonDisplayFile(_ name: String, id: UUID) -> FileItem {
         size: 1,
         dateModified: Date(timeIntervalSince1970: 0),
         exifData: nil,
-        afFocusNormalized: nil,
+        afFocusNormalized: nil
     )
 }
 
@@ -19,7 +19,7 @@ private func makeComparisonBurstResult(
     groupID: Int,
     fileIDs: [FileItem.ID],
     recommendedFileID: FileItem.ID? = nil,
-    secondBestFileID: FileItem.ID? = nil,
+    secondBestFileID: FileItem.ID? = nil
 ) -> BurstAnalysisResult {
     BurstAnalysisResult(
         groupID: groupID,
@@ -31,7 +31,7 @@ private func makeComparisonBurstResult(
         reviewState: .algorithmReviewed,
         isSafeForOneClickCulling: true,
         reasons: [],
-        cautions: [],
+        cautions: []
     )
 }
 
@@ -85,13 +85,13 @@ struct ComparisonGridDisplayStateTests {
             groupID: 7,
             fileIDs: ids,
             recommendedFileID: ids[3],
-            secondBestFileID: ids[1],
+            secondBestFileID: ids[1]
         )
         let state = makeState(
             filteredFiles: files,
             activeBurstComparisonGroupID: 7,
             finalistFocusActive: true,
-            burstResults: [7: result],
+            burstResults: [7: result]
         )
 
         #expect(state.files.map(\.id) == [ids[3], ids[1]])
@@ -104,7 +104,7 @@ struct ComparisonGridDisplayStateTests {
         let state = makeState(
             filteredFiles: files,
             activeBurstComparisonGroupID: 7,
-            finalistFocusActive: true,
+            finalistFocusActive: true
         )
 
         #expect(state.files.map(\.id) == Array(ids.prefix(4)))
@@ -132,7 +132,7 @@ struct ComparisonGridDisplayStateTests {
         selectedFileID: FileItem.ID? = nil,
         activeBurstComparisonGroupID: Int? = nil,
         finalistFocusActive: Bool = false,
-        burstResults: [Int: BurstAnalysisResult] = [:],
+        burstResults: [Int: BurstAnalysisResult] = [:]
     ) -> ComparisonGridDisplayState {
         ComparisonGridDisplayState(
             filteredFiles: filteredFiles,
@@ -140,7 +140,7 @@ struct ComparisonGridDisplayStateTests {
             selectedFileID: selectedFileID,
             activeBurstComparisonGroupID: activeBurstComparisonGroupID,
             finalistFocusActive: finalistFocusActive,
-            burstAnalysisResult: { burstResults[$0] },
+            burstAnalysisResult: { burstResults[$0] }
         )
     }
 }

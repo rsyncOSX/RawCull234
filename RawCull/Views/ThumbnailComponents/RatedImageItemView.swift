@@ -28,11 +28,11 @@ struct RatedImageItemView: View {
                     ThumbnailImageView(
                         file: file,
                         targetSize: gridCacheTargetSize,
-                        style: .grid,
+                        style: .grid
                     )
                     .frame(
                         width: CGFloat(settings.thumbnailSizeGrid),
-                        height: CGFloat(settings.thumbnailSizeGrid),
+                        height: CGFloat(settings.thumbnailSizeGrid)
                     )
                     .clipped()
                 }
@@ -49,13 +49,13 @@ struct RatedImageItemView: View {
                 .overlay(alignment: .topLeading) {
                     CurrentRatingBadgeView(
                         rating: ratingDisplay,
-                        density: .compact,
+                        density: .compact
                     )
                     .padding(5)
                 }
                 .overlay(
                     RoundedRectangle(cornerRadius: 4)
-                        .stroke(Color.accentColor, lineWidth: isSelected ? 3 : 0),
+                        .stroke(Color.accentColor, lineWidth: isSelected ? 3 : 0)
                 )
                 .clipShape(RoundedRectangle(cornerRadius: 4))
 
@@ -73,11 +73,11 @@ struct RatedImageItemView: View {
         .clipShape(RoundedRectangle(cornerRadius: 4))
         .overlay(
             RoundedRectangle(cornerRadius: 4)
-                .stroke(borderColor, lineWidth: borderWidth),
+                .stroke(borderColor, lineWidth: borderWidth)
         )
         .background(
             RoundedRectangle(cornerRadius: 4)
-                .fill(isSelected || isMultiSelected ? borderColor.opacity(isSelected ? 0.14 : 0.1) : Color.clear),
+                .fill(isSelected || isMultiSelected ? borderColor.opacity(isSelected ? 0.14 : 0.1) : Color.clear)
         )
         .contentShape(Rectangle())
         .onTapGesture(count: 2) { onDoubleSelected() }

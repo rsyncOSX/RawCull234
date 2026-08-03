@@ -31,7 +31,7 @@ actor ScanFiles {
 
     func scanFiles(
         url: URL,
-        onProgress: (@MainActor @Sendable (_ count: Int) -> Void)? = nil,
+        onProgress: (@MainActor @Sendable (_ count: Int) -> Void)? = nil
     ) async -> [FileItem] {
         let didStartSecurityScope = url.startAccessingSecurityScopedResource()
         defer {
@@ -51,14 +51,14 @@ actor ScanFiles {
             let contents = try FileManager.default.contentsOfDirectory(
                 at: url,
                 includingPropertiesForKeys: keys,
-                options: [.skipsHiddenFiles],
+                options: [.skipsHiddenFiles]
             )
 
             // Single-pass: extract EXIF and Sony MakerNote focus point in the same task per file,
             // eliminating the second file-open pass that extractNativeFocusPoints() previously required.
             let rawLoader = rawLoader
             let pairs: [(FileItem, DecodeFocusPoints?)] = await withTaskGroup(
-                of: (FileItem, DecodeFocusPoints?)?.self,
+                of: (FileItem, DecodeFocusPoints?)?.self
             ) { group in
                 for fileURL in contents {
                     if Task.isCancelled {
@@ -83,7 +83,7 @@ actor ScanFiles {
                             captureDate: metadata?.captureDate,
                             captureTimeZoneOffsetSeconds: metadata?.captureTimeZoneOffsetSeconds,
                             exifData: metadata?.exifMetadata,
-                            afFocusNormalized: metadata?.focusPoint,
+                            afFocusNormalized: metadata?.focusPoint
                         )
                         let focusPoint: DecodeFocusPoints? = focusStr.map {
                             DecodeFocusPoints(sourceFile: fileURL.lastPathComponent, focusLocation: $0)
@@ -138,7 +138,7 @@ actor ScanFiles {
     nonisolated static func sortFiles(
         _ files: [FileItem],
         by sortOrder: [some SortComparator<FileItem>],
-        searchText: String,
+        searchText: String
     ) async -> [FileItem] {
         Logger.process.debugThreadOnly("func sortFiles()")
         let sorted = files.sorted(using: sortOrder)

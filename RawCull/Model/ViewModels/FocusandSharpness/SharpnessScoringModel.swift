@@ -79,7 +79,7 @@ final class SharpnessScoringModel {
 
     var effectiveFocusConfig: FocusDetectorConfig {
         scoringQuality.packageQuality.applying(
-            to: photoType.packagePreset.applying(to: focusMaskModel.config),
+            to: photoType.packagePreset.applying(to: focusMaskModel.config)
         )
     }
 
@@ -91,7 +91,7 @@ final class SharpnessScoringModel {
         SharpnessScoringSignature(
             scoringSource: scoringSource,
             thumbnailMaxPixelSize: effectiveThumbnailMaxPixelSize,
-            config: effectiveFocusConfig,
+            config: effectiveFocusConfig
         )
     }
 
@@ -130,7 +130,7 @@ final class SharpnessScoringModel {
             (
                 url: $0.url,
                 iso: $0.exifData?.isoValue,
-                aperture: $0.exifData?.apertureValue,
+                aperture: $0.exifData?.apertureValue
             )
         }
         let calibrationConfig = effectiveFocusConfig
@@ -141,7 +141,7 @@ final class SharpnessScoringModel {
             thumbnailMaxPixelSize: effectiveThumbnailMaxPixelSize,
             scoringSource: scoringSource,
             minSamples: 5,
-            maxConcurrentTasks: effectiveMaxConcurrentScoringTasks,
+            maxConcurrentTasks: effectiveMaxConcurrentScoringTasks
         ) else {
             Logger.process.warning("SharpnessScoringModel: calibration failed (too few scoreable images)")
             isCalibratingSharpnessScoring = false
@@ -183,8 +183,8 @@ final class SharpnessScoringModel {
                     url: file.url,
                     iso: file.exifData?.isoValue ?? 400,
                     aperture: file.exifData?.apertureValue,
-                    normalizedAFPoint: file.afFocusNormalized,
-                ),
+                    normalizedAFPoint: file.afFocusNormalized
+                )
             )
         }
 
@@ -204,26 +204,26 @@ final class SharpnessScoringModel {
                     await MainActor.run {
                         self.recordScoringProgress(
                             completedCount: completedCount,
-                            totalCount: totalCount,
+                            totalCount: totalCount
                         )
                     }
-                },
+                }
             ), !Task.isCancelled else { return }
 
             self.scores = Dictionary(
                 uniqueKeysWithValues: results.compactMap { result in
                     result.score.map { (result.id, $0) }
-                },
+                }
             )
             self.saliencyInfo = Dictionary(
                 uniqueKeysWithValues: results.compactMap { result in
                     result.saliency.map { (result.id, $0) }
-                },
+                }
             )
             self.breakdowns = Dictionary(
                 uniqueKeysWithValues: results.compactMap { result in
                     result.breakdown.map { (result.id, $0) }
-                },
+                }
             )
 
             self.sortBySharpness = true
@@ -243,7 +243,7 @@ final class SharpnessScoringModel {
         let now = Date()
         if let lastScoringCompletionTime {
             scoringCompletionTimes.append(
-                now.timeIntervalSince(lastScoringCompletionTime),
+                now.timeIntervalSince(lastScoringCompletionTime)
             )
         }
         lastScoringCompletionTime = now
@@ -253,20 +253,20 @@ final class SharpnessScoringModel {
         else { return }
 
         let recentTimes = scoringCompletionTimes.suffix(
-            min(Self.estimationWindowSize, scoringCompletionTimes.count),
+            min(Self.estimationWindowSize, scoringCompletionTimes.count)
         )
         let averageSeconds = recentTimes.reduce(0, +) / Double(recentTimes.count)
         let remainingItems = totalCount - completedCount
         scoringEstimatedSeconds = max(
             0,
-            Int(averageSeconds * Double(remainingItems)),
+            Int(averageSeconds * Double(remainingItems))
         )
     }
 
     func applyPreloadedScores(
         _ files: [FileItem],
         preloadedScores: [UUID: Float],
-        preloadedSaliency: [UUID: SaliencyInfo],
+        preloadedSaliency: [UUID: SaliencyInfo]
     ) {
         guard !files.isEmpty else {
             sortBySharpness = false

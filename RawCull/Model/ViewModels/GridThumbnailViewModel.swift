@@ -19,7 +19,7 @@ final class GridThumbnailViewModel {
     func open(
         cullingModel: CullingModel,
         selectedSource: ARWSourceCatalog?,
-        filteredFiles: [FileItem],
+        filteredFiles: [FileItem]
     ) {
         self.cullingModel = cullingModel
         self.selectedSource = selectedSource

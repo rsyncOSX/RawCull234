@@ -47,7 +47,7 @@ actor WriteSavedFilesJSON {
         try FileManager.default.createDirectory(
             at: fileURL.deletingLastPathComponent(),
             withIntermediateDirectories: true,
-            attributes: nil,
+            attributes: nil
         )
         try encodedData.write(to: fileURL, options: .atomic)
     }

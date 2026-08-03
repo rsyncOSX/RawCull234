@@ -34,10 +34,10 @@ struct ThumbnailSizesTab: View {
                             description: "Thumbnail size in the main file list",
                             value: Binding<Double>(
                                 get: { Double(settingsManager.thumbnailSizeGrid) },
-                                set: { settingsManager.thumbnailSizeGrid = Int($0) },
+                                set: { settingsManager.thumbnailSizeGrid = Int($0) }
                             ),
                             range: 100 ... 300,
-                            step: 10,
+                            step: 10
                         )
 
                         // Preview Size
@@ -48,10 +48,10 @@ struct ThumbnailSizesTab: View {
                             description: "Size for preview view thumbnails",
                             value: Binding<Double>(
                                 get: { Double(settingsManager.thumbnailSizePreview) },
-                                set: { settingsManager.thumbnailSizePreview = Int($0) },
+                                set: { settingsManager.thumbnailSizePreview = Int($0) }
                             ),
                             range: 1024 ... 1664,
-                            step: 128,
+                            step: 128
                         )
 
                         Divider()
@@ -69,8 +69,8 @@ struct ThumbnailSizesTab: View {
                                         set: { newValue in
                                             settingsManager.enableThumbnailSharpening = newValue
                                             Task { await settingsManager.saveSettings() }
-                                        },
-                                    ),
+                                        }
+                                    )
                                 )
 
                                 Text("Renders the zoom preview from demosaiced raw via CIRAWFilter, then applies micro-detail sharpening.")
@@ -85,10 +85,10 @@ struct ThumbnailSizesTab: View {
                                 description: "0–1: subtle. 1–2: pronounced. Operates on demosaiced raw, not the embedded JPEG.",
                                 value: Binding<Double>(
                                     get: { Double(settingsManager.thumbnailSharpenAmount) },
-                                    set: { settingsManager.thumbnailSharpenAmount = Float($0) },
+                                    set: { settingsManager.thumbnailSharpenAmount = Float($0) }
                                 ),
                                 range: 0.0 ... 2.0,
-                                step: 0.05,
+                                step: 0.05
                             )
                             .disabled(!settingsManager.enableThumbnailSharpening)
                         }
@@ -105,7 +105,7 @@ struct ThumbnailSizesTab: View {
                     resetMessage: "Are you sure you want to reset all settings to their default values?",
                     saveMessage: "Save Settings to disk?",
                     onReset: { Task { await settingsManager.resetToDefaultsThumbnails() } },
-                    onSave: { Task { await settingsManager.saveSettings() } },
+                    onSave: { Task { await settingsManager.saveSettings() } }
                 )
             }
         }

@@ -8,23 +8,23 @@ struct ComparisonGridNavigationTests {
         #expect(ComparisonGridNavigation.destinationIndex(
             from: 1,
             itemCount: 4,
-            direction: .left,
+            direction: .left
         ) == 0)
         #expect(ComparisonGridNavigation.destinationIndex(
             from: 1,
             itemCount: 4,
-            direction: .right,
+            direction: .right
         ) == 2)
 
         #expect(ComparisonGridNavigation.destinationIndex(
             from: 0,
             itemCount: 4,
-            direction: .left,
+            direction: .left
         ) == nil)
         #expect(ComparisonGridNavigation.destinationIndex(
             from: 3,
             itemCount: 4,
-            direction: .right,
+            direction: .right
         ) == nil)
     }
 
@@ -33,17 +33,17 @@ struct ComparisonGridNavigationTests {
         #expect(ComparisonGridNavigation.destinationIndex(
             from: -1,
             itemCount: 4,
-            direction: .left,
+            direction: .left
         ) == nil)
         #expect(ComparisonGridNavigation.destinationIndex(
             from: 4,
             itemCount: 4,
-            direction: .right,
+            direction: .right
         ) == nil)
         #expect(ComparisonGridNavigation.destinationIndex(
             from: 0,
             itemCount: 0,
-            direction: .left,
+            direction: .left
         ) == nil)
     }
 
@@ -120,7 +120,7 @@ struct BurstFrameCachePolicyTests {
             for selectedIndex in 0 ..< itemCount {
                 let indices = BurstFrameCachePolicy.indices(
                     around: selectedIndex,
-                    itemCount: itemCount,
+                    itemCount: itemCount
                 )
                 #expect(indices.count <= BurstFrameCachePolicy.capacity)
                 #expect(indices.contains(selectedIndex))

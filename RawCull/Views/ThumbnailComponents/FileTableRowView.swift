@@ -34,11 +34,11 @@ struct FileTableRowView: View {
                 .padding(.vertical, 4)
                 .background(
                     RoundedRectangle(cornerRadius: 6)
-                        .fill(Color(nsColor: .textBackgroundColor)),
+                        .fill(Color(nsColor: .textBackgroundColor))
                 )
                 .overlay(
                     RoundedRectangle(cornerRadius: 6)
-                        .stroke(Color.secondary.opacity(0.3), lineWidth: 1),
+                        .stroke(Color.secondary.opacity(0.3), lineWidth: 1)
                 )
 
                 Picker("Filter", selection: $viewModel.ratingFilter) {
@@ -62,7 +62,7 @@ struct FileTableRowView: View {
             Table(
                 filteredFiles,
                 selection: $viewModel.selectedFileID,
-                sortOrder: $viewModel.sortOrder,
+                sortOrder: $viewModel.sortOrder
             ) {
                 TableColumn("Rating") { file in
                     HStack(spacing: 2) {

@@ -19,13 +19,13 @@ nonisolated enum CacheSettingsLimits {
 
     static var defaultMemoryCacheSizeMB: Int {
         CacheRecommendationPolicy.defaultUserMaxLimits(
-            physicalMemoryBytes: ProcessInfo.processInfo.physicalMemory,
+            physicalMemoryBytes: ProcessInfo.processInfo.physicalMemory
         ).previewMB
     }
 
     static var defaultGridCacheSizeMB: Int {
         CacheRecommendationPolicy.defaultUserMaxLimits(
-            physicalMemoryBytes: ProcessInfo.processInfo.physicalMemory,
+            physicalMemoryBytes: ProcessInfo.processInfo.physicalMemory
         ).gridMB
     }
 }
@@ -142,7 +142,7 @@ final class SettingsViewModel {
             try FileManager.default.createDirectory(
                 at: dirURL,
                 withIntermediateDirectories: true,
-                attributes: nil,
+                attributes: nil
             )
 
             // If file doesn't exist, just use defaults
@@ -171,7 +171,7 @@ final class SettingsViewModel {
                 self.scoringSubjectSizeFactor = savedSettings.scoringSubjectSizeFactor
                 self.scoringThumbnailMaxPixelSize = SharpnessScoringSizeOption.normalizedPixelSize(
                     savedSettings.scoringThumbnailMaxPixelSize,
-                    for: savedSettings.scoringQuality,
+                    for: savedSettings.scoringQuality
                 )
                 self.scoringPhotoType = savedSettings.scoringPhotoType
                 self.scoringQuality = savedSettings.scoringQuality
@@ -214,7 +214,7 @@ final class SettingsViewModel {
                 scoringSubjectSizeFactor: scoringSubjectSizeFactor,
                 scoringThumbnailMaxPixelSize: SharpnessScoringSizeOption.normalizedPixelSize(
                     scoringThumbnailMaxPixelSize,
-                    for: scoringQuality,
+                    for: scoringQuality
                 ),
                 scoringPhotoType: scoringPhotoType,
                 scoringQuality: scoringQuality,
@@ -224,7 +224,7 @@ final class SettingsViewModel {
                 focusMaskEnergyMultiplier: focusMaskEnergyMultiplier,
                 focusMaskErosionRadius: focusMaskErosionRadius,
                 focusMaskDilationRadius: focusMaskDilationRadius,
-                focusMaskFeatherRadius: focusMaskFeatherRadius,
+                focusMaskFeatherRadius: focusMaskFeatherRadius
             )
 
             let encoder = JSONEncoder()
@@ -237,7 +237,7 @@ final class SettingsViewModel {
                 try FileManager.default.createDirectory(
                     at: dirURL,
                     withIntermediateDirectories: true,
-                    attributes: nil,
+                    attributes: nil
                 )
                 try data.write(to: fileURL, options: .atomic)
             }.value
@@ -253,7 +253,7 @@ final class SettingsViewModel {
         // Check minimum safety threshold
         let minimumCacheMB = 500
         if memoryCacheSizeMB < minimumCacheMB {
-            let message = "Cache size: \(self.memoryCacheSizeMB)MB is below " +
+            let message = "Cache size: \(memoryCacheSizeMB)MB is below " +
                 "recommended minimum of \(minimumCacheMB)MB. Performance may suffer."
             Logger.process.errorMessageOnly("\(message)")
         }
@@ -265,7 +265,7 @@ final class SettingsViewModel {
         let memoryThresholdPercent = 80
 
         if memoryCacheSizeMB > availableMemoryMB * memoryThresholdPercent / 100 {
-            let message = "Cache size: \(self.memoryCacheSizeMB)MB exceeds " +
+            let message = "Cache size: \(memoryCacheSizeMB)MB exceeds " +
                 "\(memoryThresholdPercent)% of available system memory " +
                 "(\(availableMemoryMB)MB). This may cause system memory pressure."
             Logger.process.errorMessageOnly("\(message)")
@@ -327,7 +327,7 @@ final class SettingsViewModel {
                 scoringSubjectSizeFactor: self.scoringSubjectSizeFactor,
                 scoringThumbnailMaxPixelSize: SharpnessScoringSizeOption.normalizedPixelSize(
                     self.scoringThumbnailMaxPixelSize,
-                    for: self.scoringQuality,
+                    for: self.scoringQuality
                 ),
                 scoringPhotoType: self.scoringPhotoType,
                 scoringQuality: self.scoringQuality,
@@ -337,7 +337,7 @@ final class SettingsViewModel {
                 focusMaskEnergyMultiplier: self.focusMaskEnergyMultiplier,
                 focusMaskErosionRadius: self.focusMaskErosionRadius,
                 focusMaskDilationRadius: self.focusMaskDilationRadius,
-                focusMaskFeatherRadius: self.focusMaskFeatherRadius,
+                focusMaskFeatherRadius: self.focusMaskFeatherRadius
             )
         }
     }
@@ -392,7 +392,7 @@ struct SavedSettings: Codable {
         focusMaskEnergyMultiplier: Float = 7.62,
         focusMaskErosionRadius: Float = 1.0,
         focusMaskDilationRadius: Float = 1.0,
-        focusMaskFeatherRadius: Float = 2.0,
+        focusMaskFeatherRadius: Float = 2.0
     ) {
         self.memoryCacheSizeMB = Self.clamp(memoryCacheSizeMB, CacheSettingsLimits.memoryMinMB ... CacheSettingsLimits.memoryMaxMB)
         self.gridCacheSizeMB = Self.clamp(gridCacheSizeMB, CacheSettingsLimits.gridMinMB ... CacheSettingsLimits.gridMaxMB)
@@ -410,7 +410,7 @@ struct SavedSettings: Codable {
         self.scoringSource = scoringSource
         self.scoringThumbnailMaxPixelSize = SharpnessScoringSizeOption.normalizedPixelSize(
             scoringThumbnailMaxPixelSize,
-            for: scoringQuality,
+            for: scoringQuality
         )
         self.focusMaskPreBlurRadius = Self.clamp(focusMaskPreBlurRadius, 0.3 ... 4.0)
         self.focusMaskThreshold = Self.clamp(focusMaskThreshold, 0.01 ... 0.70)
@@ -444,7 +444,7 @@ struct SavedSettings: Codable {
             focusMaskEnergyMultiplier: (try? c.decode(Float.self, forKey: .focusMaskEnergyMultiplier)) ?? 7.62,
             focusMaskErosionRadius: (try? c.decode(Float.self, forKey: .focusMaskErosionRadius)) ?? 1.0,
             focusMaskDilationRadius: (try? c.decode(Float.self, forKey: .focusMaskDilationRadius)) ?? 1.0,
-            focusMaskFeatherRadius: (try? c.decode(Float.self, forKey: .focusMaskFeatherRadius)) ?? 2.0,
+            focusMaskFeatherRadius: (try? c.decode(Float.self, forKey: .focusMaskFeatherRadius)) ?? 2.0
         )
     }
 

@@ -56,15 +56,15 @@ struct ThumbnailImageView: View {
         style: ThumbnailStyle,
         showsShimmer: Bool = false,
         contentMode: ContentMode = .fill,
-        image: Binding<NSImage?>? = nil,
+        image: Binding<NSImage?>? = nil
     ) {
         self.file = file
-        self.url = nil
+        url = nil
         self.targetSize = targetSize
         self.style = style
         self.showsShimmer = showsShimmer
         self.contentMode = contentMode
-        self.imageBinding = image
+        imageBinding = image
     }
 
     init(
@@ -73,15 +73,15 @@ struct ThumbnailImageView: View {
         style: ThumbnailStyle,
         showsShimmer: Bool = false,
         contentMode: ContentMode = .fill,
-        image: Binding<NSImage?>? = nil,
+        image: Binding<NSImage?>? = nil
     ) {
-        self.file = nil
+        file = nil
         self.url = url
         self.targetSize = targetSize
         self.style = style
         self.showsShimmer = showsShimmer
         self.contentMode = contentMode
-        self.imageBinding = image
+        imageBinding = image
     }
 
     private func loadThumbnail() async -> NSImage? {
@@ -98,13 +98,13 @@ struct ThumbnailImageView: View {
                 cgThumb = await RequestThumbnail.shared.requestThumbnail(
                     for: file,
                     targetSize: targetSize,
-                    purpose: .preview,
+                    purpose: .preview
                 )
             } else if let url {
                 cgThumb = await RequestThumbnail.shared.requestThumbnail(
                     for: url,
                     targetSize: targetSize,
-                    purpose: .preview,
+                    purpose: .preview
                 )
             } else {
                 return nil
@@ -119,7 +119,7 @@ struct ThumbnailImageView: View {
             .overlay(
                 ProgressView()
                     .controlSize(.small)
-                    .tint(.secondary),
+                    .tint(.secondary)
             )
     }
 }

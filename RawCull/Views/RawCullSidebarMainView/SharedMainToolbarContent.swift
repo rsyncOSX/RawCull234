@@ -82,7 +82,7 @@ struct SharedMainToolbarContent: ToolbarContent {
                         onClear: {
                             viewModel.ratingFilter = .all
                             Task(priority: .background) { await viewModel.handleSortOrderChange() }
-                        },
+                        }
                     )
                     .padding(.trailing, 8)
                     .disabled(viewModel.selectedSource == nil)

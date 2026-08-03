@@ -84,7 +84,7 @@ nonisolated enum RawFileDiagnostics {
     private static func logImageIO(
         for url: URL,
         using format: any RawFormat.Type,
-        to logger: inout RawFileDiagnosticLogger,
+        to logger: inout RawFileDiagnosticLogger
     ) {
         logger.line("")
         logger.line("IMAGEIO")
@@ -122,7 +122,7 @@ nonisolated enum RawFileDiagnostics {
     private static func logParserDiagnostics(
         for url: URL,
         using format: any RawFormat.Type,
-        to logger: inout RawFileDiagnosticLogger,
+        to logger: inout RawFileDiagnosticLogger
     ) {
         logger.line("")
         logger.line("PARSER TRACE")
@@ -181,7 +181,7 @@ nonisolated enum RawFileDiagnostics {
     private static func logLocation(
         _ label: String,
         _ location: EmbeddedJPEGLocations.Location?,
-        to logger: inout RawFileDiagnosticLogger,
+        to logger: inout RawFileDiagnosticLogger
     ) {
         guard let location else {
             logger.line("\(label): nil")
@@ -193,7 +193,7 @@ nonisolated enum RawFileDiagnostics {
     private static func logLocation(
         _ label: String,
         _ location: NEFEmbeddedJPEGLocations.Location?,
-        to logger: inout RawFileDiagnosticLogger,
+        to logger: inout RawFileDiagnosticLogger
     ) {
         guard let location else {
             logger.line("\(label): nil")
@@ -218,7 +218,7 @@ nonisolated enum RawFileDiagnostics {
     private static func nestedIntValue(
         _ properties: [CFString: Any],
         dictionary: CFString,
-        key: CFString,
+        key: CFString
     ) -> Int? {
         guard let nested = properties[dictionary] as? [CFString: Any] else { return nil }
         return intValue(nested[key])

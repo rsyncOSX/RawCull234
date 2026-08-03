@@ -117,7 +117,7 @@ private func makeCullingTestFile(
     _ name: String,
     scoreAperture: Double? = nil,
     modificationSeconds: TimeInterval = 0,
-    captureSeconds: TimeInterval? = nil,
+    captureSeconds: TimeInterval? = nil
 ) -> FileItem {
     let exif = scoreAperture.map {
         ExifMetadata(
@@ -132,7 +132,7 @@ private func makeCullingTestFile(
             rawFileType: nil,
             rawSizeClass: nil,
             pixelWidth: nil,
-            pixelHeight: nil,
+            pixelHeight: nil
         )
     }
     return FileItem(
@@ -142,7 +142,7 @@ private func makeCullingTestFile(
         dateModified: Date(timeIntervalSince1970: modificationSeconds),
         captureDate: captureSeconds.map(Date.init(timeIntervalSince1970:)),
         exifData: exif,
-        afFocusNormalized: nil,
+        afFocusNormalized: nil
     )
 }
 
@@ -155,7 +155,7 @@ private func makeCullingSharpnessImage(size: Int = 128) -> CGImage? {
               bitsPerComponent: 8,
               bytesPerRow: size * 4,
               space: colorSpace,
-              bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue,
+              bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
           )
     else { return nil }
 
@@ -183,7 +183,7 @@ private func makeCullingBurstResult(groupID: Int, files: [FileItem]) -> BurstAna
         reviewState: .needsReview,
         isSafeForOneClickCulling: false,
         reasons: [],
-        cautions: [],
+        cautions: []
     )
 }
 
@@ -319,7 +319,7 @@ struct CullingModelTests {
         model.updateRating(fileName: "one.ARW", rating: 4, in: catalog)
         model.mergeScoringResults(
             [CullingScoringResult(fileName: "one.ARW", score: 0.75, saliencySubject: "bird")],
-            in: catalog,
+            in: catalog
         )
         _ = await recorder.waitForSnapshotCount(1)
 
@@ -352,9 +352,9 @@ struct CullingModelTests {
         model.upsertBurstWinnerOverride(
             BurstWinnerOverride(
                 winnerFileName: "A.ARW",
-                memberFileNames: ["A.ARW", "B.ARW", "C.ARW"],
+                memberFileNames: ["A.ARW", "B.ARW", "C.ARW"]
             ),
-            in: catalog,
+            in: catalog
         )
 
         let matching = [
@@ -379,21 +379,21 @@ struct CullingModelTests {
 
         model.upsertBurstWinnerOverride(
             BurstWinnerOverride(winnerFileName: "A.ARW", memberFileNames: ["A.ARW", "B.ARW"]),
-            in: catalog,
+            in: catalog
         )
         model.upsertBurstWinnerOverride(
             BurstWinnerOverride(winnerFileName: "A.ARW", memberFileNames: ["A.ARW", "C.ARW"]),
-            in: catalog,
+            in: catalog
         )
 
         #expect(model.burstWinnerOverrides(in: catalog).count == 2)
         #expect(model.overrideWinner(
             for: [makeCullingTestFile("A.ARW"), makeCullingTestFile("B.ARW")],
-            in: catalog,
+            in: catalog
         )?.winnerFileName == "A.ARW")
         #expect(model.overrideWinner(
             for: [makeCullingTestFile("A.ARW"), makeCullingTestFile("C.ARW")],
-            in: catalog,
+            in: catalog
         )?.winnerFileName == "A.ARW")
     }
 
@@ -404,11 +404,11 @@ struct CullingModelTests {
 
         model.upsertBurstWinnerOverride(
             BurstWinnerOverride(winnerFileName: "A.ARW", memberFileNames: ["A.ARW", "B.ARW"]),
-            in: catalog,
+            in: catalog
         )
         model.upsertBurstWinnerOverride(
             BurstWinnerOverride(winnerFileName: "C.ARW", memberFileNames: ["C.ARW", "D.ARW"]),
-            in: catalog,
+            in: catalog
         )
 
         model.pruneStaleBurstOverrides(validFileNames: ["A.ARW"], in: catalog)
@@ -427,7 +427,7 @@ struct CullingModelTests {
             saliencySubject: "bird",
             sharpnessScoringSignature: nil,
             sharpnessFileSize: 10,
-            sharpnessModificationDate: Date(timeIntervalSince1970: 1),
+            sharpnessModificationDate: Date(timeIntervalSince1970: 1)
         )
         let rhs = FileRecord(
             fileName: "one.ARW",
@@ -438,7 +438,7 @@ struct CullingModelTests {
             saliencySubject: "bird",
             sharpnessScoringSignature: nil,
             sharpnessFileSize: 10,
-            sharpnessModificationDate: Date(timeIntervalSince1970: 1),
+            sharpnessModificationDate: Date(timeIntervalSince1970: 1)
         )
 
         #expect(lhs != rhs)
@@ -476,7 +476,7 @@ struct SavedFilesJSONTests {
             SavedFiles(
                 catalog: catalog,
                 dateStart: "19 May 2026 12:00",
-                filerecord: FileRecord(fileName: "one.ARW", dateTagged: nil, dateCopied: nil, rating: 4),
+                filerecord: FileRecord(fileName: "one.ARW", dateTagged: nil, dateCopied: nil, rating: 4)
             )
         ]
 
@@ -519,12 +519,12 @@ struct SavedFilesJSONTests {
             SavedFiles(
                 catalog: catalog,
                 dateStart: "19 May 2026 12:00",
-                filerecord: FileRecord(fileName: "two.ARW", dateTagged: nil, dateCopied: nil, rating: 5),
+                filerecord: FileRecord(fileName: "two.ARW", dateTagged: nil, dateCopied: nil, rating: 5)
             )
         ]
         try FileManager.default.createDirectory(
             at: fileURL.deletingLastPathComponent(),
-            withIntermediateDirectories: true,
+            withIntermediateDirectories: true
         )
         let data = try JSONEncoder().encode(savedFiles)
         try data.write(to: fileURL)
@@ -550,23 +550,23 @@ struct SavedFilesJSONTests {
             SavedFiles(
                 catalog: newCatalog,
                 dateStart: "19 May 2026 12:00",
-                filerecord: FileRecord(fileName: "new.ARW", dateTagged: nil, dateCopied: nil, rating: 5),
+                filerecord: FileRecord(fileName: "new.ARW", dateTagged: nil, dateCopied: nil, rating: 5)
             )
         ]
         let oldSavedFiles = [
             SavedFiles(
                 catalog: oldCatalog,
                 dateStart: "18 May 2026 12:00",
-                filerecord: FileRecord(fileName: "old.ARW", dateTagged: nil, dateCopied: nil, rating: 1),
+                filerecord: FileRecord(fileName: "old.ARW", dateTagged: nil, dateCopied: nil, rating: 1)
             )
         ]
         try FileManager.default.createDirectory(
             at: newFileURL.deletingLastPathComponent(),
-            withIntermediateDirectories: true,
+            withIntermediateDirectories: true
         )
         try FileManager.default.createDirectory(
             at: oldFileURL.deletingLastPathComponent(),
-            withIntermediateDirectories: true,
+            withIntermediateDirectories: true
         )
         try JSONEncoder().encode(newSavedFiles).write(to: newFileURL)
         try JSONEncoder().encode(oldSavedFiles).write(to: oldFileURL)
@@ -734,7 +734,7 @@ struct RawCullViewModelCullingTests {
         #expect(viewModel.burstAnalysisTargetFiles.map(\.name) == [
             "Z-earliest.ARW",
             "M-fallback.ARW",
-            "A-latest.ARW",
+            "A-latest.ARW"
         ])
     }
 
@@ -834,12 +834,12 @@ struct RawCullViewModelCullingTests {
                     image: image,
                     iso: file.iso,
                     aperture: file.aperture,
-                    normalizedAFPoint: file.normalizedAFPoint,
+                    normalizedAFPoint: file.normalizedAFPoint
                 )
-            },
+            }
         )
         viewModel.sharpnessModel = SharpnessScoringModel(
-            analysisAdapterOverride: adapter,
+            analysisAdapterOverride: adapter
         )
 
         await viewModel.calibrateAndScoreCurrentCatalog()
@@ -999,7 +999,7 @@ struct RawCullViewModelCullingTests {
             size: 1,
             dateModified: Date(timeIntervalSince1970: 0),
             exifData: nil,
-            afFocusNormalized: nil,
+            afFocusNormalized: nil
         )
         let second = FileItem(
             url: catalog.appendingPathComponent("day2/duplicate.ARW"),
@@ -1007,7 +1007,7 @@ struct RawCullViewModelCullingTests {
             size: 1,
             dateModified: Date(timeIntervalSince1970: 0),
             exifData: nil,
-            afFocusNormalized: nil,
+            afFocusNormalized: nil
         )
 
         let lhs = try #require(BurstGroupSignature(files: [first, second], catalog: catalog))
@@ -1036,7 +1036,7 @@ struct RawCullViewModelCullingTests {
             files: [oldA, oldB],
             groups: [BurstGroup(id: 1, fileIDs: [oldA.id, oldB.id])],
             results: [],
-            reviewStateSnapshots: [BurstReviewStateSnapshot(signature: signature, state: .decisionApplied)],
+            reviewStateSnapshots: [BurstReviewStateSnapshot(signature: signature, state: .decisionApplied)]
         )
 
         let states = viewModel.cachedReviewStates(from: snapshot)
@@ -1063,7 +1063,7 @@ struct RawCullViewModelCullingTests {
             files: [oldA, oldB],
             groups: [BurstGroup(id: 1, fileIDs: [oldA.id, oldB.id])],
             results: [],
-            reviewStateSnapshots: [BurstReviewStateSnapshot(signature: signature, state: .decisionApplied)],
+            reviewStateSnapshots: [BurstReviewStateSnapshot(signature: signature, state: .decisionApplied)]
         )
 
         let states = viewModel.cachedReviewStates(from: snapshot)
@@ -1076,7 +1076,7 @@ struct RawCullViewModelCullingTests {
         let viewModel = RawCullViewModel()
         let catalog = ARWSourceCatalog(
             name: "Catalog",
-            url: URL(fileURLWithPath: "/tmp/catalog-\(UUID().uuidString)"),
+            url: URL(fileURLWithPath: "/tmp/catalog-\(UUID().uuidString)")
         )
         let first = makeCullingTestFile("A.ARW")
         let second = makeCullingTestFile("B.ARW")
@@ -1086,7 +1086,7 @@ struct RawCullViewModelCullingTests {
             files: [first, second],
             groups: [BurstGroup(id: 0, fileIDs: [first.id, second.id])],
             results: [],
-            reviewStateSnapshots: [],
+            reviewStateSnapshots: []
         )
 
         viewModel.selectedSource = catalog
@@ -1149,7 +1149,7 @@ struct RawCullViewModelCullingTests {
             groups: [],
             results: [],
             reviewStateSnapshots: [],
-            similaritySignature: originalSignature,
+            similaritySignature: originalSignature
         )
 
         await cache.save(snapshot, catalog: catalog)
@@ -1159,14 +1159,14 @@ struct RawCullViewModelCullingTests {
             files: files,
             thumbnailMaxPixelSize: 512,
             sharpnessSignature: snapshot.sharpnessSignature,
-            similaritySignature: originalSignature,
+            similaritySignature: originalSignature
         )
         let mismatching = await cache.load(
             catalog: catalog,
             files: files,
             thumbnailMaxPixelSize: 512,
             sharpnessSignature: snapshot.sharpnessSignature,
-            similaritySignature: makeBurstSimilaritySignature(sensitivity: 0.10),
+            similaritySignature: makeBurstSimilaritySignature(sensitivity: 0.10)
         )
 
         #expect(matching != nil)
@@ -1187,7 +1187,7 @@ struct RawCullViewModelCullingTests {
             files: files,
             groups: [],
             results: [],
-            reviewStateSnapshots: [],
+            reviewStateSnapshots: []
         )
         snapshot.algorithmVersion = BurstGroupingConfig.algorithmVersion - 1
 
@@ -1198,7 +1198,7 @@ struct RawCullViewModelCullingTests {
             files: files,
             thumbnailMaxPixelSize: 512,
             sharpnessSignature: snapshot.sharpnessSignature,
-            similaritySignature: snapshot.similaritySignature,
+            similaritySignature: snapshot.similaritySignature
         )
 
         #expect(loaded == nil)
@@ -1219,7 +1219,7 @@ struct RawCullViewModelCullingTests {
                 files: files,
                 groups: [],
                 results: [],
-                reviewStateSnapshots: [],
+                reviewStateSnapshots: []
             )
             await cache.save(snapshot, catalog: catalog)
         }
@@ -1256,10 +1256,10 @@ struct RawCullViewModelCullingTests {
             results: groups.map { group in
                 makeCullingBurstResult(
                     groupID: group.id,
-                    files: group.fileIDs.compactMap { id in files.first { $0.id == id } },
+                    files: group.fileIDs.compactMap { id in files.first { $0.id == id } }
                 )
             },
-            reviewStateSnapshots: [],
+            reviewStateSnapshots: []
         )
         snapshot.embeddings = Dictionary(uniqueKeysWithValues: files.map { file in
             (file.id, Data(repeating: UInt8(file.name.count % 255), count: 256))
@@ -1267,7 +1267,7 @@ struct RawCullViewModelCullingTests {
         snapshot.similarityArtifactSetDigest =
             BurstAnalysisCache.artifactSetDigest(
                 files: files,
-                artifacts: snapshot.embeddings,
+                artifacts: snapshot.embeddings
             )
         snapshot.sharpnessScores = Dictionary(uniqueKeysWithValues: files.enumerated().map { index, file in
             (file.id, Float(index) / Float(files.count))
@@ -1279,7 +1279,7 @@ struct RawCullViewModelCullingTests {
             files: files,
             thumbnailMaxPixelSize: snapshot.thumbnailMaxPixelSize,
             sharpnessSignature: snapshot.sharpnessSignature,
-            similaritySignature: snapshot.similaritySignature,
+            similaritySignature: snapshot.similaritySignature
         )
 
         #expect(loaded == snapshot)
@@ -1290,7 +1290,7 @@ struct RawCullViewModelCullingTests {
         let viewModel = RawCullViewModel()
         let catalog = ARWSourceCatalog(
             name: "Catalog",
-            url: URL(fileURLWithPath: "/tmp/catalog-\(UUID().uuidString)"),
+            url: URL(fileURLWithPath: "/tmp/catalog-\(UUID().uuidString)")
         )
         let first = makeCullingTestFile("A.ARW")
         let second = makeCullingTestFile("B.ARW")
@@ -1301,7 +1301,7 @@ struct RawCullViewModelCullingTests {
             files: [first, second],
             groups: [group],
             results: [result],
-            reviewStateSnapshots: [],
+            reviewStateSnapshots: []
         )
         let recorder = BurstCacheSaveRecorder()
 
@@ -1332,7 +1332,7 @@ struct RawCullViewModelCullingTests {
         let second = makeCullingTestFile("B.ARW")
         let third = makeCullingTestFile("C.ARW")
         let originalSignature = try #require(
-            BurstGroupSignature(files: [first, second], catalog: catalog),
+            BurstGroupSignature(files: [first, second], catalog: catalog)
         )
         let saved: [BurstGroupSignature: BurstReviewState] = [
             originalSignature: .deferred
@@ -1345,7 +1345,7 @@ struct RawCullViewModelCullingTests {
                 BurstGroup(id: 0, fileIDs: [third.id])
             ],
             files: [first, second, third],
-            catalog: catalog,
+            catalog: catalog
         )
 
         #expect(restored == [7: .deferred])
@@ -1359,14 +1359,14 @@ struct RawCullViewModelCullingTests {
         let second = makeCullingTestFile("B.ARW")
         let third = makeCullingTestFile("C.ARW")
         let originalSignature = try #require(
-            BurstGroupSignature(files: [first, second], catalog: catalog),
+            BurstGroupSignature(files: [first, second], catalog: catalog)
         )
 
         let restored = viewModel.restoredBurstReviewStates(
             savedStatesBySignature: [originalSignature: .reviewed],
             groups: [BurstGroup(id: 0, fileIDs: [first.id, third.id])],
             files: [first, second, third],
-            catalog: catalog,
+            catalog: catalog
         )
 
         #expect(restored.isEmpty)
@@ -1426,13 +1426,13 @@ private actor BurstCacheSaveRecorder {
 }
 
 private func makeBurstSimilaritySignature(
-    sensitivity: Float = 0.25,
+    sensitivity: Float = 0.25
 ) -> BurstSimilaritySignature {
     BurstSimilaritySignature(
         groupingConfig: BurstGroupingConfig(visualDistanceThreshold: sensitivity),
         embeddingThumbnailMaxPixelSize: SimilarityScoringModel.embeddingThumbnailMaxPixelSize,
         visionFeaturePrintRevision: Int(SimilarityScoringModel.featurePrintRevision),
-        embeddingPipelineVersion: SimilarityScoringModel.embeddingPipelineVersion,
+        embeddingPipelineVersion: SimilarityScoringModel.embeddingPipelineVersion
     )
 }
 
@@ -1443,7 +1443,7 @@ private func makeBurstSnapshot(
     groups: [BurstGroup],
     results: [BurstAnalysisResult],
     reviewStateSnapshots: [BurstReviewStateSnapshot],
-    similaritySignature: BurstSimilaritySignature = makeBurstSimilaritySignature(),
+    similaritySignature: BurstSimilaritySignature = makeBurstSimilaritySignature()
 ) -> BurstAnalysisCacheSnapshot {
     let embeddings: [UUID: Data] = [:]
     return BurstAnalysisCacheSnapshot(
@@ -1453,19 +1453,19 @@ private func makeBurstSnapshot(
         thumbnailMaxPixelSize: 512,
         sharpnessSignature: BurstSharpnessSignature(
             thumbnailMaxPixelSize: 512,
-            config: FocusDetectorConfig(),
+            config: FocusDetectorConfig()
         ),
         similaritySignature: similaritySignature,
         similarityArtifactSetDigest: BurstAnalysisCache.artifactSetDigest(
             files: files,
-            artifacts: embeddings,
+            artifacts: embeddings
         ),
         files: files.map {
             BurstAnalysisCacheFile(
                 id: $0.id,
                 path: $0.url.path,
                 size: $0.size,
-                modificationDate: $0.dateModified,
+                modificationDate: $0.dateModified
             )
         },
         embeddings: embeddings,
@@ -1474,6 +1474,6 @@ private func makeBurstSnapshot(
         groups: groups,
         boundaryEvidence: [],
         results: results,
-        reviewStateSnapshots: reviewStateSnapshots,
+        reviewStateSnapshots: reviewStateSnapshots
     )
 }

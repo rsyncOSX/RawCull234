@@ -26,7 +26,7 @@ struct SimilarityGridSelectionView: View {
             BurstGroupsHomeView(
                 viewModel: viewModel,
                 analyzeBurstsRequested: $analyzeBurstsRequested,
-                similarityThresholdChanged: scheduleBurstRegroup,
+                similarityThresholdChanged: scheduleBurstRegroup
             )
         }
     }
@@ -40,7 +40,7 @@ struct SimilarityGridSelectionView: View {
 
             Slider(
                 value: $viewModel.similarityModel.burstSensitivity,
-                in: 0.05 ... 0.60,
+                in: 0.05 ... 0.60
             )
             .frame(width: 120)
             .help("Burst sensitivity — lower = tighter groups, higher = similar scenes grouped together")
@@ -52,8 +52,8 @@ struct SimilarityGridSelectionView: View {
                 String(
                     format: "%.2f · %d groups",
                     viewModel.similarityModel.burstSensitivity,
-                    viewModel.similarityModel.burstGroups.count,
-                ),
+                    viewModel.similarityModel.burstGroups.count
+                )
             )
             .font(.caption.monospacedDigit())
             .foregroundStyle(.secondary)
