@@ -4,7 +4,7 @@ import SwiftUI
 struct FileInspectorView: View {
     let file: FileItem?
 
-    @State var nsImage: NSImage?
+    @State private var nsImage: NSImage?
 
     var body: some View {
         if let file {
@@ -63,10 +63,14 @@ struct FileInspectorView: View {
             }
             .formStyle(.grouped)
             .task(id: file) {
-                let cgImage = await RequestThumbnail().requestThumbnail(for: file.url, targetSize: 1024)
-                if let cgImage {
-                    nsImage = NSImage(cgImage: cgImage, size: .zero)
-                }
+                nsImage = nil
+                let cgImage = await RequestThumbnail().requestThumbnail(
+                    for: file,
+                    targetSize: 1024,
+                    purpose: .preview,
+                )
+                guard !Task.isCancelled, let cgImage else { return }
+                nsImage = NSImage(cgImage: cgImage, size: .zero)
             }
         }
     }

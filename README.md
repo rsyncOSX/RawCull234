@@ -88,8 +88,8 @@ All package requirements are exact versions in the Xcode project and are recorde
 | Package | Version | Responsibility | Main APIs used by RawCull |
 |---|---:|---|---|
 | [PhotoAnalysisKit](https://github.com/rsyncOSX/PhotoAnalysisKit) | 1.2.0 | Sharpness scoring, focus masks, Vision saliency/classification, calibration, batch analysis, cache identity, and Vision feature prints | `PhotoAnalyzer.analyzeBatch`, `PhotoAnalyzer.calibrate`, `PhotoAnalyzer.focusMask`, `PhotoAnalyzer.analyzeWithFocusMask`, `PhotoAnalyzer.sharpnessDescriptor`, `SharpnessPreset`, `SharpnessQuality`, `VisionFeaturePrintBackend.featurePrint`, `VisionFeaturePrintBackend.distance` |
-| [RawParserKit](https://github.com/rsyncOSX/RawParserKit) | 1.2.6 | RAW discovery, metadata parsing, embedded JPEG extraction, previews, and manufacturer MakerNote parsing | `RawFormatRegistry`, `RawImageLoader.metadata`, `thumbnailCGImage`, `thumbnail`, `previewImage`, `SonyMakerNoteParser`, `NikonMakerNoteParser`, `SupportedFileType` |
-| [RawCullCore](https://github.com/rsyncOSX/RawCullCore) | 1.1.0 | Shared file, catalog, EXIF, burst-grouping, ranking, and review-state value types | `RawCullFileItem`, `RawCullSourceCatalog`, `ExifMetadata`, `BurstGroupingConfig`, `BurstGroupingEngine.group`, `BurstAnalysisResult`, `BurstCandidateScore`, `BurstReviewState` |
+| [RawParserKit](https://github.com/rsyncOSX/RawParserKit) | 1.2.8 | RAW discovery, metadata parsing, embedded JPEG extraction, previews, and manufacturer MakerNote parsing | `RawFormatRegistry`, `RawImageLoader.metadata`, `thumbnailCGImage`, `thumbnail`, `previewImage`, `SonyMakerNoteParser`, `NikonMakerNoteParser`, `SupportedFileType` |
+| [RawCullCore](https://github.com/rsyncOSX/RawCullCore) | 1.1.2 | Shared file, catalog, EXIF, burst-grouping, ranking, and review-state value types | `RawCullFileItem`, `RawCullSourceCatalog`, `ExifMetadata`, `BurstGroupingConfig`, `BurstGroupingEngine.group`, `BurstAnalysisResult`, `BurstCandidateScore`, `BurstReviewState` |
 | [RsyncArguments](https://github.com/rsyncOSX/RsyncArguments) | 1.0.0 | Type-safe construction of rsync parameters and synchronization arguments | `Parameters`, `BasicRsyncParameters`, `OptionalRsyncParameters`, `SSHParameters`, `PathConfiguration`, `RsyncParametersSynchronize.argumentsForSynchronize`, `computedArguments` |
 | [RsyncProcessStreaming](https://github.com/rsyncOSX/RsyncProcessStreaming) | 1.0.0 | Starts and cancels rsync processes and streams file/progress output | `ProcessHandlers`, `RsyncProcess`, `executeProcess`, `cancel` |
 | [ParseRsyncOutput](https://github.com/rsyncOSX/ParseRsyncOutput) | 1.0.0 | Parses rsync summary output into counts and formatted transfer statistics | `ParseRsyncOutput`, `getstats`, `numbersonly`, and the formatted file/size properties |
@@ -317,23 +317,31 @@ xcodebuild \
 
 ## Tests
 
-Tests use Apple's Swift Testing framework. Fast package-integration and critical smoke coverage:
+Tests use Apple's Swift Testing framework. `Smoke.xctestplan` is the single
+smoke selector: it runs every test declared with `.tags(.smoke)`. Add the tag
+to any new fast, deterministic release check; no Makefile allow-list needs to
+be updated.
 
 ```bash
 make test-smoke
 ```
 
-Full suite with Thread Sanitizer:
+Full suite with Thread Sanitizer (serialized because it includes tests of
+process-wide caches, settings, and other singleton state):
 
 ```bash
 make test-full
 ```
 
-Performance and extreme-concurrency coverage:
+Dedicated extreme-concurrency stress/data-race coverage:
 
 ```bash
 make test-performance
 ```
+
+This last command is a stress gate, not a timing benchmark; it currently makes
+no performance-duration assertion. Thread Sanitizer is enabled only by
+`make test-full`.
 
 The test suites cover package integration, sharpness and focus metrics,
 structured cancellation, latest-run-wins behavior, memory-cache counters,

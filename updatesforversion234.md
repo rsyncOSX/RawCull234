@@ -493,6 +493,344 @@ request so that completed work is verified rather than repeated:
 - Package.resolved contains RawParserKit 1.2.8 and RawCullCore 1.1.2, but the
   README table still says 1.2.6 and 1.1.0. The README correction remains open.
 
+### Execution ledger
+
+This ledger records work performed against the phase plan. A phase is marked
+complete only after its focused verification and commit succeed.
+
+| Phase | Status | Evidence |
+|---|---|---|
+| 0 — Baseline | Complete | Baseline captured on 3 August 2026; commit 5da6ff4 |
+| 1 — Actual Pixels | Complete | 1:1 math and invalid-input handling verified by 9 focused tests, with and without Thread Sanitizer; smoke gate passed |
+| 2 — Histogram safety | Complete | Unified cancellable loader; 4 deterministic focused tests passed repeatedly and under Thread Sanitizer; smoke gate passed |
+| 3 — Release gates | Complete | Smoke plan is the sole tag selector; deliberate red/green proof succeeded; Smoke, full TSan, performance stress, and exact-package Release gates passed |
+| 4 — Thumbnail identity | Complete | Schema-v3 source/representation keys applied across disk, memory, scan, grid, and preview paths; focused normal/TSan and smoke gates passed |
+| 5 — Scan/grid contention | Complete | Low-risk catalog-identity grid gate prevents scan/UI competition; per-key extraction diagnostics added; focused normal/TSan and smoke gates passed |
+| 6 — Similarity persistence | Complete | Four uncovered persistence outcomes added; focused artifact/indexing/culling suites passed normally and under TSan; no production behavior fix required |
+| 7 — Accessibility | Implementation complete | Saved-file rows use native buttons; bounded labels, values, actions, and selected traits added; Debug build and smoke gate passed; physical VoiceOver/keyboard evidence remains in Phase 9 |
+| 8 — Metadata and documentation | Local verification complete | Debug and Release resolve and build as 2.3.4 (231), macOS 26.2, arm64; README matches all seven resolved packages; App Store build-number availability remains a Phase 10 pre-upload check |
+| 9 — Integrated regression | Automated gates complete; manual gates pending | Final smoke 93/101, full TSan 270/295, stress 1/1, and exact-package Release arm64 build passed; release-hardware, VoiceOver, real-catalog, minimum-OS, and copied-2.3.3-data matrix remains blocking |
+| 10 — Release handoff | Prepared; distribution blocked | AI-safe 3.0.0 plan created from inspected main/version-3.0.0 commit 2857a6b; signing/notarization/upload/hash/tag correctly blocked on manual Phase 9 evidence and App Store build-number confirmation |
+
+#### Phase 0 baseline evidence
+
+- Source commit: 9250d9f35e1f8f9d3bb6104c721ec31ade62fcc6
+- Host: Apple Silicon arm64, macOS 26.6 build 25G72
+- Toolchain: Xcode 26.6 build 17F113; Apple Swift 6.3.3
+- Application language mode: Swift 6 with Main Actor default isolation and
+  Approachable Concurrency
+- Test target: complete strict concurrency checking
+- Resolved-package SHA-256:
+  2563e9f3e0d45448d2cb8f8042fd4e80d40fe77564b3a624f8c72a4e52d45fa9
+- make test-smoke: passed. Output confirmed that several selected Swift
+  Testing suites and cases executed twice.
+- make test-full with Thread Sanitizer: failed on the known
+  ZoomViewportMathTests mismatch. The unique failures were the fit-upscaled
+  scale, focus-point transform, and missing-focus-point transform expectations;
+  one focus-point failure was reported twice. No Thread Sanitizer data-race
+  report appeared.
+- make test-performance: passed the dedicated extreme concurrent-load test.
+- Exact-package Release arm64 build: succeeded. The only observed warning was
+  Xcode's App Intents metadata notice that no AppIntents.framework dependency
+  was present; no new RawCull compiler warning was observed.
+- Baseline result bundles were written by Xcode under DerivedData for the smoke,
+  full, and performance runs. Final release evidence will use explicit,
+  stable result-bundle paths after Phase 3 repairs the gate commands.
+
+#### Phase 1 Actual Pixels evidence
+
+- Product decision: “Actual Pixels” means one source-image pixel per display
+  point before backing-scale conversion. The fit-relative scale is therefore
+  `1.0 / fitScale`; the previous additional 60% factor was removed.
+- `ZoomViewportMath` now rejects non-positive and non-finite dimensions and
+  derived values. Invalid dimensions and non-finite focus coordinates produce
+  the documented finite, centered fallback transform.
+- Nine focused `ZoomViewportMathTests` cover landscape and portrait images,
+  fit-upscaled and mismatched aspect ratios, all four clamped edges, absent
+  focus metadata, and invalid dimensions/focus coordinates.
+- The focused suite passed normally and with Thread Sanitizer enabled. No
+  sanitizer diagnostic appeared. The wider smoke gate also passed.
+- Project-wide terminology inspection found the Z shortcut and About text
+  consistently describe actual-pixel inspection. Unrelated 0.6 constants are
+  cache, animation, styling, or analysis parameters and were not changed.
+- Manual checks involving a physical display's backing scale remain part of
+  the integrated Phase 9 release checklist; no physical-display result is
+  inferred from the automated geometry tests.
+
+#### Phase 2 histogram evidence
+
+- `HistogramView` now has one `.task(id:)` lifecycle keyed by the selected
+  `NSImage` object's identity. Starting any load clears the displayed bins.
+- `HistogramLoadingModel` performs calculation through a structured
+  `@concurrent` helper and publishes only when the task is not cancelled and
+  its generation is still current. A superseded calculation cannot overwrite
+  the newer image's histogram even if the older calculation ignores task
+  cancellation.
+- Nil images and failed `NSImage` conversion leave the histogram empty. The
+  conversion failure is logged as a recoverable display problem; the histogram
+  path contains no `fatalError`.
+- `FileInspectorView` now keeps its image state private, clears it when file
+  identity changes, and checks cancellation before publishing the thumbnail.
+- Four focused tests cover nil/valid-to-nil clearing, conversion failure,
+  successful bin publication, and a controlled slow-A/fast-B supersession.
+  The actor-backed test gate uses no timing sleeps.
+- The focused suite passed normally and twice consecutively under Thread
+  Sanitizer, with no sanitizer diagnostic. The wider smoke gate also passed.
+
+#### Phase 3 release-gate evidence
+
+- `Smoke.xctestplan` is now the sole smoke selector and filters the RawCull test
+  target with `selectedTags.tags = ["smoke"]`. The Makefile no longer maintains
+  a second `-only-testing` allow-list. Smoke tests remain parallelizable.
+- The source inventory contains 93 `.tags(.smoke)` declarations across six
+  suites/files. The repaired smoke result contains those 93 unique test
+  identifiers and 101 concrete cases after parameter expansion, including all
+  nine `ZoomViewportMathTests` cases. No suite is invoked a second time.
+- Xcode's test enumerator reports the 255 target candidates for both the Smoke
+  and RawCull plans before plan-level tag filtering. Therefore the executed
+  result bundle, not the pre-filter enumeration count, is the authoritative
+  smoke membership record. The Performance command resolves and executes its
+  single selected stress test.
+- A temporary smoke-tagged test recorded
+  `INTENTIONAL_SMOKE_GATE_PROOF_FAILURE`; `make test-smoke` failed with
+  `xcodebuild` status 65 and Make status 2. The proof file was then removed and
+  the unmodified gate passed. No proof-only source remains in the repository.
+- `make test-full` passed under Thread Sanitizer with 255 unique tests and 280
+  concrete parameterized cases. No sanitizer diagnostic appeared. Its result
+  bundle is
+  `Test-RawCull-2026.08.03_18-51-36-+0200.xcresult` in Xcode DerivedData.
+- `make test-performance` passed the dedicated extreme concurrent-load test;
+  documentation now describes this as a stress/data-race gate, not a timing
+  benchmark. Its result bundle is
+  `Test-RawCull-2026.08.03_18-52-54-+0200.xcresult` in Xcode DerivedData.
+- The exact resolved-package Release arm64 build succeeded. The final restored
+  `make test-smoke` also passed, confirming the checked-in gate is green after
+  the deliberate failure proof.
+- README and `RawCullTests/TEST_ARCHITECTURE.md` now document the one-selector
+  rule, how to add smoke coverage, and the distinct responsibilities of Smoke,
+  full TSan, and Performance commands.
+
+#### Phase 4 thumbnail-identity evidence
+
+- Added immutable `ThumbnailSourceFingerprint`, `ThumbnailRepresentation`, and
+  `ThumbnailRequestKey` values. Source identity contains the standardized path,
+  byte size, modification time quantized to milliseconds, and independent
+  thumbnail cache schema version 3. Representation identity contains grid or
+  preview purpose plus the requested maximum pixel size.
+- `DiskCacheManager`, `SharedMemoryCache`, `RequestThumbnail`,
+  `ScanAndCreateThumbnails`, and eviction/boomerang diagnostics now use the same
+  complete request identity. Disk filenames hash a length-delimited,
+  deterministic serialization of that identity and retain atomic JPEG writes.
+- File-based UI paths pass existing `FileItem.size` and `dateModified` metadata.
+  URL-only paths read file size and modification date once; when either cannot
+  be established, they decode without persistent or memory reuse instead of
+  accepting a stale path-only hit.
+- Grid and preview representations are distinct. A 200-pixel grid artifact
+  cannot resolve a 1024/1616-pixel preview request in memory or on disk.
+  Representation suitability additionally requires the decoded maximum
+  dimension to meet the requested dimension.
+- Schema v2/path-only entries remain physically clearable but cannot load as
+  schema v3. Cache clearing removes old and current schema artifacts.
+- Eight new identity tests cover stable keys, in-place source replacement,
+  metadata failure, decoded-size suitability, grid/preview separation, old
+  schema rejection, cross-schema clearing, and cancellation without an
+  incomplete disk artifact. Existing disk, scan-admission, request-provider,
+  raw-loader integration, and shared-cache counter tests were migrated to the
+  new identity.
+- The authoritative focused RawCull-plan pass succeeded. The affected cache,
+  identity, integration, and stress suites also passed under Thread Sanitizer
+  with no sanitizer diagnostic. `make test-smoke` passed.
+
+#### Phase 5 scan/grid-contention evidence
+
+- Chose the documented low-risk 2.3.4 fallback instead of introducing a shared
+  extraction-task registry. Scan and UI extraction currently belong to
+  different actors with different cache-admission policies and injectable
+  loaders; moving ownership and image transfer in the final stabilization
+  release would be a broader concurrency change than the measured issue.
+- `ThumbnailPreloadGridGate` binds blocking to the active catalog URL, selected
+  catalog URL, and presence of that catalog's preload actor. Normal, similarity,
+  and rated thumbnail grids are not constructed while this condition is true,
+  so their `.task` thumbnail requests cannot compete with the batch preload.
+  A progress view and Cancel action remain available.
+- Existing catalog lifecycle paths clear the preload actor on success and call
+  `cancelCatalogLoad` on cancellation/supersession; the gate also fails open
+  when the active or selected identity disappears. Deterministic tests cover
+  matching, mismatched, inactive, cancelled/superseded identity states.
+- Removed the stale grid-contention TODO from `ThumbnailLoader` and documented
+  the enforced invariant at the fast-path lookup.
+- Added process-wide, lock-protected metrics keyed by `ThumbnailRequestKey` for
+  extraction starts/completions, cancellations, concurrent duplicate starts,
+  coalesced waiters (zero for this fallback), current active work, and peak
+  active work. Both scan and UI cold-decode paths record the same metrics.
+- The Memory Diagnostics console and exported TSV expose these counters, so the
+  fixed-catalog four-scenario matrix can be captured on release hardware
+  without debug-only instrumentation. That real-catalog timing matrix remains
+  a Phase 9 manual release check; no timing result is inferred from unit tests.
+- Three deterministic gate/metrics tests and the existing shared-cache and
+  stress tests passed normally and under Thread Sanitizer, with no sanitizer
+  diagnostic. `make test-smoke` passed.
+
+#### Phase 6 similarity-persistence evidence
+
+- Mapped existing coverage before adding cases. Existing suites already proved
+  identity round trips, incompatible/corrupt/invalid isolation, pruning and
+  clear, pre-replacement cancellation, recreation, changed/added sources,
+  legacy migration, partial generation failure, structured cancellation, and
+  latest-generation-wins behavior.
+- Added the four previously uncovered outcomes: a persistence-directory write
+  failure retains the generated embedding in memory; cancellation after one
+  record commit preserves that completed record and prevents later commits;
+  clearing the analysis directory leaves independent ratings and settings
+  files byte-for-byte unchanged; and indexing progress/phase reset after
+  successful, partial-generation, persistence-failure, cancellation, and
+  superseded terminal paths.
+- Added an async pre-record test seam to the actor-isolated artifact store. Its
+  production default is nil; it changes no production commit ordering or
+  persistence policy and permits deterministic partial-commit cancellation
+  without timing sleeps.
+- Added an explicit independence test proving that thumbnail purpose, size, and
+  cache-schema changes do not enter `SimilarityArtifactSourceFingerprint`.
+  Phase 4 therefore cannot invalidate similarity artifacts by itself.
+- Focused per-file artifact, durable indexing, burst-cache, and culling tests
+  passed. The artifact/indexing/culling set also passed under Thread Sanitizer
+  with no sanitizer diagnostic. `make test-smoke` passed.
+- Restart and migration checks against an actual copy of 2.3.3 user data remain
+  in the Phase 9 manual release matrix; no installed-user-data result is
+  inferred from isolated fixtures.
+
+#### Phase 7 bounded-accessibility evidence
+
+- Inventoried every remaining `onTapGesture`. The only remaining uses are the
+  intentional double-click zoom gestures in `ZoomOverlayView` and
+  `FileDetailView`, plus the coordinated single/double-click selection and zoom
+  gestures in `ImageItemView`, `RatedImageItemView`, and
+  `ComparisonImagePaneView`. Their click-count behavior was not changed.
+- Converted catalog and file-record rows in `SavedFilesView` from gesture-only
+  containers to plain native `Button` rows while retaining their row-wide hit
+  targets, hover rendering, selection bindings, and split-view navigation.
+- Added explicit names, values, selected traits, and named/default actions to
+  normal, rated, and comparison thumbnails. Decorative selection, rating, and
+  divider elements that duplicate spoken state are hidden from accessibility.
+- Added bounded state semantics to image-source, rating/reject, focus-mask,
+  focus-point, and burst-review controls. Existing enabled-state and keyboard
+  behavior remains owned by the native controls.
+- The Debug application build and authoritative smoke gate passed. Source
+  inspection confirms no unintended single-action gesture rows remain in the
+  bounded inventory.
+- Physical VoiceOver navigation, focus return, and keyboard-only operation
+  require interactive release-hardware checks. They remain explicit Phase 9
+  manual gates; this phase does not infer those results from compilation or
+  automated tests.
+
+#### Phase 8 metadata-and-documentation evidence
+
+- Resolved Debug and Release build settings both report marketing version
+  2.3.4, build 231, deployment target macOS 26.2, supported platform macOS, and
+  architecture arm64.
+- Inspected both built application bundles. Their generated `Info.plist` files
+  report `CFBundleShortVersionString` 2.3.4, `CFBundleVersion` 231, and
+  `LSMinimumSystemVersion` 26.2; `file` identifies each executable as arm64
+  Mach-O. `AboutRawCullView` reads the first two generated bundle keys rather
+  than containing a duplicated version literal.
+- Updated the two stale README rows to RawParserKit 1.2.8 and RawCullCore 1.1.2.
+  Compared every README package row with `Package.resolved`; all seven package
+  names and exact versions now agree.
+- The README test section already describes `Smoke.xctestplan` as the sole
+  smoke-tag selector, the full Thread Sanitizer gate, and the dedicated stress
+  gate, matching the Phase 3 Makefile implementation.
+- Build 231 availability cannot be established from the local repository.
+  Confirm that it is unused in App Store Connect immediately before upload; if
+  consumed, increment both configurations, rebuild, reinspect both bundles,
+  and rerun Phases 9 and 10.
+
+#### RawCull 2.3.4 release record
+
+- Compatibility: macOS 26.2 or later on Apple Silicon; no new AI requirement.
+- Release summary: improves actual-pixel inspection consistency; handles
+  histogram conversion and supersession safely; fingerprints thumbnails by
+  source and representation; prevents selected-catalog grid decoding during
+  preload; strengthens similarity-persistence regression coverage and release
+  test selection; and improves accessibility semantics for saved-file rows and
+  key culling controls.
+- Known limitation: thumbnail extraction is gated during selected-catalog
+  preload rather than coalesced across the scan and UI actors. The grid resumes
+  when preload finishes, is cancelled, or is superseded.
+- Exact tested commit: pending Phase 9 clean-checkout verification.
+- DMG SHA-256: pending Phase 10 packaging.
+- App Store build: proposed build 231; availability and uploaded build pending
+  Phase 10.
+
+#### Phase 9 integrated-regression evidence
+
+- Began from clean commit `ab711df`. The initial smoke gate passed. Two full
+  TSan attempts then stopped making progress while the test plan ran every
+  singleton-heavy suite in parallel; both were manually cancelled after a
+  bounded diagnostic window. Their cancellation failures are not counted as
+  product failures, and no Thread Sanitizer diagnostic appeared.
+- A serial diagnostic completed the entire target and exposed one genuine test
+  race: the persistence-retry test allowed only 200 scheduler yields for its
+  asynchronous failure to publish. It now waits on the actor that owns the save
+  attempt, eliminating the scheduler-speed assumption. The focused test passed
+  under Thread Sanitizer.
+- `RawCull.xctestplan` now serializes the complete TSan plan because it
+  deliberately exercises process-wide cache, settings, and singleton state.
+  The fast smoke plan remains parallel. This retains every full-plan test while
+  removing cross-suite scheduling as a release-gate variable.
+- Final `make test-smoke` passed 93 unique tests and 101 concrete parameterized
+  cases. Result bundle:
+  `Test-RawCull-2026.08.03_19-32-38-+0200.xcresult`.
+- Final `make test-full` passed 270 unique tests and 295 concrete parameterized
+  cases under Thread Sanitizer, with no sanitizer diagnostic. Result bundle:
+  `Test-RawCull-2026.08.03_19-30-51-+0200.xcresult`.
+- Final `make test-performance` passed its one selected extreme-concurrency
+  test. Result bundle: `Test-RawCull-2026.08.03_19-31-08-+0200.xcresult`.
+- The exact-`Package.resolved` Release arm64 build passed. Its only observed
+  warning was the pre-existing App Intents metadata notice that no
+  `AppIntents.framework` dependency exists; no RawCull compiler or concurrency
+  warning was emitted.
+- Interactive QA is not inferred from these gates. VoiceOver and keyboard
+  focus, actual-pixel behavior on a physical display, real RAW replacement and
+  scan-contention measurements, upgrade/restart behavior using copied 2.3.3
+  data, clean-account installation, minimum macOS 26.2, and the latest macOS 26
+  hardware matrix remain blocking manual release checks.
+
+#### Phase 10 release-handoff evidence
+
+- The current candidate is commit `de58ca3`, containing the independently
+  committed Phase 0–9 work. It is not declared the final tested release commit
+  because the manual Phase 9 matrix has not been completed.
+- Packaging, Developer ID distribution signing, notarization submission,
+  stapling, DMG publication, App Store upload, and creation of tag `2.3.4` were
+  intentionally not started. Phase 10 requires the missing manual evidence and
+  confirmation that App Store build 231 is unused before any of those external
+  or irreversible release actions.
+- Added `updatesforversion300.md`, based on read-only inspection of local
+  `main` and `version-3.0.0` at
+  `2857a6b3a095425b06bbe8c8f757e32f2cd07664`. The plan classifies every
+  2.3.4 requirement and maps applicable behavior to AI-native code paths,
+  focused tests, AI regression matrices, acceptance criteria, and rollback
+  boundaries. It explicitly prohibits merging or mechanically transplanting
+  the maintenance implementation.
+- No 3.0.0 production code, tests, packages, project settings, model resources,
+  branch pointers, or Git history were changed while creating the plan. No
+  3.0.0 test result is claimed.
+
+#### Actions required to unblock final 2.3.4 release
+
+1. Complete the physical/manual Phase 9 matrix and attach results, including
+   copied 2.3.3 persistence, minimum macOS 26.2, latest macOS 26, VoiceOver,
+   actual-pixel display behavior, real RAW replacement, scan diagnostics, and
+   clean-account installation.
+2. Confirm build 231 is unused in App Store Connect. If it is consumed, update
+   both configurations and rerun metadata inspection and Phases 9–10.
+3. Rerun all four automated gates on the resulting exact clean commit and
+   record that commit as the release candidate.
+4. Archive, sign, notarize, staple, assess, install, and upgrade-test that exact
+   commit. Compute the DMG SHA-256 and verify the downloaded artifact.
+5. Upload only the verified build, then tag the exact tested commit as 2.3.4
+   and preserve its source, artifacts, hash, release notes, and result bundles.
+
 ### Phase 0: establish the closure ledger and reproducible baseline
 
 1. Create one tracked checklist with rows for work items 1–8 and columns for
@@ -953,7 +1291,7 @@ Avoid mixing these fixes with macOS 27 or Core AI changes.
 
 ## Draft release-note summary
 
-> RawCull 2.3.4 is a maintenance and stabilization update for macOS 26. It improves zoom inspection consistency, safely handles image conversion failures, strengthens thumbnail cache correctness and release testing, and includes reliability improvements around catalog analysis. RawCull 2.3.4 requires macOS 26.2 or later and an Apple Silicon Mac.
+> RawCull 2.3.4 is a maintenance and stabilization update for macOS 26. It improves actual-pixel inspection consistency, safely handles histogram conversion and rapid image changes, strengthens thumbnail cache correctness and release testing, avoids grid decoding while the selected catalog is preloading, expands persistence regression coverage, and improves accessibility semantics in key culling controls. RawCull 2.3.4 requires macOS 26.2 or later and an Apple Silicon Mac, and adds no new AI requirement.
 
 ## Post-release policy
 
